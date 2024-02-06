@@ -1,5 +1,6 @@
 ﻿using GamesDataAccess;
 using System.Data.SQLite;
+using System.Net.Http.Headers;
 
 string dbFile = @"..\..\Data\test.db";
 string dbFilePath = Path.GetDirectoryName(dbFile)!;
@@ -10,53 +11,22 @@ if (!Directory.Exists(dbFilePath))
 
 string connStr = $@"Data Source={dbFile}; Version=3;";
 
-GamesDao gamesDal =
+GamesDao gamesDao =
     new GamesDao
     (
         () => new SQLiteConnection(connStr),
         "||"
     );
 
-gamesDal.DropAllTables();
+gamesDao.DropAllTables();
 
-gamesDal.CreateAllTables();
+gamesDao.CreateAllTables();
 
-//int affected = 
-//    gamesDal
-//    .AddNewGame
-//    (
-//        new Game
-//        (
-//            "zelda-botw",
-//            "The Legend of Zelda Breath of the Wild",
-//            "The best Zelda of all time?",
-//            "zelda;nintendo;gdr;adventure"
-//        )
-//    );
+DataPopulator dataPopulator = new DataPopulator(gamesDao);
 
-//    affected =
-//    gamesDal
-//    .AddNewGame
-//    (
-//        new Game
-//        (
-//            "elden-ring",
-//            "Elden Ring",
-//            "GOTY 2022",
-//            "soulslike;gdr;adventure"
-//        )
-//    );
+dataPopulator.AddSomeGames();
 
-//Console.WriteLine($"Added {affected} game(s)");
-
-//var allGames = gamesDal.GetAllGames();
-
-//foreach (var game in allGames)
-//{
-//    Console.WriteLine(game);
-//}
-
-Game[] games = gamesDal.GetGamesByPartialName("zel", "gdr");
+GameDbItem[] games = gamesDao.GetAllGames();
 
 foreach (var game in games)
 {

@@ -26,19 +26,8 @@ public class GamesDao
         action(conn);
     }
 
-    private void ExecuteNonQuery(string commandText)
-    {
-        Action<DbConnection> action =
-            conn =>
-            {                
-                using DbCommand cmd = conn.CreateCommand();
-                cmd.CommandText = commandText;
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.ExecuteNonQuery();
-            };
-
-        OpenAndExecute(action);
-    }
+    private void ExecuteNonQuery(string commandText) =>
+        ExecuteNonQuery(commandText, null);
 
 
     public void CreateTableGames()
@@ -148,14 +137,9 @@ create table game_transactions
         action.SafeExecute();
     }
 
-    public int AddNewGame(Game game)
+    public int AddNewGame(GameDbItem game)
     {
-        int affected = 0;
-
-        Action<DbConnection>  action = 
-            conn =>
-            {
-                string cmdText = $@"
+        string cmdText = $@"
     insert into games
     (
         game_id,
@@ -172,15 +156,67 @@ create table game_transactions
     )
     ";
 
-                using DbCommand cmd = conn.CreateCommand();
-                cmd.CommandText = cmdText;
-                cmd.CommandType = System.Data.CommandType.Text;
-
+        Action<DbCommand> action =
+            cmd =>
+            {
                 cmd.AddParameterWithValue("game_id", game.GameId);
                 cmd.AddParameterWithValue("game_name", game.GameName);
                 cmd.AddParameterWithValue("game_description", game.GameDescription);
                 cmd.AddParameterWithValue("game_tags", game.GameTags);
+            };
 
+        return ExecuteNonQuery(cmdText, action);
+    }
+
+    public int AddNewStore(StoreDbItem store)
+    {
+        string cmdText = $@"
+    insert into stores
+    (
+        store_id,
+        store_name,
+        store_description,
+        store_link
+    ) 
+    values
+    (
+        :store_id,
+        :store_name,
+        :store_description,
+        :store_link
+    )
+    ";
+
+        Action<DbCommand> action =
+            cmd =>
+            {
+                cmd.AddParameterWithValue("store_id", store.StoreId);
+                cmd.AddParameterWithValue("store_name", store.StoreName);
+                cmd.AddParameterWithValue("store_description", store.StoreDescription);
+                cmd.AddParameterWithValue("store_link", store.StoreLink);
+            };
+
+        return ExecuteNonQuery(cmdText, action);
+    }
+
+    private int ExecuteNonQuery
+    (
+        string sqlText, 
+        Action<DbCommand>? addParametersAction
+    )
+    {
+        int affected = 0;
+
+        Action<DbConnection> action =
+            conn =>
+            {
+                string cmdText = sqlText;
+
+                using DbCommand cmd = conn.CreateCommand();
+                cmd.CommandText = cmdText;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                addParametersAction?.Invoke(cmd);
 
                 affected = cmd.ExecuteNonQuery();
             };
@@ -190,12 +226,13 @@ create table game_transactions
         return affected;
     }
 
-    public Game[] GetAllGames() =>
+
+    public GameDbItem[] GetAllGames() =>
         GetGamesByPartialName(null, null);
 
-    public Game[] GetGamesByPartialName(string? partialName, string? partialTags)
+    public GameDbItem[] GetGamesByPartialName(string? partialName, string? partialTags)
     {
-        List<Game> games = new List<Game>();
+        List<GameDbItem> games = new List<GameDbItem>();
 
         Action<DbConnection> action =
             conn =>
@@ -244,7 +281,7 @@ where 1 = 1 ";
                     string description = dataReader.GetString(2);
                     string tags = dataReader.GetString(3);
 
-                    Game game = new Game(id, name, description, tags);
+                    GameDbItem game = new GameDbItem(id, name, description, tags);
                     games.Add(game);
                 }
             };
