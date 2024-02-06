@@ -375,16 +375,15 @@ select
 from stores
 where 1 = 1 ";
 
+        if (partialName is not null)
+        {
+            selectText +=
+            $@"and store_name like '%' {_strConcatOperator} :partialname {_strConcatOperator} '%'";
+        }
+
         Action<DbCommand> addParametersAction =
             cmd =>
             {
-
-                if (partialName is not null)
-                {
-                    selectText +=
-                    $@"and store_name like '%' {_strConcatOperator} :partialname {_strConcatOperator} '%'";
-                }
-
                 if (partialName is not null)
                 {
                     cmd.AddParameterWithValue("partialname", partialName);
@@ -412,7 +411,52 @@ where 1 = 1 ";
             );
     }
 
+    public PlatformDbItem[] GetAllPlatforms() =>
+        GetPlatformsByPartialName(null);
 
+    public PlatformDbItem[] GetPlatformsByPartialName(string? partialName)
+    {
+        string selectText = $@"
+select 
+    platform_id, 
+    platform_name, 
+    platform_description
+from platforms
+where 1 = 1 ";
+
+        if (partialName is not null)
+        {
+            selectText += $@"and platform_name like '%' {_strConcatOperator} :partialname {_strConcatOperator} '%'";
+        }
+
+        Action<DbCommand> addParametersAction =
+            cmd =>
+            {
+                if (partialName is not null)
+                {
+                    cmd.AddParameterWithValue("partialname", partialName);
+                }
+            };
+
+        Func<DbDataReader, PlatformDbItem> mapper =
+            dataReader =>
+            {
+                string id = dataReader.GetString(0);
+                string name = dataReader.GetString(1);
+                string description = dataReader.GetString(2);
+
+                PlatformDbItem platform = new PlatformDbItem(id, name, description);
+                return platform;
+            };
+
+        return
+            GetItemsFromDb
+            (
+                selectText,
+                addParametersAction,
+                mapper
+            );
+    }
 
     private T[] GetItemsFromDb<T>
     (

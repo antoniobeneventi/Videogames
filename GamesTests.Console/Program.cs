@@ -26,6 +26,8 @@ DataPopulator dataPopulator = new DataPopulator(gamesDao);
 
 dataPopulator.AddSomeData();
 
+Console.WriteLine(new string('-', 80));
+
 GameDbItem[] games = gamesDao.GetAllGames();
 
 foreach (var game in games)
@@ -33,9 +35,22 @@ foreach (var game in games)
     Console.WriteLine(game);
 }
 
+Console.WriteLine(new string('-', 80));
+
 StoreDbItem[] stores = gamesDao.GetAllStores();
 
 foreach (var store in stores)
 {
     Console.WriteLine(store);
 }
+
+Console.WriteLine(new string('-', 80));
+
+PlatformDbItem[] platforms = gamesDao.GetAllPlatforms();
+
+foreach (var platform in platforms)
+{
+    Console.WriteLine(platform);
+}
+
+Console.WriteLine(new string('-', 80));
