@@ -199,6 +199,77 @@ create table game_transactions
         return ExecuteNonQuery(cmdText, action);
     }
 
+    public int AddNewPlatform(PlatformDbItem platform)
+    {
+        string cmdText = $@"
+    insert into platforms
+    (
+        platform_id,
+        platform_name,
+        platform_description
+    ) 
+    values
+    (
+        :platform_id,
+        :platform_name,
+        :platform_description
+    )
+    ";
+
+        Action<DbCommand> action =
+            cmd =>
+            {
+                cmd.AddParameterWithValue("platform_id", platform.PlatformId);
+                cmd.AddParameterWithValue("platform_name", platform.PlatformName);
+                cmd.AddParameterWithValue("platform_description", platform.PlatformDescription);
+            };
+
+        return ExecuteNonQuery(cmdText, action);
+    }
+
+    public int AddNewGameTransaction(GameTransactionDbItem gameTx)
+    {
+        string cmdText = $@"
+    insert into game_transactions
+    (
+        transaction_id,
+        purchase_date,
+        is_virtual,
+        store_id,
+        platform_id,
+        game_id,
+        price,
+        notes
+    ) 
+    values
+    (
+        :transaction_id,
+        :purchase_date,
+        :is_virtual,
+        :store_id,
+        :platform_id,
+        :game_id,
+        :price,
+        :notes
+    )
+    ";
+
+        Action<DbCommand> action =
+            cmd =>
+            {
+                cmd.AddParameterWithValue("transaction_id", gameTx.TransactionId);
+                cmd.AddParameterWithValue("purchase_date", gameTx.PurchaseDate);
+                cmd.AddParameterWithValue("is_virtual", gameTx.IsVirtual);
+                cmd.AddParameterWithValue("store_id", gameTx.StoreId);
+                cmd.AddParameterWithValue("platform_id", gameTx.PlatformId);
+                cmd.AddParameterWithValue("game_id", gameTx.GameId);
+                cmd.AddParameterWithValue("price", gameTx.Price);
+                cmd.AddParameterWithValue("notes", gameTx.Notes);
+            };
+
+        return ExecuteNonQuery(cmdText, action);
+    }
+
     private int ExecuteNonQuery
     (
         string sqlText, 
@@ -234,9 +305,6 @@ create table game_transactions
     {
         List<GameDbItem> games = new List<GameDbItem>();
 
-        Action<DbConnection> action =
-            conn =>
-            {
                 string selectText = $@"
 select 
     game_id, 
@@ -255,13 +323,12 @@ where 1 = 1 ";
                 if (partialTags is not null)
                 {
                     selectText +=
-        $@"and game_tags like '%' {_strConcatOperator} :partialtags {_strConcatOperator} '%'";
+                        $@"and game_tags like '%' {_strConcatOperator} :partialtags {_strConcatOperator} '%'";
                 }
 
-                using DbCommand cmd = conn.CreateCommand();
-                cmd.CommandText = selectText;
-                cmd.CommandType = System.Data.CommandType.Text;
-
+        Action<DbCommand> addParametersAction =
+            cmd =>
+            {
                 if (partialName is not null)
                 {
                     cmd.AddParameterWithValue("partialname", partialName);
@@ -271,10 +338,10 @@ where 1 = 1 ";
                 {
                     cmd.AddParameterWithValue("partialtags", partialTags);
                 }
+            };
 
-                using var dataReader = cmd.ExecuteReader();
-                
-                while (dataReader.Read())
+        Func<DbDataReader, GameDbItem> mapper =
+            dataReader =>
                 {
                     string id = dataReader.GetString(0);
                     string name = dataReader.GetString(1);
@@ -282,11 +349,100 @@ where 1 = 1 ";
                     string tags = dataReader.GetString(3);
 
                     GameDbItem game = new GameDbItem(id, name, description, tags);
-                    games.Add(game);
+                    return game;
+                };
+
+        return 
+            GetItemsFromDb
+            (
+                selectText, 
+                addParametersAction, 
+                mapper
+            );
+    }
+
+    public StoreDbItem[] GetAllStores() =>
+        GetStoresByPartialName(null);
+
+    public StoreDbItem[] GetStoresByPartialName(string? partialName)
+    {
+                string selectText = $@"
+select 
+    store_id, 
+    store_name, 
+    store_description,
+    store_link
+from stores
+where 1 = 1 ";
+
+        Action<DbCommand> addParametersAction =
+            cmd =>
+            {
+
+                if (partialName is not null)
+                {
+                    selectText +=
+                    $@"and store_name like '%' {_strConcatOperator} :partialname {_strConcatOperator} '%'";
+                }
+
+                if (partialName is not null)
+                {
+                    cmd.AddParameterWithValue("partialname", partialName);
+                }
+            };
+
+        Func<DbDataReader, StoreDbItem> mapper =
+            dataReader =>
+            {
+                string id = dataReader.GetString(0);
+                string name = dataReader.GetString(1);
+                string description = dataReader.GetString(2);
+                string link = dataReader.GetString(3);
+
+                StoreDbItem store = new StoreDbItem(id, name, description, link);
+                return store;
+            };
+
+        return
+            GetItemsFromDb
+            (
+                selectText,
+                addParametersAction,
+                mapper
+            );
+    }
+
+
+
+    private T[] GetItemsFromDb<T>
+    (
+        string selectText,
+        Action<DbCommand>? addParametersAction,
+        Func<DbDataReader, T> mapper
+    )
+    {
+        List<T> items = new List<T>();
+
+        Action<DbConnection> action =
+            conn =>
+            {       
+                using DbCommand cmd = conn.CreateCommand();
+                cmd.CommandText = selectText;
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                addParametersAction?.Invoke(cmd);
+
+                using var dataReader = cmd.ExecuteReader();
+                
+                while (dataReader.Read())
+                {
+                    T item = mapper(dataReader);
+                    items.Add(item);
                 }
             };
 
         OpenAndExecute(action);
-        return games.ToArray();
+        return items.ToArray();
     }
+
 }

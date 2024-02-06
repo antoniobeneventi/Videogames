@@ -24,11 +24,18 @@ gamesDao.CreateAllTables();
 
 DataPopulator dataPopulator = new DataPopulator(gamesDao);
 
-dataPopulator.AddSomeGames();
+dataPopulator.AddSomeData();
 
 GameDbItem[] games = gamesDao.GetAllGames();
 
 foreach (var game in games)
 {
     Console.WriteLine(game);
+}
+
+StoreDbItem[] stores = gamesDao.GetAllStores();
+
+foreach (var store in stores)
+{
+    Console.WriteLine(store);
 }
