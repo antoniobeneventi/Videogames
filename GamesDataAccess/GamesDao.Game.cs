@@ -38,10 +38,10 @@ create table games
     ) 
     values
     (
-        :game_id,
-        :game_name,
-        :game_description,
-        :game_tags
+        {_parameterPrefix}game_id,
+        {_parameterPrefix}game_name,
+        {_parameterPrefix}game_description,
+        {_parameterPrefix}game_tags
     )
     ";
 
@@ -76,13 +76,13 @@ where 1 = 1 ";
                 if (partialName is not null)
                 {
                     selectText +=
-                    $@"and game_name like '%' {_strConcatOperator} :partialname {_strConcatOperator} '%'";
+                    $@"and game_name like '%' {_strConcatOperator} {_parameterPrefix}partialname {_strConcatOperator} '%'";
                 }
 
                 if (partialTags is not null)
                 {
                     selectText +=
-                        $@"and game_tags like '%' {_strConcatOperator} :partialtags {_strConcatOperator} '%'";
+                        $@"and game_tags like '%' {_strConcatOperator} {_parameterPrefix}partialtags {_strConcatOperator} '%'";
                 }
 
         Action<DbCommand> addParametersAction =

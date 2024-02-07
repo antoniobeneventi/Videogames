@@ -39,9 +39,9 @@ create table platforms
     ) 
     values
     (
-        :platform_id,
-        :platform_name,
-        :platform_description
+        {_parameterPrefix}platform_id,
+        {_parameterPrefix}platform_name,
+        {_parameterPrefix}platform_description
     )
     ";
 
@@ -71,7 +71,7 @@ where 1 = 1 ";
 
         if (partialName is not null)
         {
-            selectText += $@"and platform_name like '%' {_strConcatOperator} :partialname {_strConcatOperator} '%'";
+            selectText += $@"and platform_name like '%' {_strConcatOperator} {_parameterPrefix}partialname {_strConcatOperator} '%'";
         }
 
         Action<DbCommand> addParametersAction =

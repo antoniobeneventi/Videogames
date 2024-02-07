@@ -1,21 +1,23 @@
 ﻿namespace GamesDataAccess;
 
 using System.Data.Common;
-using GamesDataAccess.DbItems;
 
 public partial class GamesDao
 {
-    private Func<DbConnection> _connectionFactory;
-    private string _strConcatOperator;
+    private readonly Func<DbConnection> _connectionFactory;
+    private readonly string _strConcatOperator;
+    private readonly string _parameterPrefix;
 
     public GamesDao
     (
         Func<DbConnection> connectionFactory,
-        string strConcatOperator
+        string strConcatOperator,
+        string parameterPrefix
     )
     {
         _connectionFactory = connectionFactory;
         _strConcatOperator = strConcatOperator;
+        _parameterPrefix = parameterPrefix;
     }
 
     private void OpenAndExecute(Action<DbConnection> action)

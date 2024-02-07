@@ -1,8 +1,7 @@
-﻿namespace GamesDataAccess;
-
-using System.Data;
-// See https://aka.ms/new-console-template for more information
+﻿using System.Data;
 using System.Data.Common;
+
+namespace GamesDataAccess;
 
 public static class Extensions
 {
@@ -10,13 +9,13 @@ public static class Extensions
     (
         this DbCommand command,
         string paramName, 
-        object value,
+        object? value,
         DbType dbType = DbType.String
     )
     {
         DbParameter parameter = command.CreateParameter();
         parameter.ParameterName = paramName;
-        parameter.Value = value;
+        parameter.Value = value ?? DBNull.Value;
         parameter.DbType = dbType;
 
         command.Parameters.Add(parameter);
@@ -34,5 +33,5 @@ public static class Extensions
     }
 
     public static DateTime ToDateTime(this DateOnly dt) =>
-        new DateTime(dt.Year, dt.Month, dt.Day);
+        new DateTime(dt.Year, dt.Month, dt.Day);    
 }

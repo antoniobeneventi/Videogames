@@ -3,20 +3,21 @@ using GamesDataAccess.Criterias;
 using GamesDataAccess.DbItems;
 using System.Data.SQLite;
 
-string dbFile = @"..\..\Data\test.db;Foreign Keys=True";
+string dbFile = @"..\..\Data\test.db";
 string dbFilePath = Path.GetDirectoryName(dbFile)!;
 if (!Directory.Exists(dbFilePath))
 {
     Directory.CreateDirectory(dbFilePath);
 }
 
-string connStr = $@"Data Source={dbFile}; Version=3;";
+string connStr = $@"Data Source={dbFile}; Version=3;Foreign Keys=True";
 
 GamesDao gamesDao =
     new GamesDao
     (
-        () => new SQLiteConnection(connStr),
-        "||"
+        connectionFactory: () => new SQLiteConnection(connStr),
+        strConcatOperator: "||",
+        parameterPrefix: ":"
     );
 
 gamesDao.DropAllTables();
@@ -27,7 +28,7 @@ DataPopulator dataPopulator = new DataPopulator(gamesDao);
 
 dataPopulator.AddSomeData();
 
-Console.WriteLine(new string('-', 80));
+PrintLine("All games");
 
 GameDbItem[] games = gamesDao.GetAllGames();
 
@@ -36,7 +37,7 @@ foreach (var game in games)
     Console.WriteLine(game);
 }
 
-Console.WriteLine(new string('-', 80));
+PrintLine("All stores");
 
 StoreDbItem[] stores = gamesDao.GetAllStores();
 
@@ -45,7 +46,7 @@ foreach (var store in stores)
     Console.WriteLine(store);
 }
 
-Console.WriteLine(new string('-', 80));
+PrintLine("All platforms");
 
 PlatformDbItem[] platforms = gamesDao.GetAllPlatforms();
 
@@ -54,9 +55,7 @@ foreach (var platform in platforms)
     Console.WriteLine(platform);
 }
 
-// DateOnly.FromDateTime(dataReader.GetDateTime(1));
-
-Console.WriteLine(new string('-', 80));
+PrintLine("Owned games");
 
 var ownedGames = 
     gamesDao
@@ -64,7 +63,12 @@ var ownedGames =
     (
         new GamesCriteria 
         { 
-            PurchaseDateFrom = new DateOnly(2022, 1, 1)
+            PurchaseDateFrom = new DateOnly(2022, 1, 1),
+            StoreName = "me",
+            StoreDescription = "resto",
+            PlatformName = "Play",
+            GameName = "la",
+            GameTags = "adv"
         }
     );
 
@@ -73,6 +77,19 @@ foreach (var tx in ownedGames)
     Console.WriteLine(tx);
 }
 
-// DateOnly.FromDateTime(dataReader.GetDateTime(1));
+PrintLine("End");
 
-Console.WriteLine(new string('-', 80));
+void PrintLine(string? title = null)
+{
+    const int maxLen = 100;
+
+    if ((title?.Length ?? 0) > maxLen)
+    {
+        Console.WriteLine(title);
+        return;
+    }
+    
+    int halfLen = (maxLen - (title?.Length ?? 0)) / 2;
+    string halfLine = new string('-', halfLen);
+    Console.WriteLine($"{halfLine} {title ?? ""} {halfLine}");
+}

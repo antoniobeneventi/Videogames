@@ -10,19 +10,18 @@ partial class GamesDao
 	public void CreateTableTransaction()
 	{
 		string createTableText = $@"
-create table game_transactions
-(
-    transaction_id varchar(20) not null primary key,
-    purchase_date datetime not null,
-    is_virtual int not null,
-    store_id  varchar(20) not null references stores(store_id),
-    platform_id varchar(20) not null references platforms(platform_id),
-    game_id varchar(20) not null references games(game_id),
-    price decimal(10, 2) not null,
-    notes varchar(2000) null,
-    check (price >= 0)
-)
-";
+			create table game_transactions
+			(
+				transaction_id varchar(20) not null primary key,
+				purchase_date datetime not null,
+				is_virtual int not null,
+				store_id  varchar(20) not null references stores(store_id),
+				platform_id varchar(20) not null references platforms(platform_id),
+				game_id varchar(20) not null references games(game_id),
+				price decimal(10, 2) not null,
+				notes varchar(2000) null,
+				check (price >= 0)
+			)";
 		ExecuteNonQuery(createTableText);
 	}
 
@@ -35,29 +34,28 @@ create table game_transactions
 	public int AddNewGameTransaction(GameTransactionDbItem gameTx)
 	{
 		string cmdText = $@"
-    insert into game_transactions
-    (
-        transaction_id,
-        purchase_date,
-        is_virtual,
-        store_id,
-        platform_id,
-        game_id,
-        price,
-        notes
-    ) 
-    values
-    (
-        :transaction_id,
-        :purchase_date,
-        :is_virtual,
-        :store_id,
-        :platform_id,
-        :game_id,
-        :price,
-        :notes
-    )
-    ";
+			insert into game_transactions
+			(
+				transaction_id,
+				purchase_date,
+				is_virtual,
+				store_id,
+				platform_id,
+				game_id,
+				price,
+				notes
+			) 
+			values
+			(
+				{_parameterPrefix}transaction_id,
+				{_parameterPrefix}purchase_date,
+				{_parameterPrefix}is_virtual,
+				{_parameterPrefix}store_id,
+				{_parameterPrefix}platform_id,
+				{_parameterPrefix}game_id,
+				{_parameterPrefix}price,
+				{_parameterPrefix}notes
+			)";
 
 		Action<DbCommand> action =
 			cmd =>
@@ -81,22 +79,22 @@ create table game_transactions
 	public GameTransactionDbItem[] GetTransactionsById(string? id)
 	{
 		string selectText = $@"
-     select
-         transaction_id,
-         purchase_date,
-         is_virtual,
-         store_id,
-         game_id,
-         platform_id,
-         price,
-         notes
-     from game_transactions
-     where 1 = 1 ";
+			select
+				transaction_id,
+				purchase_date,
+				is_virtual,
+				store_id,
+				game_id,
+				platform_id,
+				price,
+				notes
+			from game_transactions
+			where 1 = 1 ";
 
 		if (id is not null)
 		{
 			selectText +=
-			$@"and transaction_id = :partialname";
+			$@"and transaction_id = {_parameterPrefix}partialname";
 		}
 
 		Action<DbCommand> addParametersAction =
@@ -147,21 +145,21 @@ create table game_transactions
 	public OwnedGameDbItem[] GetOwnedGamesByCriteria(GamesCriteria criteria)
 	{
 		string selectText = $@"
-		 select
-			 GT.transaction_id,
-			 GT.purchase_date,
-			 GT.is_virtual,
-			 S.store_id,         
-			 S.store_name,
-			 S.store_description,
-			 P.platform_id,
-			 P.platform_name,
-			 P.platform_description,
-			 G.game_id,         
-			 G.game_name,
-			 G.game_description,
-			 G.game_tags,
-			 GT.price
+		select
+			GT.transaction_id,
+		    GT.purchase_date,
+		    GT.is_virtual,
+		    S.store_id,         
+		    S.store_name,
+		    S.store_description,
+		    P.platform_id,
+		    P.platform_name,
+		    P.platform_description,
+		    G.game_id,         
+		    G.game_name,
+		    G.game_description,
+		    G.game_tags,
+		    GT.price
 		 from game_transactions GT
 		 inner join stores S on GT.store_id = S.store_id
 		 inner join platforms P on GT.platform_id = P.platform_id
@@ -170,76 +168,168 @@ create table game_transactions
 
         if (criteria?.PurchaseDateFrom is not null)
         {
-            selectText +=
-            $@"and GT.purchase_date >= :purchaseDateFrom";
+            selectText += $@" and GT.purchase_date >= {_parameterPrefix}{nameof(criteria.PurchaseDateFrom)}";
         }
 
         if (criteria?.PurchaseDateTo is not null)
         {
-            selectText +=
-            $@"and GT.purchase_date <= :purchaseDateTo";
+            selectText += $@" and GT.purchase_date <= {_parameterPrefix}{nameof(criteria.PurchaseDateTo)}";
         }
 
         if (criteria?.IsVirtual is not null)
         {
-            selectText +=
-            $@"and GT.is_virtual = :isVirtual";
+            selectText += $@" and GT.is_virtual = {_parameterPrefix}{nameof(criteria.IsVirtual)}";
         }
+
+        if (criteria?.StoreId is not null)
+        {
+            selectText += $@" and GT.store_id = {_parameterPrefix}{nameof(criteria.StoreId)}";
+        }
+
+        if (criteria?.StoreName is not null)
+        {
+            selectText += $@" and S.store_name like '%' {_strConcatOperator} {_parameterPrefix}{nameof(criteria.StoreName)} {_strConcatOperator} '%'";
+        }
+
+        if (criteria?.StoreDescription is not null)
+        { 
+            selectText += $@" and S.store_description like '%' {_strConcatOperator} {_parameterPrefix}{nameof(criteria.StoreDescription)} {_strConcatOperator} '%'";
+        }
+
+        if (criteria?.PlatformId is not null)
+        {
+            selectText += $@" and GT.platform_id = {_parameterPrefix}{nameof(criteria.PlatformId)}";
+        }
+
+        if (criteria?.PlatformName is not null)
+        {
+            selectText += $@" and P.platform_name like '%' {_strConcatOperator} {_parameterPrefix}{nameof(criteria.PlatformName)} {_strConcatOperator} '%'";
+        }
+
+        if (criteria?.PlatformDescription is not null)
+        {
+            selectText += $@" and P.platform_description like '%' {_strConcatOperator} {_parameterPrefix}{nameof(criteria.PlatformDescription)} {_strConcatOperator} '%'";
+        }
+
+        if (criteria?.GameId is not null)
+        {
+            selectText += $@" and GT.game_id = {_parameterPrefix}{nameof(criteria.GameId)}";
+        }
+
+        if (criteria?.GameName is not null)
+        {
+            selectText += $@" and G.game_name like '%' {_strConcatOperator} {_parameterPrefix}{nameof(criteria.GameName)} {_strConcatOperator} '%'";
+        }
+
+        if (criteria?.GameDescription is not null)
+        {
+            selectText += $@" and G.game_description like '%' {_strConcatOperator} {_parameterPrefix}{nameof(criteria.GameDescription)} {_strConcatOperator} '%'";
+        }
+
+        if (criteria?.GameTags is not null)
+        {
+            selectText += $@" and G.game_tags like '%' {_strConcatOperator} {_parameterPrefix}{nameof(criteria.GameTags)} {_strConcatOperator} '%'";
+        }
+
 
         if (criteria?.PriceFrom is not null)
 		{
-			selectText +=
-			$@"and GT.price >= :priceFrom";
+			selectText += $@" and GT.price >= {_parameterPrefix}{nameof(criteria.PriceFrom)}";
 		}
 
         if (criteria?.PriceTo is not null)
         {
-            selectText +=
-            $@"and GT.price <= :priceTo";
+            selectText += $@" and GT.price <= {_parameterPrefix}{nameof(criteria.PriceTo)}";
         }
-
-
-
-        
 
         Action<DbCommand> addParametersAction =
 			cmd =>
 			{
 				if (criteria?.PurchaseDateFrom is not null)
 				{
-					cmd.AddParameterWithValue("purchaseDateFrom", criteria.PurchaseDateFrom.Value.ToDateTime(), DbType.DateTime);
+                    cmd.AddParameterWithValue(nameof(criteria.PurchaseDateFrom), criteria.PurchaseDateFrom.Value.ToDateTime(), DbType.DateTime);
 				}
 
                 if (criteria?.PurchaseDateTo is not null)
                 {
-                    cmd.AddParameterWithValue("purchaseDateTo", criteria.PurchaseDateTo.Value.ToDateTime(), DbType.DateTime);
+                    cmd.AddParameterWithValue(nameof(criteria.PurchaseDateTo), criteria.PurchaseDateTo.Value.ToDateTime(), DbType.DateTime);
                 }
 
                 if (criteria?.IsVirtual is not null)
                 {
-                    cmd.AddParameterWithValue("isVirtual", criteria.IsVirtual.Value, DbType.Boolean);
+                    cmd.AddParameterWithValue(nameof(criteria.IsVirtual), criteria.IsVirtual.Value, DbType.Boolean);
+                }
+
+                if (criteria?.StoreId is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.StoreId), criteria.StoreId);
+                }
+
+                if (criteria?.StoreName is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.StoreName), criteria.StoreName);
+                }
+
+                if (criteria?.StoreDescription is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.StoreDescription), criteria.StoreDescription);
+                }
+
+                if (criteria?.PlatformId is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.PlatformId), criteria.PlatformId);
+                }
+
+                if (criteria?.PlatformName is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.PlatformName), criteria.PlatformName);
+                }
+
+                if (criteria?.PlatformDescription is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.PlatformDescription), criteria.PlatformDescription);
+                }
+
+                if (criteria?.GameId is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.GameId), criteria.GameId);
+                }
+
+                if (criteria?.GameName is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.GameName), criteria.GameName);
+                }
+
+                if (criteria?.GameDescription is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.GameDescription), criteria.GameDescription);
+                }
+
+                if (criteria?.GameTags is not null)
+                {
+                    cmd.AddParameterWithValue(nameof(criteria.GameTags), criteria.GameTags);
                 }
 
                 if (criteria?.PriceFrom is not null)
                 {
-                    cmd.AddParameterWithValue("priceFrom", criteria.PriceFrom.Value, DbType.Decimal);
+                    cmd.AddParameterWithValue(nameof(criteria.PriceFrom), criteria.PriceFrom.Value, DbType.Decimal);
                 }
 
                 if (criteria?.PriceTo is not null)
                 {
-                    cmd.AddParameterWithValue("priceTo", criteria.PriceTo.Value, DbType.Decimal);
+                    cmd.AddParameterWithValue(nameof(criteria.PriceTo), criteria.PriceTo.Value, DbType.Decimal);
                 }
             };
 
 		Func<DbDataReader, OwnedGameDbItem> mapper =
 			dataReader =>
 			{
-				string id = dataReader.GetString(0);
+				string id = dataReader.GetString("transaction_id");
 				var date = DateOnly.FromDateTime(dataReader.GetDateTime(1));
 				bool isVirtual = dataReader.GetBoolean(2);
 				
-				string storeId = dataReader.GetString(3);
-                string storeName = dataReader.GetString(4);
+				string storeId = dataReader.GetString("store_id");
+                string storeName = dataReader.GetString("store_name");
                 string storeDescription = dataReader.GetString(5);
 
 				string platformId = dataReader.GetString(6);

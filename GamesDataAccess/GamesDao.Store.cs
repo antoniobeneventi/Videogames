@@ -37,10 +37,10 @@ create table stores
     ) 
     values
     (
-        :store_id,
-        :store_name,
-        :store_description,
-        :store_link
+        {_parameterPrefix}store_id,
+        {_parameterPrefix}store_name,
+        {_parameterPrefix}store_description,
+        {_parameterPrefix}store_link
     )
     ";
 
@@ -74,8 +74,7 @@ where 1 = 1 ";
 
         if (partialName is not null)
         {
-            selectText +=
-            $@"and store_name like '%' {_strConcatOperator} :partialname {_strConcatOperator} '%'";
+            selectText += $@"and store_name like '%' {_strConcatOperator} {_parameterPrefix}partialname {_strConcatOperator} '%'";
         }
 
         Action<DbCommand> addParametersAction =
