@@ -1,9 +1,9 @@
 ﻿using GamesDataAccess;
+using GamesDataAccess.Criterias;
 using GamesDataAccess.DbItems;
-using System.Data.Common;
 using System.Data.SQLite;
 
-string dbFile = @"..\..\Data\test.db";
+string dbFile = @"..\..\Data\test.db;Foreign Keys=True";
 string dbFilePath = Path.GetDirectoryName(dbFile)!;
 if (!Directory.Exists(dbFilePath))
 {
@@ -58,7 +58,17 @@ foreach (var platform in platforms)
 
 Console.WriteLine(new string('-', 80));
 
-foreach (var tx in gamesDao.GetAllTransactions())
+var ownedGames = 
+    gamesDao
+    .GetOwnedGamesByCriteria
+    (
+        new GamesCriteria 
+        { 
+            PurchaseDateFrom = new DateOnly(2022, 1, 1)
+        }
+    );
+
+foreach (var tx in ownedGames)
 {
     Console.WriteLine(tx);
 }

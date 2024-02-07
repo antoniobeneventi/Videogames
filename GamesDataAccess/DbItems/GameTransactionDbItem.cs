@@ -9,6 +9,5 @@ public record GameTransactionDbItem
     string PlatformId,
     string GameId,
     decimal Price,
-    string Notes
+    string? Notes
 );
-

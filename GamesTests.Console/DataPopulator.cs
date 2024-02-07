@@ -189,10 +189,10 @@ class DataPopulator
                 new DateOnly(2024, 01, 18),
                 false,
                 "ns-store",
-                "super-mario-wonder",
                 "nswt",
+                "super-mario-wonder",
                 80,
-                ""
+                "Good transaction"
             );
 
         yield return
@@ -201,11 +201,11 @@ class DataPopulator
                 "TX0002",
                 new DateOnly(2022, 05, 18),
                 true,
+                "ps-store",
                 "ps5",
-                "elden-ring",
-                "instantstore",
+                "elden-ring",                
                 45,
-                ""
+                "Bad transaction"
             );
 
         yield return
@@ -215,10 +215,10 @@ class DataPopulator
                new DateOnly(2017, 03, 03),
                true,
                "ns-store",
-               "zelda-botw",
                "nswt",
+               "zelda-botw",
                68,
-               ""
+               null
            );
 
         yield return
@@ -228,8 +228,8 @@ class DataPopulator
                new DateOnly(2024, 02, 07),
                false,
                "gamestopfisic",
-               "alan-wake-2",
                "ps5",
+               "alan-wake-2",
                59,
                "Via San Quirico, 165, 50013 Campi Bisenzio FI"
            );

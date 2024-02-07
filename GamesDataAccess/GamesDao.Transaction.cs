@@ -1,4 +1,5 @@
-﻿using GamesDataAccess.DbItems;
+﻿using GamesDataAccess.Criterias;
+using GamesDataAccess.DbItems;
 using System.Data;
 using System.Data.Common;
 
@@ -131,6 +132,145 @@ create table game_transactions
 						price, 
 						notes
 					);
+				return transaction;
+			};
+
+		return
+			GetItemsFromDb
+			(
+				selectText,
+				addParametersAction,
+				mapper
+			);
+	}
+
+	public OwnedGameDbItem[] GetOwnedGamesByCriteria(GamesCriteria criteria)
+	{
+		string selectText = $@"
+		 select
+			 GT.transaction_id,
+			 GT.purchase_date,
+			 GT.is_virtual,
+			 S.store_id,         
+			 S.store_name,
+			 S.store_description,
+			 P.platform_id,
+			 P.platform_name,
+			 P.platform_description,
+			 G.game_id,         
+			 G.game_name,
+			 G.game_description,
+			 G.game_tags,
+			 GT.price
+		 from game_transactions GT
+		 inner join stores S on GT.store_id = S.store_id
+		 inner join platforms P on GT.platform_id = P.platform_id
+		 inner join games G on GT.game_id = G.game_id
+		 where 1 = 1 ";
+
+        if (criteria?.PurchaseDateFrom is not null)
+        {
+            selectText +=
+            $@"and GT.purchase_date >= :purchaseDateFrom";
+        }
+
+        if (criteria?.PurchaseDateTo is not null)
+        {
+            selectText +=
+            $@"and GT.purchase_date <= :purchaseDateTo";
+        }
+
+        if (criteria?.IsVirtual is not null)
+        {
+            selectText +=
+            $@"and GT.is_virtual = :isVirtual";
+        }
+
+        if (criteria?.PriceFrom is not null)
+		{
+			selectText +=
+			$@"and GT.price >= :priceFrom";
+		}
+
+        if (criteria?.PriceTo is not null)
+        {
+            selectText +=
+            $@"and GT.price <= :priceTo";
+        }
+
+
+
+        
+
+        Action<DbCommand> addParametersAction =
+			cmd =>
+			{
+				if (criteria?.PurchaseDateFrom is not null)
+				{
+					cmd.AddParameterWithValue("purchaseDateFrom", criteria.PurchaseDateFrom.Value.ToDateTime(), DbType.DateTime);
+				}
+
+                if (criteria?.PurchaseDateTo is not null)
+                {
+                    cmd.AddParameterWithValue("purchaseDateTo", criteria.PurchaseDateTo.Value.ToDateTime(), DbType.DateTime);
+                }
+
+                if (criteria?.IsVirtual is not null)
+                {
+                    cmd.AddParameterWithValue("isVirtual", criteria.IsVirtual.Value, DbType.Boolean);
+                }
+
+                if (criteria?.PriceFrom is not null)
+                {
+                    cmd.AddParameterWithValue("priceFrom", criteria.PriceFrom.Value, DbType.Decimal);
+                }
+
+                if (criteria?.PriceTo is not null)
+                {
+                    cmd.AddParameterWithValue("priceTo", criteria.PriceTo.Value, DbType.Decimal);
+                }
+            };
+
+		Func<DbDataReader, OwnedGameDbItem> mapper =
+			dataReader =>
+			{
+				string id = dataReader.GetString(0);
+				var date = DateOnly.FromDateTime(dataReader.GetDateTime(1));
+				bool isVirtual = dataReader.GetBoolean(2);
+				
+				string storeId = dataReader.GetString(3);
+                string storeName = dataReader.GetString(4);
+                string storeDescription = dataReader.GetString(5);
+
+				string platformId = dataReader.GetString(6);
+                string platformName = dataReader.GetString(7);
+                string platformDescription = dataReader.GetString(8);
+
+				string gameId = dataReader.GetString(9);
+                string gameName = dataReader.GetString(10);
+                string gameDescription = dataReader.GetString(11);
+				string gameTags = dataReader.GetString(12);
+				decimal price = dataReader.GetDecimal(13);
+
+				var transaction =
+					new OwnedGameDbItem
+					(
+						id,
+						date,
+						isVirtual,
+						storeId,
+						storeName,
+						storeDescription,
+						platformId,
+						platformName,
+						platformDescription,
+						gameId,
+						gameName,
+						gameDescription,
+						gameTags,
+						price
+					);
+
 				return transaction;
 			};
 
