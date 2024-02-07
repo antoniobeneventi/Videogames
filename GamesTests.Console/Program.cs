@@ -1,6 +1,7 @@
 ﻿using GamesDataAccess;
+using GamesDataAccess.DbItems;
+using System.Data.Common;
 using System.Data.SQLite;
-using System.Net.Http.Headers;
 
 string dbFile = @"..\..\Data\test.db";
 string dbFilePath = Path.GetDirectoryName(dbFile)!;
@@ -52,5 +53,16 @@ foreach (var platform in platforms)
 {
     Console.WriteLine(platform);
 }
+
+// DateOnly.FromDateTime(dataReader.GetDateTime(1));
+
+Console.WriteLine(new string('-', 80));
+
+foreach (var tx in gamesDao.GetAllTransactions())
+{
+    Console.WriteLine(tx);
+}
+
+// DateOnly.FromDateTime(dataReader.GetDateTime(1));
 
 Console.WriteLine(new string('-', 80));

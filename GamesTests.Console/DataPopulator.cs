@@ -1,4 +1,5 @@
 ﻿using GamesDataAccess;
+using GamesDataAccess.DbItems;
 
 class DataPopulator
 {
@@ -14,6 +15,7 @@ class DataPopulator
         int affected = AddSomeGames();
         affected += AddSomeStores();
         affected += AddSomePlatforms();
+        affected += AddSomeTransactions();
 
         return affected;
     }
@@ -123,6 +125,14 @@ class DataPopulator
                "https://www.instant-gaming.com"
            );
 
+        yield return
+           new StoreDbItem
+           (
+                "gamestopfisic",
+                "Game Stop",
+                "Non danno mai il centesimo di resto",
+                "https://www.gamestop.it"
+           );
     }
     public int AddSomePlatforms()
     {
@@ -158,5 +168,70 @@ class DataPopulator
                 "X-Box S",
                 "E' verde"
             );
+    }
+
+    public int AddSomeTransactions()
+    {
+        int affected = 0;
+        foreach (var tx in GetTransactions())
+        {
+            affected += _gamesDao.AddNewGameTransaction(tx);
+        }
+        return affected;
+    }
+
+    private IEnumerable<GameTransactionDbItem> GetTransactions()
+    {
+        yield return
+            new GameTransactionDbItem
+            (
+                "TX0001",
+                new DateOnly(2024, 01, 18),
+                false,
+                "ns-store",
+                "super-mario-wonder",
+                "nswt",
+                80,
+                ""
+            );
+
+        yield return
+            new GameTransactionDbItem
+            (
+                "TX0002",
+                new DateOnly(2022, 05, 18),
+                true,
+                "ps5",
+                "elden-ring",
+                "instantstore",
+                45,
+                ""
+            );
+
+        yield return
+           new GameTransactionDbItem
+           (
+               "TX0003",
+               new DateOnly(2017, 03, 03),
+               true,
+               "ns-store",
+               "zelda-botw",
+               "nswt",
+               68,
+               ""
+           );
+
+        yield return
+           new GameTransactionDbItem
+           (
+               "TX0004",
+               new DateOnly(2024, 02, 07),
+               false,
+               "gamestopfisic",
+               "alan-wake-2",
+               "ps5",
+               59,
+               "Via San Quirico, 165, 50013 Campi Bisenzio FI"
+           );
     }
 }

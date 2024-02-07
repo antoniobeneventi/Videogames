@@ -1,4 +1,4 @@
-﻿namespace GamesDataAccess;
+﻿namespace GamesDataAccess.DbItems;
 
 public record StoreDbItem
 (
