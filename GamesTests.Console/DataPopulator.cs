@@ -1,7 +1,7 @@
 ﻿using GamesDataAccess;
 using GamesDataAccess.DbItems;
 
-class DataPopulator
+ public class DataPopulator
 {
     private GamesDao _gamesDao;
 

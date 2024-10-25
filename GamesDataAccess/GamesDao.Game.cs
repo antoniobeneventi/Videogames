@@ -64,7 +64,7 @@ create table games
     {
         List<GameDbItem> games = new List<GameDbItem>();
 
-                string selectText = $@"
+        string selectText = $@"
 select 
     game_id, 
     game_name, 
@@ -73,17 +73,17 @@ select
 from games
 where 1 = 1 ";
 
-                if (partialName is not null)
-                {
-                    selectText +=
-                    $@"and game_name like '%' {_strConcatOperator} {_parameterPrefix}partialname {_strConcatOperator} '%'";
-                }
+        if (partialName is not null)
+        {
+            selectText +=
+            $@"and game_name like '%' {_strConcatOperator} {_parameterPrefix}partialname {_strConcatOperator} '%'";
+        }
 
-                if (partialTags is not null)
-                {
-                    selectText +=
-                        $@"and game_tags like '%' {_strConcatOperator} {_parameterPrefix}partialtags {_strConcatOperator} '%'";
-                }
+        if (partialTags is not null)
+        {
+            selectText +=
+                $@"and game_tags like '%' {_strConcatOperator} {_parameterPrefix}partialtags {_strConcatOperator} '%'";
+        }
 
         Action<DbCommand> addParametersAction =
             cmd =>
@@ -111,11 +111,11 @@ where 1 = 1 ";
                     return game;
                 };
 
-        return 
+        return
             GetItemsFromDb
             (
-                selectText, 
-                addParametersAction, 
+                selectText,
+                addParametersAction,
                 mapper
             );
     }

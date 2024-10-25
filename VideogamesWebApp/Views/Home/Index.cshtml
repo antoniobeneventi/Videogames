@@ -1,0 +1,36 @@
+﻿@model List<VideogamesWebApp.Models.GameViewModel>
+
+<div class="container mt-4">
+    <h1>Games Library</h1>
+    <form method="get" asp-controller="Games" asp-action="Index">
+        <input type="text" name="searchQuery" class="form-control"
+               placeholder="Search games..."
+               value="@ViewData["searchQuery"]">
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </form>
+
+    <hr>
+
+    <h3>Game List</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Game Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Tags</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in Model)
+            {
+                <tr>
+                    <td>@game.GameId</td>
+                    <td><strong>@game.GameName</strong></td>
+                    <td>@game.GameDescription</td>
+                    <td>@game.GameTags</td> 
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
