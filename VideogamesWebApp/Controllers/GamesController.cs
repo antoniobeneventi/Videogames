@@ -2,9 +2,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 using GamesDataAccess;
-using GamesDataAccess.Criterias; // You might not need this anymore
 using VideogamesWebApp.Models;
-using System.Linq; // Make sure to include LINQ for querying
+using System.Linq; 
 
 public class GamesController : Controller
 {
@@ -17,10 +16,8 @@ public class GamesController : Controller
 
     public IActionResult Index(string searchQuery)
     {
-        // Query the Games DbSet directly
         var gamesQuery = _dbContext.Games.AsQueryable();
 
-        // Apply filtering if a search query is provided
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
             gamesQuery = gamesQuery.Where(game => game.GameName.Contains(searchQuery));
