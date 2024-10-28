@@ -1,22 +1,27 @@
 using Microsoft.EntityFrameworkCore;
-using GamesDataAccess; // Adjust this according to your namespace
+using GamesDataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configure Entity Framework with SQLite
+// Configura il Database Context
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("VideogamesDatabase")));
 
+// Configura il servizio di sessione
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true; // Protezione del cookie della sessione
+    options.Cookie.IsEssential = true; // Necessario per il GDPR
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();  // Enables HTTP Strict Transport Security (HSTS) for production.
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -24,9 +29,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession(); // Aggiungi il middleware della sessione qui
+
 app.UseAuthorization();
 
-// Initialize the database with seed data
+// Inizializza il database alla partenza dell'app
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -34,9 +41,8 @@ using (var scope = app.Services.CreateScope())
     DbInitializer.Initialize(context);
 }
 
-// Set the default route to point to GamesController's Index action
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Games}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();

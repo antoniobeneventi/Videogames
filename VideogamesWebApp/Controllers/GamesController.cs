@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GamesDataAccess;
 using VideogamesWebApp.Models;
-using System.Linq; 
+using System.Linq;
 
 public class GamesController : Controller
 {
@@ -20,7 +20,13 @@ public class GamesController : Controller
 
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
-            gamesQuery = gamesQuery.Where(game => game.GameName.Contains(searchQuery));
+            searchQuery = searchQuery.ToLower(); 
+
+            gamesQuery = gamesQuery.Where(game =>
+               game.GameName.ToLower().StartsWith(searchQuery) ||       // Ricerca solo in base alle iniziali nel nome
+                game.GameDescription.ToLower().StartsWith(searchQuery) ||
+                game.GameTags.ToLower().Contains(searchQuery)          
+            );
         }
 
         var games = gamesQuery
