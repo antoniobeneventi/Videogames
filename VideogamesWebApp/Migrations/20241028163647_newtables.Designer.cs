@@ -3,6 +3,7 @@ using System;
 using GamesDataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20241028163647_newtables")]
+    partial class newtables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -73,20 +76,12 @@ namespace VideogamesWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("DlcId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("GameId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsVirtual")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("LauncherId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -113,29 +108,6 @@ namespace VideogamesWebApp.Migrations
                     b.HasIndex("StoreId");
 
                     b.ToTable("GameTransactions");
-                });
-
-            modelBuilder.Entity("VideogamesWebApp.Models.Launcher", b =>
-                {
-                    b.Property<int>("LauncherId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("LauncherDescription")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LauncherName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("LauncherId");
-
-                    b.ToTable("Launchers");
                 });
 
             modelBuilder.Entity("VideogamesWebApp.Models.Platforms", b =>

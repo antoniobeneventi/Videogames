@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241028133358_AddUserTable")]
-    partial class AddUserTable
+    [Migration("20241028160529_CreateDatabase")]
+    partial class CreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,7 +65,7 @@ namespace VideogamesWebApp.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("REAL");
 
-                    b.Property<DateTime>("PurchaseDate")
+                    b.Property<DateOnly>("PurchaseDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("StoreId")

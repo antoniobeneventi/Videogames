@@ -10,10 +10,10 @@ namespace VideogamesWebApp.Models
         [Key]
         public int TransactionId { get; set; }
 
-        public DateTime PurchaseDate { get; set; }
+        public DateOnly PurchaseDate { get; set; }
 
         public bool IsVirtual { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [ForeignKey("Store")]
         public int StoreId { get; set; }
@@ -27,7 +27,12 @@ namespace VideogamesWebApp.Models
         public string GameId { get; set; }
         public Game Game { get; set; }
 
+        [ForeignKey("Dlc")]
+        public string DlcId { get; set; }
 
+
+        [ForeignKey("Launcher")]
+        public string LauncherId { get; set; }
 
 
         public string Notes { get; set; }

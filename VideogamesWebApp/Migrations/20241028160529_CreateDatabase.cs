@@ -55,12 +55,26 @@ namespace VideogamesWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GameTransactions",
                 columns: table => new
                 {
                     TransactionId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PurchaseDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PurchaseDate = table.Column<DateOnly>(type: "TEXT", nullable: false),
                     IsVirtual = table.Column<bool>(type: "INTEGER", nullable: false),
                     Price = table.Column<double>(type: "REAL", nullable: false),
                     StoreId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -112,6 +126,9 @@ namespace VideogamesWebApp.Migrations
         {
             migrationBuilder.DropTable(
                 name: "GameTransactions");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Games");

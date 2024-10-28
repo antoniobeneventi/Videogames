@@ -80,10 +80,7 @@ public class AccountController : Controller
      [HttpPost]
     public IActionResult Logout()
     {
-        // Invalida la sessione o rimuovi i cookie di autenticazione
-        HttpContext.Session.Clear(); // Se usi sessioni
-        // Oppure, se usi autenticazione basata su cookie:
-        // await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        HttpContext.Session.Clear(); 
 
         return RedirectToAction("Login", "Account");
     }

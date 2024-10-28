@@ -53,7 +53,7 @@ public static class DbInitializer
                 new GameTransactions
                 {
                     TransactionId = 1,
-                    PurchaseDate = DateTime.Now,
+                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today),
                     IsVirtual = true,
                     StoreId = 2,
                     PlatformId = 2,
@@ -64,7 +64,7 @@ public static class DbInitializer
                 new GameTransactions
                 {
                     TransactionId = 2,
-                    PurchaseDate = DateTime.Now.AddDays(-5),
+                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-5)),
                     IsVirtual = false,
                     StoreId = 3,
                     PlatformId = 1,
@@ -75,7 +75,7 @@ public static class DbInitializer
                  new GameTransactions
                 {
                     TransactionId = 3,
-                    PurchaseDate = DateTime.Now.AddDays(-25),
+                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-25)),
                     IsVirtual = false,
                     StoreId = 1,
                     PlatformId = 3,
@@ -86,7 +86,7 @@ public static class DbInitializer
                   new GameTransactions
                 {
                     TransactionId = 4,
-                    PurchaseDate = DateTime.Now.AddDays(-10),
+                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-10)),
                     IsVirtual = false,
                     StoreId = 4,
                     PlatformId = 4,
@@ -165,6 +165,68 @@ public static class DbInitializer
 
             context.Platforms.AddRange(platforms);
         }
+        if (!context.DLCs.Any()) 
+        {
+            var dlcs = new DLC[]
+            {
+                new DLC
+                {
+                    DlcId = 1,
+                    DlcName = "Grand Theft Auto V: Heists",
+                    DlcDescription = "Adds heist missions and new vehicles.",
+                    Price = 20,
+                    GameId = "Grand_Theft_Auto_V"
+                },
+                new DLC
+                {
+                    DlcId = 2,
+                    DlcName = "Fifa Ultimate Team",
+                    DlcDescription = "Ultimate Team mode with additional packs.",
+                    Price = 15,
+                    GameId = "fifa"
+                },
+                new DLC
+                {
+                    DlcId = 3,
+                    DlcName = "Call of Duty: Modern Warfare - Battle Pass",
+                    DlcDescription = "Seasonal Battle Pass with new content.",
+                    Price = 10,
+                    GameId = "Call_Of_Duty"
+                },
+            };
+
+            context.DLCs.AddRange(dlcs);
+        }
+        if (!context.Launchers.Any())
+        {
+            var launchers = new Launcher[]
+            {
+        new Launcher
+        {
+            LauncherId = 1,
+            LauncherName = "Steam",
+            LauncherDescription = "A popular gaming platform for PC",
+            Link = "https://store.steampowered.com"
+        },
+        new Launcher
+        {
+            LauncherId = 2,
+            LauncherName = "Epic Games",
+            LauncherDescription = "Epic Games Launcher",
+            Link = "https://www.epicgames.com"
+        },
+        new Launcher
+        {
+            LauncherId = 3,
+            LauncherName = "Origin",
+            LauncherDescription = "EA's game launcher",
+            Link = "https://www.origin.com"
+        }
+            };
+            context.Launchers.AddRange(launchers);
+        }
+
+
 
         context.SaveChanges();
     }

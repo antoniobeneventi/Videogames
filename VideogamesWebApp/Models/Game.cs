@@ -6,4 +6,6 @@ public class Game
     public string GameName { get; set; }
     public string GameDescription { get; set; }
     public string GameTags { get; set; }
+    public ICollection<DLC> DLCs { get; set; } 
 }
+

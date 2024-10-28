@@ -9,7 +9,11 @@ public class DatabaseContext : DbContext
     public DbSet<Stores> Stores { get; set; }
     public DbSet<Platforms> Platforms { get; set; }
     public DbSet<GameTransactions> GameTransactions { get; set; }
-    public DbSet<User> Users { get; set; } 
+    public DbSet<User> Users { get; set; }
+    public DbSet<DLC> DLCs { get; set; }
+
+    public DbSet<Launcher> Launchers { get; set; }
+
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
@@ -38,5 +42,14 @@ public class DatabaseContext : DbContext
             .HasOne(t => t.Game)
             .WithMany()
             .HasForeignKey(t => t.GameId);
+
+        modelBuilder.Entity<DLC>()
+            .HasOne(d => d.Game)
+            .WithMany(g => g.DLCs) 
+            .HasForeignKey(d => d.GameId);
+
+        modelBuilder.Entity<Launcher>().HasKey(l => l.LauncherId);
+        modelBuilder.Entity<Launcher>().Property(l => l.LauncherName).IsRequired();
+
     }
 }
