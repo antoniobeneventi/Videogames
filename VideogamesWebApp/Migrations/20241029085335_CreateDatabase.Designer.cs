@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241028160529_CreateDatabase")]
+    [Migration("20241029085335_CreateDatabase")]
     partial class CreateDatabase
     {
         /// <inheritdoc />
@@ -19,6 +19,34 @@ namespace VideogamesWebApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
+
+            modelBuilder.Entity("Dlc", b =>
+                {
+                    b.Property<int>("DlcId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DlcDescription")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DlcName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GameId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("DlcId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("Dlcs");
+                });
 
             modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
                 {
@@ -48,11 +76,17 @@ namespace VideogamesWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DlcId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("GameId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsVirtual")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LauncherId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Notes")
@@ -62,8 +96,8 @@ namespace VideogamesWebApp.Migrations
                     b.Property<int>("PlatformId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("PurchaseDate")
                         .HasColumnType("TEXT");
@@ -73,13 +107,40 @@ namespace VideogamesWebApp.Migrations
 
                     b.HasKey("TransactionId");
 
+                    b.HasIndex("DlcId");
+
                     b.HasIndex("GameId");
+
+                    b.HasIndex("LauncherId");
 
                     b.HasIndex("PlatformId");
 
                     b.HasIndex("StoreId");
 
                     b.ToTable("GameTransactions");
+                });
+
+            modelBuilder.Entity("VideogamesWebApp.Models.Launcher", b =>
+                {
+                    b.Property<int>("LauncherId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("LauncherDescription")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LauncherName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LauncherId");
+
+                    b.ToTable("Launchers");
                 });
 
             modelBuilder.Entity("VideogamesWebApp.Models.Platforms", b =>
@@ -143,31 +204,53 @@ namespace VideogamesWebApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("VideogamesWebApp.Models.GameTransactions", b =>
+            modelBuilder.Entity("Dlc", b =>
                 {
                     b.HasOne("VideogamesWebApp.Models.Game", "Game")
+                        .WithMany("Dlcs")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("VideogamesWebApp.Models.GameTransactions", b =>
+                {
+                    b.HasOne("Dlc", null)
+                        .WithMany()
+                        .HasForeignKey("DlcId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VideogamesWebApp.Models.Game", null)
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VideogamesWebApp.Models.Platforms", "Platform")
+                    b.HasOne("VideogamesWebApp.Models.Launcher", null)
+                        .WithMany()
+                        .HasForeignKey("LauncherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VideogamesWebApp.Models.Platforms", null)
                         .WithMany()
                         .HasForeignKey("PlatformId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VideogamesWebApp.Models.Stores", "Store")
+                    b.HasOne("VideogamesWebApp.Models.Stores", null)
                         .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Game");
-
-                    b.Navigation("Platform");
-
-                    b.Navigation("Store");
+            modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
+                {
+                    b.Navigation("Dlcs");
                 });
 #pragma warning restore 612, 618
         }

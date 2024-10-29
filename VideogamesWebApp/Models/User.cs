@@ -5,6 +5,7 @@ namespace VideogamesWebApp.Models;
 public class User
 {
     [Key]
+    [Required]
     public int UserId { get; set; }
 
     [Required]

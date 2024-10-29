@@ -17,7 +17,7 @@ namespace VideogamesWebApp.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
-            modelBuilder.Entity("DLC", b =>
+            modelBuilder.Entity("Dlc", b =>
                 {
                     b.Property<int>("DlcId")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace VideogamesWebApp.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("DLCs");
+                    b.ToTable("Dlcs");
                 });
 
             modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
@@ -73,9 +73,8 @@ namespace VideogamesWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("DlcId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("DlcId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GameId")
                         .IsRequired()
@@ -84,9 +83,8 @@ namespace VideogamesWebApp.Migrations
                     b.Property<bool>("IsVirtual")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("LauncherId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("LauncherId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -106,7 +104,11 @@ namespace VideogamesWebApp.Migrations
 
                     b.HasKey("TransactionId");
 
+                    b.HasIndex("DlcId");
+
                     b.HasIndex("GameId");
+
+                    b.HasIndex("LauncherId");
 
                     b.HasIndex("PlatformId");
 
@@ -199,10 +201,10 @@ namespace VideogamesWebApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DLC", b =>
+            modelBuilder.Entity("Dlc", b =>
                 {
                     b.HasOne("VideogamesWebApp.Models.Game", "Game")
-                        .WithMany("DLCs")
+                        .WithMany("Dlcs")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -212,34 +214,40 @@ namespace VideogamesWebApp.Migrations
 
             modelBuilder.Entity("VideogamesWebApp.Models.GameTransactions", b =>
                 {
-                    b.HasOne("VideogamesWebApp.Models.Game", "Game")
+                    b.HasOne("Dlc", null)
+                        .WithMany()
+                        .HasForeignKey("DlcId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VideogamesWebApp.Models.Game", null)
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VideogamesWebApp.Models.Platforms", "Platform")
+                    b.HasOne("VideogamesWebApp.Models.Launcher", null)
+                        .WithMany()
+                        .HasForeignKey("LauncherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VideogamesWebApp.Models.Platforms", null)
                         .WithMany()
                         .HasForeignKey("PlatformId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VideogamesWebApp.Models.Stores", "Store")
+                    b.HasOne("VideogamesWebApp.Models.Stores", null)
                         .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Game");
-
-                    b.Navigation("Platform");
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
                 {
-                    b.Navigation("DLCs");
+                    b.Navigation("Dlcs");
                 });
 #pragma warning restore 612, 618
         }

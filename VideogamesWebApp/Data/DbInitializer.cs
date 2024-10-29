@@ -59,7 +59,9 @@ public static class DbInitializer
                     PlatformId = 2,
                     GameId = "Grand_Theft_Auto_V",
                     Price = 80,
-                    Notes = "First transaction"
+                    Notes = "First transaction",
+                    DlcId = 1,
+                    LauncherId = 4
                 },
                 new GameTransactions
                 {
@@ -70,7 +72,9 @@ public static class DbInitializer
                     PlatformId = 1,
                     GameId = "Formula_1",
                     Price = 70,
-                    Notes = "Second transaction"
+                    Notes = "Second transaction",
+                    DlcId = 4,
+                    LauncherId = 3
                 },
                  new GameTransactions
                 {
@@ -81,7 +85,9 @@ public static class DbInitializer
                     PlatformId = 3,
                     GameId = "Call_Of_Duty",
                     Price = 100,
-                    Notes = "Second transaction"
+                    Notes = "Second transaction",
+                    DlcId = 3,
+                    LauncherId = 2
                 },
                   new GameTransactions
                 {
@@ -92,7 +98,10 @@ public static class DbInitializer
                     PlatformId = 4,
                     GameId = "fifa",
                     Price = 90,
-                    Notes = "Second transaction"
+                    Notes = "Second transaction",
+                    DlcId = 2,
+                    LauncherId = 1
+
                 }
             };
 
@@ -165,11 +174,11 @@ public static class DbInitializer
 
             context.Platforms.AddRange(platforms);
         }
-        if (!context.DLCs.Any()) 
+        if (!context.Dlcs.Any()) 
         {
-            var dlcs = new DLC[]
+            var dlcs = new Dlc[]
             {
-                new DLC
+                new Dlc
                 {
                     DlcId = 1,
                     DlcName = "Grand Theft Auto V: Heists",
@@ -177,15 +186,15 @@ public static class DbInitializer
                     Price = 20,
                     GameId = "Grand_Theft_Auto_V"
                 },
-                new DLC
+                new Dlc
                 {
                     DlcId = 2,
                     DlcName = "Fifa Ultimate Team",
                     DlcDescription = "Ultimate Team mode with additional packs.",
-                    Price = 15,
+                    Price = 0,
                     GameId = "fifa"
                 },
-                new DLC
+                new Dlc
                 {
                     DlcId = 3,
                     DlcName = "Call of Duty: Modern Warfare - Battle Pass",
@@ -193,9 +202,17 @@ public static class DbInitializer
                     Price = 10,
                     GameId = "Call_Of_Duty"
                 },
+                new Dlc
+                {
+                    DlcId = 4,
+                    DlcName = "Formula 1 - New Teams",
+                    DlcDescription = "Adding new teams",
+                    Price = 10,
+                    GameId = "Formula_1"
+                },
             };
 
-            context.DLCs.AddRange(dlcs);
+            context.Dlcs.AddRange(dlcs);
         }
         if (!context.Launchers.Any())
         {
@@ -211,9 +228,9 @@ public static class DbInitializer
         new Launcher
         {
             LauncherId = 2,
-            LauncherName = "Epic Games",
-            LauncherDescription = "Epic Games Launcher",
-            Link = "https://www.epicgames.com"
+            LauncherName = "Ubisoft",
+            LauncherDescription = "Ubisoft Launcher",
+            Link = "https://www.Ubisoft.com"
         },
         new Launcher
         {
@@ -221,6 +238,13 @@ public static class DbInitializer
             LauncherName = "Origin",
             LauncherDescription = "EA's game launcher",
             Link = "https://www.origin.com"
+        },
+        new Launcher
+        {
+            LauncherId = 4,
+            LauncherName = "Rockstar Games",
+            LauncherDescription = "Rockstar Games game launcher",
+            Link = "https://www.Rockstar.com"
         }
             };
             context.Launchers.AddRange(launchers);
