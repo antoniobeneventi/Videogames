@@ -18,7 +18,8 @@ namespace VideogamesWebApp.Migrations
                     GameId = table.Column<string>(type: "TEXT", nullable: false),
                     GameName = table.Column<string>(type: "TEXT", nullable: false),
                     GameDescription = table.Column<string>(type: "TEXT", nullable: false),
-                    GameTags = table.Column<string>(type: "TEXT", nullable: false)
+                    GameTags = table.Column<string>(type: "TEXT", nullable: false),
+                    MainGameId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -84,28 +85,6 @@ namespace VideogamesWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Dlcs",
-                columns: table => new
-                {
-                    DlcId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DlcName = table.Column<string>(type: "TEXT", nullable: false),
-                    DlcDescription = table.Column<string>(type: "TEXT", nullable: false),
-                    Price = table.Column<decimal>(type: "TEXT", nullable: false),
-                    GameId = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dlcs", x => x.DlcId);
-                    table.ForeignKey(
-                        name: "FK_Dlcs_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "GameId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GameTransactions",
                 columns: table => new
                 {
@@ -117,19 +96,13 @@ namespace VideogamesWebApp.Migrations
                     StoreId = table.Column<int>(type: "INTEGER", nullable: false),
                     PlatformId = table.Column<int>(type: "INTEGER", nullable: false),
                     GameId = table.Column<string>(type: "TEXT", nullable: false),
-                    DlcId = table.Column<int>(type: "INTEGER", nullable: false),
                     LauncherId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Notes = table.Column<string>(type: "TEXT", nullable: false)
+                    Notes = table.Column<string>(type: "TEXT", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GameTransactions", x => x.TransactionId);
-                    table.ForeignKey(
-                        name: "FK_GameTransactions_Dlcs_DlcId",
-                        column: x => x.DlcId,
-                        principalTable: "Dlcs",
-                        principalColumn: "DlcId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GameTransactions_Games_GameId",
                         column: x => x.GameId,
@@ -155,16 +128,6 @@ namespace VideogamesWebApp.Migrations
                         principalColumn: "StoreId",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dlcs_GameId",
-                table: "Dlcs",
-                column: "GameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GameTransactions_DlcId",
-                table: "GameTransactions",
-                column: "DlcId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameTransactions_GameId",
@@ -197,7 +160,7 @@ namespace VideogamesWebApp.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Dlcs");
+                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "Launchers");
@@ -207,9 +170,6 @@ namespace VideogamesWebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Stores");
-
-            migrationBuilder.DropTable(
-                name: "Games");
         }
     }
 }

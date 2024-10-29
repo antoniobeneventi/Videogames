@@ -4,11 +4,12 @@ namespace VideogamesWebApp.Models;
 
 public class User
 {
-    [Key]
     [Required]
     public int UserId { get; set; }
 
     [Required]
+   
+    [MaxLength(30)]
     public string Username { get; set; }
 
     [Required]

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241029085335_CreateDatabase")]
+    [Migration("20241029151848_CreateDatabase")]
     partial class CreateDatabase
     {
         /// <inheritdoc />
@@ -19,34 +19,6 @@ namespace VideogamesWebApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
-
-            modelBuilder.Entity("Dlc", b =>
-                {
-                    b.Property<int>("DlcId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("DlcDescription")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DlcName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GameId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("DlcId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Dlcs");
-                });
 
             modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
                 {
@@ -65,6 +37,9 @@ namespace VideogamesWebApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MainGameId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("GameId");
 
                     b.ToTable("Games");
@@ -74,9 +49,6 @@ namespace VideogamesWebApp.Migrations
                 {
                     b.Property<int>("TransactionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("DlcId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("GameId")
@@ -105,9 +77,10 @@ namespace VideogamesWebApp.Migrations
                     b.Property<int>("StoreId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("TransactionId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("DlcId");
+                    b.HasKey("TransactionId");
 
                     b.HasIndex("GameId");
 
@@ -204,25 +177,8 @@ namespace VideogamesWebApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Dlc", b =>
-                {
-                    b.HasOne("VideogamesWebApp.Models.Game", "Game")
-                        .WithMany("Dlcs")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-                });
-
             modelBuilder.Entity("VideogamesWebApp.Models.GameTransactions", b =>
                 {
-                    b.HasOne("Dlc", null)
-                        .WithMany()
-                        .HasForeignKey("DlcId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("VideogamesWebApp.Models.Game", null)
                         .WithMany()
                         .HasForeignKey("GameId")
@@ -246,11 +202,6 @@ namespace VideogamesWebApp.Migrations
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
-                {
-                    b.Navigation("Dlcs");
                 });
 #pragma warning restore 612, 618
         }

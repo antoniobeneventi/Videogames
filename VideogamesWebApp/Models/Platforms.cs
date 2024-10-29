@@ -4,10 +4,13 @@ namespace VideogamesWebApp.Models
 {
     public class Platforms
     {
-        [Key]
         [Required]
-        public int PlatformId { get; set; } 
+        public int PlatformId { get; set; }
+
+        [MaxLength(15)]
         public string PlatformName { get; set; }
+
+        [MaxLength(25)]
         public string PlatformDescription { get; set; }
     }
 }

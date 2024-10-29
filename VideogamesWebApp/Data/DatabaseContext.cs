@@ -10,7 +10,6 @@ namespace GamesDataAccess
         public DbSet<Platforms> Platforms { get; set; }
         public DbSet<GameTransactions> GameTransactions { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Dlc> Dlcs { get; set; }
         public DbSet<Launcher> Launchers { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
@@ -45,20 +44,14 @@ namespace GamesDataAccess
                 .WithMany()
                 .HasForeignKey(t => t.GameId);
 
-            modelBuilder.Entity<GameTransactions>()
-                .HasOne<Dlc>()
-                .WithMany()
-                .HasForeignKey(t => t.DlcId);
+           
 
             modelBuilder.Entity<GameTransactions>()
                 .HasOne<Launcher>()
                 .WithMany()
                 .HasForeignKey(t => t.LauncherId);
 
-            modelBuilder.Entity<Dlc>()
-                .HasOne<Game>()
-                .WithMany(g => g.Dlcs)
-                .HasForeignKey(d => d.GameId);
+          
 
             modelBuilder.Entity<Launcher>().HasKey(l => l.LauncherId);
             modelBuilder.Entity<Launcher>().Property(l => l.LauncherName).IsRequired();

@@ -17,7 +17,8 @@ public static class DbInitializer
                     GameId = "Grand_Theft_Auto_V",
                     GameName = "Grand Theft Auto V",
                     GameDescription = "An open-world game",
-                    GameTags = "Gun, Violence"
+                    GameTags = "Gun, Violence",
+                    MainGameId = "Gta online"
                 },
 
                 new Game
@@ -25,21 +26,26 @@ public static class DbInitializer
                     GameId = "Formula_1", 
                     GameName = "Formula 1", 
                     GameDescription = "A car game.",
-                    GameTags = "Car, fast"
+                    GameTags = "Car, fast",
+                    MainGameId = null
                 },
                 new Game 
                 { 
                     GameId = "Call_Of_Duty",
-                   GameName = "Call Of Duty",
+                    GameName = "Call Of Duty",
                     GameDescription = "Shooter game",
-                    GameTags = "gun"
+                    GameTags = "gun",
+                    MainGameId = "Awakeing"
+
                 },
                 new Game
                 {
                     GameId = "fifa", 
                     GameName = "Fifa",
-                   GameDescription = "football game",
-                    GameTags = "Football, ball"
+                    GameDescription = "football game",
+                    GameTags = "Football, ball",
+                    MainGameId = null
+
                 },
             };
 
@@ -60,8 +66,9 @@ public static class DbInitializer
                     GameId = "Grand_Theft_Auto_V",
                     Price = 80,
                     Notes = "First transaction",
-                    DlcId = 1,
-                    LauncherId = 4
+                    LauncherId = 4,
+                    UserId = 1
+                    
                 },
                 new GameTransactions
                 {
@@ -73,8 +80,9 @@ public static class DbInitializer
                     GameId = "Formula_1",
                     Price = 70,
                     Notes = "Second transaction",
-                    DlcId = 4,
-                    LauncherId = 3
+                    LauncherId = 3,
+                    UserId = 2
+
                 },
                  new GameTransactions
                 {
@@ -86,8 +94,9 @@ public static class DbInitializer
                     GameId = "Call_Of_Duty",
                     Price = 100,
                     Notes = "Second transaction",
-                    DlcId = 3,
-                    LauncherId = 2
+                    LauncherId = 2,
+                    UserId = 2
+
                 },
                   new GameTransactions
                 {
@@ -99,8 +108,9 @@ public static class DbInitializer
                     GameId = "fifa",
                     Price = 90,
                     Notes = "Second transaction",
-                    DlcId = 2,
-                    LauncherId = 1
+                    LauncherId = 1,
+                    UserId = 1
+
 
                 }
             };
@@ -174,46 +184,9 @@ public static class DbInitializer
 
             context.Platforms.AddRange(platforms);
         }
-        if (!context.Dlcs.Any()) 
-        {
-            var dlcs = new Dlc[]
-            {
-                new Dlc
-                {
-                    DlcId = 1,
-                    DlcName = "Grand Theft Auto V: Heists",
-                    DlcDescription = "Adds heist missions and new vehicles.",
-                    Price = 20,
-                    GameId = "Grand_Theft_Auto_V"
-                },
-                new Dlc
-                {
-                    DlcId = 2,
-                    DlcName = "Fifa Ultimate Team",
-                    DlcDescription = "Ultimate Team mode with additional packs.",
-                    Price = 0,
-                    GameId = "fifa"
-                },
-                new Dlc
-                {
-                    DlcId = 3,
-                    DlcName = "Call of Duty: Modern Warfare - Battle Pass",
-                    DlcDescription = "Seasonal Battle Pass with new content.",
-                    Price = 10,
-                    GameId = "Call_Of_Duty"
-                },
-                new Dlc
-                {
-                    DlcId = 4,
-                    DlcName = "Formula 1 - New Teams",
-                    DlcDescription = "Adding new teams",
-                    Price = 10,
-                    GameId = "Formula_1"
-                },
-            };
+        
 
-            context.Dlcs.AddRange(dlcs);
-        }
+        
         if (!context.Launchers.Any())
         {
             var launchers = new Launcher[]

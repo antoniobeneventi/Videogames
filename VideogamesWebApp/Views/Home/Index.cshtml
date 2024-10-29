@@ -9,12 +9,11 @@
     </div>
 
     <form method="get" asp-controller="Games" asp-action="Index">
-    <input type="text" name="searchQuery" class="form-control"
-           placeholder="Search games..."
-           value="@ViewData["searchQuery"]">
-    <button type="submit" class="btn btn-primary mt-2">Search</button>
-</form>
-
+        <input type="text" name="searchQuery" class="form-control"
+               placeholder="Search games..."
+               value="@ViewData["searchQuery"]">
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </form>
 
     <hr>
 
