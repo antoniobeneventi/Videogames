@@ -27,6 +27,9 @@ public class AccountController : Controller
         var user = _context.Users.SingleOrDefault(u => u.Username == username);
         if (user != null && VerifyPasswordHash(password, user.PasswordHash))
         {
+            // Salva l'ID dell'utente nella sessione
+            HttpContext.Session.SetInt32("UserId", user.UserId);
+            HttpContext.Session.SetString("Username", user.Username);
             return RedirectToAction("Index", "Games");
         }
 

@@ -19,6 +19,7 @@ public static class DbInitializer
                     GameDescription = "An open-world game",
                     GameTags = "Gun, Violence",
                     MainGameId = "Gta online"
+
                 },
 
                 new Game

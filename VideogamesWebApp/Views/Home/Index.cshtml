@@ -1,8 +1,8 @@
-﻿@model List<VideogamesWebApp.Models.GameViewModel>
+﻿@model List<VideogamesWebApp.Models.GameTransactionsViewModel>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center">
-        <h1>Games Library</h1>
+        <h1>My Games Library</h1>
         <form method="post" asp-controller="Account" asp-action="Logout">
             <button type="submit" class="btn btn-outline-danger">Logout</button>
         </form>
@@ -17,24 +17,32 @@
 
     <hr>
 
-    <h3>Game List</h3>
+    <h3>My Games Transactions</h3>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">ID</th>
                 <th scope="col">Game Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Tags</th>
+                <th scope="col">Purchase Date</th>
+                <th scope="col">Price</th>
+                <th scope="col">Virtual Copy</th>
+                <th scope="col">Store Name</th>
+                <th scope="col">Platform Name</th>
+                <th scope="col">Launcher Name</th>
+                <th scope="col">Dlc</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var game in Model)
+            @foreach (var transaction in Model)
             {
                 <tr>
-                    <td>@game.GameId</td>
-                    <td><strong>@game.GameName</strong></td>
-                    <td>@game.GameDescription</td>
-                    <td>@game.GameTags</td>
+                    <td><strong>@transaction.GameName</strong></td>
+                    <td>@transaction.PurchaseDate.ToString("dd/MM/yyyy")</td>
+                    <td>@transaction.Price.ToString("C")</td>
+                    <td>@(transaction.IsVirtual ? "Yes" : "No")</td>
+                    <td>@transaction.StoreName</td>
+                    <td>@transaction.PlatformName</td>
+                    <td>@transaction.LauncherName</td>
+                    <td>@(string.IsNullOrEmpty(transaction.MainGameId) ? "-" : transaction.MainGameId)</td>
                 </tr>
             }
         </tbody>
