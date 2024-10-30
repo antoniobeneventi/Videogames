@@ -52,6 +52,21 @@ public class GamesController : Controller
 
         return View("~/Views/Home/Index.cshtml", transactions);
     }
+   
+    public IActionResult ViewAllGames()
+    {
+        var allGamesQuery = from game in _dbContext.Games
+                            select new GameViewModel
+                            {
+                                GameId = game.GameId,
+                                GameName = game.GameName,
+                                GameDescription = game.GameDescription, 
+                                MainGameId = game.MainGameId
+                            };
+
+        var allGames = allGamesQuery.ToList();
+        return View("~/Views/Home/ViewAllGames.cshtml", allGames); 
+    }
 
     private int GetUserId()
     {

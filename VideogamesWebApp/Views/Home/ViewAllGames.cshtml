@@ -1,0 +1,24 @@
+﻿@model List<VideogamesWebApp.Models.GameViewModel>
+
+<div class="container mt-4">
+    <h1>All Games</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Game Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Main Game ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var game in Model)
+            {
+                <tr>
+                    <td><strong>@game.GameName</strong></td>
+                    <td>@game.GameDescription</td>
+                    <td>@(string.IsNullOrEmpty(game.MainGameId) ? "-" : game.MainGameId)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

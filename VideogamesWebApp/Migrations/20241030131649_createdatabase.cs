@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VideogamesWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDatabase : Migration
+    public partial class createdatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,11 +15,11 @@ namespace VideogamesWebApp.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    GameId = table.Column<string>(type: "TEXT", nullable: false),
-                    GameName = table.Column<string>(type: "TEXT", nullable: false),
-                    GameDescription = table.Column<string>(type: "TEXT", nullable: false),
-                    GameTags = table.Column<string>(type: "TEXT", nullable: false),
-                    MainGameId = table.Column<string>(type: "TEXT", nullable: true)
+                    GameId = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
+                    GameName = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
+                    GameDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    GameTags = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    MainGameId = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -32,9 +32,9 @@ namespace VideogamesWebApp.Migrations
                 {
                     LauncherId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LauncherName = table.Column<string>(type: "TEXT", nullable: false),
-                    LauncherDescription = table.Column<string>(type: "TEXT", nullable: false),
-                    Link = table.Column<string>(type: "TEXT", nullable: false)
+                    LauncherName = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
+                    LauncherDescription = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
+                    Link = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,8 +47,8 @@ namespace VideogamesWebApp.Migrations
                 {
                     PlatformId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PlatformName = table.Column<string>(type: "TEXT", nullable: false),
-                    PlatformDescription = table.Column<string>(type: "TEXT", nullable: false)
+                    PlatformName = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
+                    PlatformDescription = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,9 +61,9 @@ namespace VideogamesWebApp.Migrations
                 {
                     StoreId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    StoreName = table.Column<string>(type: "TEXT", nullable: false),
-                    StoreDescription = table.Column<string>(type: "TEXT", nullable: false),
-                    StoreLink = table.Column<string>(type: "TEXT", nullable: false)
+                    StoreName = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
+                    StoreDescription = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
+                    StoreLink = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,7 +76,7 @@ namespace VideogamesWebApp.Migrations
                 {
                     UserId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Username = table.Column<string>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
                     PasswordHash = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -95,9 +95,9 @@ namespace VideogamesWebApp.Migrations
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
                     StoreId = table.Column<int>(type: "INTEGER", nullable: false),
                     PlatformId = table.Column<int>(type: "INTEGER", nullable: false),
-                    GameId = table.Column<string>(type: "TEXT", nullable: false),
+                    GameId = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     LauncherId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Notes = table.Column<string>(type: "TEXT", nullable: false),
+                    Notes = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

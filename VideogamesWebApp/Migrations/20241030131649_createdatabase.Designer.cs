@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241029151848_CreateDatabase")]
-    partial class CreateDatabase
+    [Migration("20241030131649_createdatabase")]
+    partial class createdatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,21 +23,26 @@ namespace VideogamesWebApp.Migrations
             modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
                 {
                     b.Property<string>("GameId")
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("GameDescription")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("GameName")
                         .IsRequired()
+                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("GameTags")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MainGameId")
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.HasKey("GameId");
@@ -53,6 +58,7 @@ namespace VideogamesWebApp.Migrations
 
                     b.Property<string>("GameId")
                         .IsRequired()
+                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsVirtual")
@@ -63,6 +69,7 @@ namespace VideogamesWebApp.Migrations
 
                     b.Property<string>("Notes")
                         .IsRequired()
+                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("PlatformId")
@@ -101,14 +108,17 @@ namespace VideogamesWebApp.Migrations
 
                     b.Property<string>("LauncherDescription")
                         .IsRequired()
+                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LauncherName")
                         .IsRequired()
+                        .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Link")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("LauncherId");
@@ -124,10 +134,12 @@ namespace VideogamesWebApp.Migrations
 
                     b.Property<string>("PlatformDescription")
                         .IsRequired()
+                        .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PlatformName")
                         .IsRequired()
+                        .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
                     b.HasKey("PlatformId");
@@ -143,14 +155,17 @@ namespace VideogamesWebApp.Migrations
 
                     b.Property<string>("StoreDescription")
                         .IsRequired()
+                        .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StoreLink")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StoreName")
                         .IsRequired()
+                        .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
                     b.HasKey("StoreId");
@@ -170,6 +185,7 @@ namespace VideogamesWebApp.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
+                        .HasMaxLength(30)
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
