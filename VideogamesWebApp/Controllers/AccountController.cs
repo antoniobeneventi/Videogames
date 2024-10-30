@@ -27,7 +27,6 @@ public class AccountController : Controller
         var user = _context.Users.SingleOrDefault(u => u.Username == username);
         if (user != null && VerifyPasswordHash(password, user.PasswordHash))
         {
-            // Salva l'ID dell'utente nella sessione
             HttpContext.Session.SetInt32("UserId", user.UserId);
             HttpContext.Session.SetString("Username", user.Username);
             return RedirectToAction("Index", "Games");
@@ -49,6 +48,7 @@ public class AccountController : Controller
         if (_context.Users.Any(u => u.Username == regUsername))
         {
             ViewData["RegisterError"] = "Username already exists.";
+            ViewBag.ShowRegisterModal = true;
             return View("Login");
         }
 
@@ -64,6 +64,7 @@ public class AccountController : Controller
         ViewData["RegisterSuccess"] = "Registration successful! You can now log in.";
         return View("Login");
     }
+
 
     private string HashPassword(string password)
     {

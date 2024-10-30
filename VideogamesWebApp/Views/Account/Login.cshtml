@@ -106,11 +106,11 @@
         <form method="post" asp-controller="Account" asp-action="Login">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <input type="text" maxlength="20" class="form-control" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input type="password" maxlength="20" class="form-control" id="password" name="password" required>
             </div>
             <div class="button-container">
                 <button type="submit" class="btn btn-primary">Login</button>
@@ -141,16 +141,17 @@
                     <form id="registerForm" method="post" asp-controller="Account" asp-action="Register">
                         <div class="form-group">
                             <label for="regUsername">Username</label>
-                            <input type="text" class="form-control" id="regUsername" name="regUsername" required>
+                            <input type="text" maxlength="20" class="form-control" id="regUsername" name="regUsername" required>
                         </div>
                         <div class="form-group">
                             <label for="regPassword">Password</label>
-                            <input type="password" class="form-control" id="regPassword" name="regPassword" required>
+                            <input type="password" maxlength="20" class="form-control" id="regPassword" name="regPassword" required>
                         </div>
                         @if (ViewData["RegisterError"] != null)
                         {
-                            <div class="alert alert-danger">@ViewData["RegisterError"]</div>
+                            <div id="registerErrorMessage" class="alert alert-danger">@ViewData["RegisterError"]</div>
                         }
+
                         @if (ViewData["RegisterSuccess"] != null)
                         {
                             <div class="alert alert-success">@ViewData["RegisterSuccess"]</div>
@@ -161,22 +162,36 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        setTimeout(function () {
-            var successMessage = document.getElementById("registerSuccessMessage");
-            if (successMessage) {
-                successMessage.style.display = "none";
+        $(document).ready(function () {
+            var showRegisterModal = '@(ViewBag.ShowRegisterModal != null && (bool)ViewBag.ShowRegisterModal)';
+            if (showRegisterModal === 'True') {
+                $('#registerModal').modal('show');
             }
-        }, 3000);
+        });
+            setTimeout(function () {
+                var successMessage = document.getElementById("registerSuccessMessage");
+                if (successMessage) {
+                    successMessage.style.display = "none";
+                }
+            }, 3000);
+            setTimeout(function () {
+                var errorMessage = document.getElementById("errorMessage");
+                if (errorMessage) {
+                    errorMessage.style.display = "none";
+                }
+            }, 3000);
         setTimeout(function () {
-            var errorMessage = document.getElementById("errorMessage");
-            if (errorMessage) {
-                errorMessage.style.display = "none";
+            var registerErrorMessage = document.getElementById("registerErrorMessage");
+            if (registerErrorMessage) {
+                registerErrorMessage.style.display = "none";
             }
         }, 3000);
 
+
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
