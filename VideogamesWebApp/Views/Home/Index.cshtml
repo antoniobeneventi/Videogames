@@ -9,13 +9,13 @@
     </div>
 
     <form method="get" asp-controller="Games" asp-action="Index">
-        <input type="text" name="searchQuery" class="form-control"
+        <input type="text" id="searchQuery" name="searchQuery" class="form-control"
                placeholder="Search games..."
                value="@ViewData["searchQuery"]">
         <button type="submit" class="btn btn-primary mt-2">Search</button>
     </form>
-        <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-secondary mt-2">View All Games</a>
-    
+    <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-secondary mt-2">View All Games</a>
+
     <hr>
 
     <h3>My Games Transactions</h3>
@@ -32,7 +32,7 @@
                 <th scope="col">Dlc</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="transactionsTableBody">
             @foreach (var transaction in Model)
             {
                 <tr>
@@ -49,3 +49,37 @@
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#searchQuery').on('input', function () {
+                let query = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("Index", "Games")',
+                    data: { searchQuery: query },
+                    success: function (data) {
+                        let tableBody = $('#transactionsTableBody');
+                        tableBody.empty();
+
+                        data.forEach(transaction => {
+                            let row = `
+                                        <tr>
+                                            <td><strong>${transaction.gameName}</strong></td>
+                                            <td>${new Date(transaction.purchaseDate).toLocaleDateString()}</td>
+                                            <td>${transaction.price.toLocaleString("en-US", { style: "currency", currency: "USD" })}</td>
+                                            <td>${transaction.isVirtual ? "Yes" : "No"}</td>
+                                            <td>${transaction.storeName}</td>
+                                            <td>${transaction.platformName}</td>
+                                            <td>${transaction.launcherName}</td>
+                                            <td>${transaction.mainGameId ? transaction.mainGameId : "-"}</td>
+                                        </tr>
+                                    `;
+                            tableBody.append(row);
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

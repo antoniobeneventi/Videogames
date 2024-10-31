@@ -48,11 +48,16 @@ public class GamesController : Controller
 
         var transactions = transactionsQuery.ToList();
 
-        ViewData["searchQuery"] = searchQuery;
+        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            return Json(transactions);
+        }
 
+        ViewData["searchQuery"] = searchQuery;
         return View("~/Views/Home/Index.cshtml", transactions);
     }
-   
+
+
     public IActionResult ViewAllGames()
     {
         var allGamesQuery = from game in _dbContext.Games
