@@ -19,9 +19,9 @@ namespace VideogamesWebApp.Migrations
 
             modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
                 {
-                    b.Property<string>("GameId")
-                        .HasMaxLength(30)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("GameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("GameDescription")
                         .IsRequired()
@@ -53,10 +53,8 @@ namespace VideogamesWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("GameId")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsVirtual")
                         .HasColumnType("INTEGER");

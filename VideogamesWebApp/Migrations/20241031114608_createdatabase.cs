@@ -15,7 +15,8 @@ namespace VideogamesWebApp.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    GameId = table.Column<string>(type: "TEXT", maxLength: 30, nullable: false),
+                    GameId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     GameName = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     GameDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     GameTags = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
@@ -95,7 +96,7 @@ namespace VideogamesWebApp.Migrations
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
                     StoreId = table.Column<int>(type: "INTEGER", nullable: false),
                     PlatformId = table.Column<int>(type: "INTEGER", nullable: false),
-                    GameId = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
+                    GameId = table.Column<int>(type: "INTEGER", nullable: false),
                     LauncherId = table.Column<int>(type: "INTEGER", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false)

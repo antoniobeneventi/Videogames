@@ -5,9 +5,7 @@ namespace VideogamesWebApp.Models;
 public class Game
 {
     [Required]
-
-    [MaxLength(30)]
-    public string GameId { get; set; }
+    public int GameId { get; set; }
 
     [MaxLength(25)]
     public string GameName { get; set; }

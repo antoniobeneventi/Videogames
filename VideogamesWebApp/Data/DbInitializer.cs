@@ -12,9 +12,9 @@ public static class DbInitializer
         {
             var games = new Game[]
             {
-                new Game 
+                new Game
                 {
-                    GameId = "Grand_Theft_Auto_V",
+                    GameId = 1,
                     GameName = "Grand Theft Auto V",
                     GameDescription = "An open-world game",
                     GameTags = "Gun, Violence",
@@ -24,15 +24,15 @@ public static class DbInitializer
 
                 new Game
                 {
-                    GameId = "Formula_1", 
-                    GameName = "Formula 1", 
+                    GameId = 2,
+                    GameName = "Formula 1",
                     GameDescription = "A car game.",
                     GameTags = "Car, fast",
                     MainGameId = null
                 },
-                new Game 
-                { 
-                    GameId = "Call_Of_Duty",
+                new Game
+                {
+                    GameId = 3,
                     GameName = "Call Of Duty",
                     GameDescription = "Shooter game",
                     GameTags = "gun",
@@ -41,13 +41,68 @@ public static class DbInitializer
                 },
                 new Game
                 {
-                    GameId = "fifa", 
+                    GameId = 4,
                     GameName = "Fifa",
                     GameDescription = "football game",
                     GameTags = "Football, ball",
                     MainGameId = null
 
                 },
+                new Game
+                {
+                   GameId = 5,
+                   GameName = "Battlefield",
+                   GameDescription = "warl game",
+                   GameTags = "War, gun, violence",
+                   MainGameId = null
+
+                },
+                new Game
+                {
+                   GameId = 6,
+                   GameName = "Just dance",
+                   GameDescription = "Dance music",
+                   GameTags = "Dance, music",
+                   MainGameId = "More songs"
+
+                },
+                new Game
+                {
+                   GameId = 7,
+                   GameName = "League of Legends",
+                   GameDescription = "Lol",
+                   GameTags = "Champion, monster",
+                   MainGameId = "More champions"
+                },
+                new Game
+                {
+                   GameId = 8,
+                   GameName = "Valorant",
+                   GameDescription = "war game",
+                   GameTags = "war, fantasy",
+                   MainGameId = null
+
+                },
+                new Game
+                {
+                   GameId = 9,
+                   GameName = "Minecraft",
+                   GameDescription = "cube game",
+                   GameTags = "cube, pixel",
+                   MainGameId = null
+
+                },
+                new Game
+                {
+                   GameId = 10,
+                   GameName = "Rocket League",
+                   GameDescription = "car football game",
+                   GameTags = "Football, car",
+                   MainGameId = "More car"
+
+                },
+
+
             };
 
             context.Games.AddRange(games);
@@ -64,12 +119,12 @@ public static class DbInitializer
                     IsVirtual = true,
                     StoreId = 2,
                     PlatformId = 2,
-                    GameId = "Grand_Theft_Auto_V",
+                    GameId = 1,
                     Price = 80,
                     Notes = "First transaction",
                     LauncherId = 4,
                     UserId = 1
-                    
+
                 },
                 new GameTransactions
                 {
@@ -78,7 +133,7 @@ public static class DbInitializer
                     IsVirtual = false,
                     StoreId = 3,
                     PlatformId = 1,
-                    GameId = "Formula_1",
+                    GameId = 2,
                     Price = 70,
                     Notes = "Second transaction",
                     LauncherId = 3,
@@ -92,7 +147,7 @@ public static class DbInitializer
                     IsVirtual = false,
                     StoreId = 1,
                     PlatformId = 3,
-                    GameId = "Call_Of_Duty",
+                    GameId = 3,
                     Price = 100,
                     Notes = "Second transaction",
                     LauncherId = 2,
@@ -106,7 +161,7 @@ public static class DbInitializer
                     IsVirtual = false,
                     StoreId = 4,
                     PlatformId = 4,
-                    GameId = "fifa",
+                    GameId = 4,
                     Price = 90,
                     Notes = "Second transaction",
                     LauncherId = 1,
@@ -123,32 +178,52 @@ public static class DbInitializer
         {
             var stores = new Stores[]
             {
-                new Stores 
+                new Stores
                 {
                     StoreId = 1,
-                    StoreName = "Steam", 
-                    StoreDescription = "Online game store for PC games", 
+                    StoreName = "Steam",
+                    StoreDescription = "Online game store for PC games",
                     StoreLink = "https://store.steampowered.com"
                 },
-                new Stores 
-                { 
+                new Stores
+                {
                     StoreId = 2,
                     StoreName = "PlayStation Store",
                     StoreDescription = "Sony's official PlayStation store",
-                    StoreLink = "https://store.playstation.com" 
+                    StoreLink = "https://store.playstation.com"
                 },
-                new Stores 
-                { StoreId = 3, 
+                new Stores
+                { StoreId = 3,
                     StoreName = "Microsoft Store",
                     StoreDescription = "Microsoft's official Xbox and PC store",
                     StoreLink = "https://www.microsoft.com/store"
                 },
-                 new Stores { 
-                     StoreId = 4, 
-                     StoreName = "Instant Gaming", 
-                     StoreDescription = "An online store to buy games", 
-                     StoreLink = "https://www.instant-gaming.com/it"
+                 new Stores {
+                    StoreId = 4,
+                    StoreName = "Instant Gaming",
+                    StoreDescription = "An online store to buy games",
+                    StoreLink = "https://www.instant-gaming.com/it"
+                 },
+                 new Stores {
+                    StoreId = 5,
+                    StoreName = "MediaWorld",
+                    StoreDescription = "electronics store",
+                    StoreLink = "https://www.mediaworld.it"
+                 },
+                 new Stores {
+                    StoreId = 6,
+                    StoreName = "Nintendo Store",
+                    StoreDescription = "Official Nintendo Store",
+                    StoreLink = "https://www.Nintendo.it"
+                 },
+                 new Stores {
+                    StoreId = 7,
+                    StoreName = "Games Store",
+                    StoreDescription = "The classic phisical store of game",
+                    StoreLink = "https://www.GameStop.it"
                  }
+
+
             };
 
             context.Stores.AddRange(stores);
@@ -158,36 +233,36 @@ public static class DbInitializer
         {
             var platforms = new Platforms[]
             {
-                new Platforms 
-                { 
-                    PlatformId = 1, 
-                    PlatformName = "PC", 
-                    PlatformDescription = "Personal Computer" 
+                new Platforms
+                {
+                    PlatformId = 1,
+                    PlatformName = "PC",
+                    PlatformDescription = "Personal Computer"
                 },
-                new Platforms 
-                { 
-                    PlatformId = 2, 
+                new Platforms
+                {
+                    PlatformId = 2,
                     PlatformName = "PlayStation",
                     PlatformDescription = "Sony PlayStation console"
                 },
-                new Platforms 
-                { 
-                    PlatformId = 3,  
+                new Platforms
+                {
+                    PlatformId = 3,
                     PlatformName = "Xbox",
-                    PlatformDescription = "Microsoft Xbox Console" 
+                    PlatformDescription = "Microsoft Xbox Console"
                 },
-                new Platforms 
+                new Platforms
                 { PlatformId = 4,
                     PlatformName = "Nintendo Switch",
-                    PlatformDescription = "Nintendo console" 
+                    PlatformDescription = "Nintendo console"
                 }
             };
 
             context.Platforms.AddRange(platforms);
         }
-        
 
-        
+
+
         if (!context.Launchers.Any())
         {
             var launchers = new Launcher[]

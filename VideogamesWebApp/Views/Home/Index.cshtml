@@ -2,6 +2,8 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center">
+        <h1>Welcome, @ViewData["Username"]!</h1>
+
         <h1>My Games Library</h1>
         <form method="post" asp-controller="Account" asp-action="Logout">
             <button type="submit" class="btn btn-outline-danger">Logout</button>
@@ -15,10 +17,95 @@
         <button type="submit" class="btn btn-primary mt-2">Search</button>
     </form>
     <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-secondary mt-2">View All Games</a>
+    <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#buyGameModal">Buy a New Game</button>
 
     <hr>
 
-    <h3>My Games Transactions</h3>
+    <div class="modal fade" id="buyGameModal" tabindex="-1" aria-labelledby="buyGameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="buyGameModalLabel">Buy a New Game</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="BuyGame" asp-controller="Games" method="post" id="buyGameForm">
+                        <div class="mb-3">
+                            <label for="gameId" class="form-label">Game Name</label>
+                            <select class="form-control" id="gameId" name="GameId" required>
+                                <option value="">Select a game</option>
+                                @foreach (var game in (IEnumerable<dynamic>)ViewData["AvailableGames"])
+                                {
+                                    <option value="@game.GameId">@game.GameName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="storeId" class="form-label">Store</label>
+                            <select class="form-control" id="storeId" name="StoreId" required>
+                                <option value="">Select a store</option>
+                                @foreach (var store in (IEnumerable<dynamic>)ViewData["AvailableStores"])
+                                {
+                                    <option value="@store.StoreId">@store.StoreName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="platformId" class="form-label">Platform</label>
+                            <select class="form-control" id="platformId" name="PlatformId" required>
+                                <option value="">Select a platform</option>
+                                @foreach (var platform in (IEnumerable<dynamic>)ViewData["AvailablePlatforms"])
+                                {
+                                    <option value="@platform.PlatformId">@platform.PlatformName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="launcherId" class="form-label">Launcher</label>
+                            <select class="form-control" id="launcherId" name="LauncherId" required>
+                                <option value="">Select a launcher</option>
+                                @foreach (var launcher in (IEnumerable<dynamic>)ViewData["AvailableLaunchers"])
+                                {
+                                    <option value="@launcher.LauncherId">@launcher.LauncherName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="purchaseDate" class="form-label">Purchase Date</label>
+                            <input type="date" class="form-control" id="purchaseDate" name="PurchaseDate" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" step="0.01" class="form-control" id="price" name="Price" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="isVirtual" class="form-label">Is Virtual Copy</label>
+                            <select class="form-control" id="isVirtual" name="IsVirtual" required>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="Notes"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Confirm Purchase</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h3>My Games </h3>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -52,6 +139,7 @@
 
 @section Scripts {
     <script>
+
         $(document).ready(function () {
             $('#searchQuery').on('input', function () {
                 let query = $(this).val();
@@ -64,17 +152,17 @@
 
                         data.forEach(transaction => {
                             let row = `
-                                        <tr>
-                                            <td><strong>${transaction.gameName}</strong></td>
-                                            <td>${new Date(transaction.purchaseDate).toLocaleDateString()}</td>
-                                            <td>${transaction.price.toLocaleString("en-US", { style: "currency", currency: "USD" })}</td>
-                                            <td>${transaction.isVirtual ? "Yes" : "No"}</td>
-                                            <td>${transaction.storeName}</td>
-                                            <td>${transaction.platformName}</td>
-                                            <td>${transaction.launcherName}</td>
-                                            <td>${transaction.mainGameId ? transaction.mainGameId : "-"}</td>
-                                        </tr>
-                                    `;
+                                                <tr>
+                                                    <td><strong>${transaction.gameName}</strong></td>
+                                                    <td>${new Date(transaction.purchaseDate).toLocaleDateString()}</td>
+                                                    <td>${transaction.price.toLocaleString("en-US", { style: "currency", currency: "USD" })}</td>
+                                                    <td>${transaction.isVirtual ? "Yes" : "No"}</td>
+                                                    <td>${transaction.storeName}</td>
+                                                    <td>${transaction.platformName}</td>
+                                                    <td>${transaction.launcherName}</td>
+                                                    <td>${transaction.mainGameId ? transaction.mainGameId : "-"}</td>
+                                                </tr>
+                                            `;
                             tableBody.append(row);
                         });
                     }

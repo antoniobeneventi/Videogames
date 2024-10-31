@@ -13,11 +13,12 @@ public class GameTransactions
     public int StoreId { get; set; }
     public int PlatformId { get; set; }
 
-    [MaxLength(25)]
-    public string GameId { get; set; }
+    public int GameId { get; set; }
     public int LauncherId { get; set; }
     [MaxLength(25)]
     public string Notes { get; set; }
     public int UserId { get; set; }
+
+
 }
 
