@@ -52,7 +52,7 @@ public static class DbInitializer
                 {
                    GameId = 5,
                    GameName = "Battlefield",
-                   GameDescription = "warl game",
+                   GameDescription = "war game",
                    GameTags = "War, gun, violence",
                    MainGameId = null
 

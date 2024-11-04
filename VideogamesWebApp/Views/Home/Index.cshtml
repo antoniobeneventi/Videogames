@@ -1,5 +1,60 @@
 ﻿@model List<VideogamesWebApp.Models.GameTransactionsViewModel>
+<style>
+    .btn-custom {
+        border-radius: 8px;
+        font-weight: bold;
+    }
 
+    .btn-buy-game {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-add-store {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-add-platform {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .btn-add-launcher {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+
+    .search-container {
+        position: relative;
+    }
+
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .search-result-item {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+        .search-result-item:hover {
+            background-color: #f5f5f5;
+        }
+
+</style>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Welcome, @ViewData["Username"]!</h1>
@@ -16,10 +71,19 @@
                value="@ViewData["searchQuery"]">
         <button type="submit" class="btn btn-primary mt-2">Search</button>
     </form>
-    <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-secondary mt-2">View All Games</a>
-    <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#buyGameModal">Buy a New Game</button>
+    <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-secondary btn-custom mt-2 me-3">View All Games</a>
+    <button type="button" class="btn btn-custom btn-buy-game mt-2 me-3" data-bs-toggle="modal" data-bs-target="#buyGameModal">Buy a New Game</button>
+    <button type="button" class="btn btn-custom btn-add-store mt-2 me-3" data-bs-toggle="modal" data-bs-target="#addStoreModal">Add Store</button>
+    <button type="button" class="btn btn-custom btn-add-platform mt-2 me-3" data-bs-toggle="modal" data-bs-target="#addPlatformModal">Add Platform</button>
+    <button type="button" class="btn btn-custom btn-add-launcher mt-2" data-bs-toggle="modal" data-bs-target="#addLauncherModal">Add Launcher</button>
 
     <hr>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successMessage" class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
     <div class="modal fade" id="buyGameModal" tabindex="-1" aria-labelledby="buyGameModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -31,48 +95,42 @@
                 <div class="modal-body">
                     <form asp-action="BuyGame" asp-controller="Games" method="post" id="buyGameForm">
                         <div class="mb-3">
-                            <label for="gameId" class="form-label">Game Name</label>
-                            <select class="form-control" id="gameId" name="GameId" required>
-                                <option value="">Select a game</option>
-                                @foreach (var game in (IEnumerable<dynamic>)ViewData["AvailableGames"])
-                                {
-                                    <option value="@game.GameId">@game.GameName</option>
-                                }
-                            </select>
+                            <label for="gameSearch">Game Name</label>
+                            <div class="search-container">
+                                <input type="text" class="form-control" id="gameSearch" placeholder="Start typing to search for a game...">
+                                <div id="gameSearchResults" class="search-results"></div>
+                            </div>
+                            <input type="hidden" id="gameId" name="GameId">
                         </div>
 
                         <div class="mb-3">
-                            <label for="storeId" class="form-label">Store</label>
-                            <select class="form-control" id="storeId" name="StoreId" required>
-                                <option value="">Select a store</option>
-                                @foreach (var store in (IEnumerable<dynamic>)ViewData["AvailableStores"])
-                                {
-                                    <option value="@store.StoreId">@store.StoreName</option>
-                                }
-                            </select>
+                            <label for="storeSearch">Store</label>
+                            <div class="search-container">
+                                <input type="text" class="form-control" id="storeSearch" placeholder="Start typing to search for a store...">
+                                <div id="storeSearchResults" class="search-results"></div>
+                            </div>
+                            <input type="hidden" id="storeId" name="StoreId">
                         </div>
 
                         <div class="mb-3">
-                            <label for="platformId" class="form-label">Platform</label>
-                            <select class="form-control" id="platformId" name="PlatformId" required>
-                                <option value="">Select a platform</option>
-                                @foreach (var platform in (IEnumerable<dynamic>)ViewData["AvailablePlatforms"])
-                                {
-                                    <option value="@platform.PlatformId">@platform.PlatformName</option>
-                                }
-                            </select>
+                            <label for="platformSearch">Platform</label>
+                            <div class="search-container">
+                                <input type="text" class="form-control" id="platformSearch" placeholder="Start typing to search for a platform...">
+                                <div id="platformSearchResults" class="search-results"></div>
+                            </div>
+                            <input type="hidden" id="platformId" name="PlatformId">
                         </div>
 
                         <div class="mb-3">
-                            <label for="launcherId" class="form-label">Launcher</label>
-                            <select class="form-control" id="launcherId" name="LauncherId" required>
-                                <option value="">Select a launcher</option>
-                                @foreach (var launcher in (IEnumerable<dynamic>)ViewData["AvailableLaunchers"])
-                                {
-                                    <option value="@launcher.LauncherId">@launcher.LauncherName</option>
-                                }
-                            </select>
+                            <label for="launcherSearch">Launcher</label>
+                            <div class="search-container">
+                                <input type="text" class="form-control" id="launcherSearch" placeholder="Start typing to search for a launcher...">
+                                <div id="launcherSearchResults" class="search-results"></div>
+                            </div>
+                            <input type="hidden" id="launcherId" name="LauncherId">
                         </div>
+
+
 
                         <div class="mb-3">
                             <label for="purchaseDate" class="form-label">Purchase Date</label>
@@ -104,6 +162,89 @@
         </div>
     </div>
 
+    <!-- Modal for Adding Store -->
+    <div class="modal fade" id="addStoreModal" tabindex="-1" aria-labelledby="addStoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStoreModalLabel">Add New Store</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="AddStore" asp-controller="Games" method="post" id="addStoreForm">
+                        <div class="mb-3">
+                            <label for="storeName" class="form-label">Store Name</label>
+                            <input type="text" class="form-control" id="storeName" name="StoreName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="storeDescription" class="form-label">Store Description</label>
+                            <textarea class="form-control" id="storeDescription" name="StoreDescription"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="storeLink" class="form-label">Store Link</label>
+                            <input type="url" class="form-control" id="storeLink" name="StoreLink">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Store</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Platform -->
+    <div class="modal fade" id="addPlatformModal" tabindex="-1" aria-labelledby="addPlatformModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPlatformModalLabel">Add New Platform</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="AddPlatform" asp-controller="Games" method="post" id="addPlatformForm">
+                        <div class="mb-3">
+                            <label for="platformName" class="form-label">Platform Name</label>
+                            <input type="text" class="form-control" id="platformName" name="PlatformName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="platformDescription" class="form-label">Platform Description</label>
+                            <textarea class="form-control" id="platformDescription" name="PlatformDescription"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Platform</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding Launcher -->
+    <div class="modal fade" id="addLauncherModal" tabindex="-1" aria-labelledby="addLauncherModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addLauncherModalLabel">Add New Launcher</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="AddLauncher" asp-controller="Games" method="post" id="addLauncherForm">
+                        <div class="mb-3">
+                            <label for="launcherName" class="form-label">Launcher Name</label>
+                            <input type="text" class="form-control" id="launcherName" name="LauncherName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="launcherDescription" class="form-label">Launcher Description</label>
+                            <textarea class="form-control" id="launcherDescription" name="LauncherDescription"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="link" class="form-label">Launcher Link</label>
+                            <input type="url" class="form-control" id="link" name="Link">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Launcher</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <h3>My Games </h3>
     <table class="table table-striped">
@@ -117,6 +258,7 @@
                 <th scope="col">Platform Name</th>
                 <th scope="col">Launcher Name</th>
                 <th scope="col">Dlc</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody id="transactionsTableBody">
@@ -131,13 +273,172 @@
                     <td>@transaction.PlatformName</td>
                     <td>@transaction.LauncherName</td>
                     <td>@(string.IsNullOrEmpty(transaction.MainGameId) ? "-" : transaction.MainGameId)</td>
+                    <td>
+                        <form asp-action="DeleteGame" asp-controller="Games" method="post" style="display:inline;">
+                            <input type="hidden" name="gameId" value="@transaction.GameId" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this game?');">Delete Game</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
-@section Scripts {
+<script>
+
+    gameSearch.addEventListener('input', function () {
+        const searchQuery = this.value.trim().toLowerCase();
+        if (searchQuery.length > 0) {
+            fetch(`/Games/SearchGames?query=${encodeURIComponent(searchQuery)}`)
+                .then(response => response.json())
+                .then(games => {
+                    gameSearchResults.innerHTML = '';
+                    if (games.length > 0) {
+                        games.forEach(game => {
+                            const div = document.createElement('div');
+                            div.className = 'search-result-item';
+                            div.textContent = game.gameName;
+                            div.addEventListener('click', () => {
+                                gameSearch.value = game.gameName;
+                                gameId.value = game.gameId;
+                                gameSearchResults.style.display = 'none';
+                            });
+                            gameSearchResults.appendChild(div);
+                        });
+                        gameSearchResults.style.display = 'block';
+                    } else {
+                        gameSearchResults.style.display = 'none';
+                    }
+                });
+        } else {
+            gameSearchResults.style.display = 'none';
+        }
+    });
+    // Store search
+    storeSearch.addEventListener('input', function () {
+        const searchQuery = this.value.trim().toLowerCase();
+        if (searchQuery.length > 0) {
+            fetch(`/Games/SearchStores?query=${encodeURIComponent(searchQuery)}`)
+                .then(response => response.json())
+                .then(stores => {
+                    storeSearchResults.innerHTML = '';
+                    if (stores.length > 0) {
+                        stores.forEach(store => {
+                            const div = document.createElement('div');
+                            div.className = 'search-result-item';
+                            div.textContent = store.storeName;
+                            div.addEventListener('click', () => {
+                                storeSearch.value = store.storeName;
+                                storeId.value = store.storeId;
+                                storeSearchResults.style.display = 'none';
+                            });
+                            storeSearchResults.appendChild(div);
+                        });
+                        storeSearchResults.style.display = 'block';
+                    } else {
+                        storeSearchResults.style.display = 'none';
+                    }
+                });
+        } else {
+            storeSearchResults.style.display = 'none';
+        }
+    });
+
+    // Platform search
+    platformSearch.addEventListener('input', function () {
+        const searchQuery = this.value.trim().toLowerCase();
+        if (searchQuery.length > 0) {
+            fetch(`/Games/SearchPlatforms?query=${encodeURIComponent(searchQuery)}`)
+                .then(response => response.json())
+                .then(platforms => {
+                    platformSearchResults.innerHTML = '';
+                    if (platforms.length > 0) {
+                        platforms.forEach(platform => {
+                            const div = document.createElement('div');
+                            div.className = 'search-result-item';
+                            div.textContent = platform.platformName;
+                            div.addEventListener('click', () => {
+                                platformSearch.value = platform.platformName;
+                                platformId.value = platform.platformId;
+                                platformSearchResults.style.display = 'none';
+                            });
+                            platformSearchResults.appendChild(div);
+                        });
+                        platformSearchResults.style.display = 'block';
+                    } else {
+                        platformSearchResults.style.display = 'none';
+                    }
+                });
+        } else {
+            platformSearchResults.style.display = 'none';
+        }
+    });
+
+    // Launcher search
+    launcherSearch.addEventListener('input', function () {
+        const searchQuery = this.value.trim().toLowerCase();
+        if (searchQuery.length > 0) {
+            fetch(`/Games/SearchLaunchers?query=${encodeURIComponent(searchQuery)}`)
+                .then(response => response.json())
+                .then(launchers => {
+                    launcherSearchResults.innerHTML = '';
+                    if (launchers.length > 0) {
+                        launchers.forEach(launcher => {
+                            const div = document.createElement('div');
+                            div.className = 'search-result-item';
+                            div.textContent = launcher.launcherName;
+                            div.addEventListener('click', () => {
+                                launcherSearch.value = launcher.launcherName;
+                                launcherId.value = launcher.launcherId;
+                                launcherSearchResults.style.display = 'none';
+                            });
+                            launcherSearchResults.appendChild(div);
+                        });
+                        launcherSearchResults.style.display = 'block';
+                    } else {
+                        launcherSearchResults.style.display = 'none';
+                    }
+                });
+        } else {
+            launcherSearchResults.style.display = 'none';
+        }
+    });
+
+    // Close search results when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.search-container')) {
+            document.querySelectorAll('.search-results').forEach(results => {
+                results.style.display = 'none';
+            });
+        }
+    });
+
+    // Clear search fields when modal is closed
+    document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function () {
+        gameSearch.value = '';
+        storeSearch.value = '';
+        platformSearch.value = '';
+        launcherSearch.value = '';
+
+        gameId.value = '';
+        storeId.value = '';
+        platformId.value = '';
+        launcherId.value = '';
+    });
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const successMessage = document.getElementById("successMessage");
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.display = "none";
+            }, 3000);
+        }
+    });
+</script>
+@* @section Scripts {
     <script>
 
         $(document).ready(function () {
@@ -170,4 +471,4 @@
             });
         });
     </script>
-}
+} *@
