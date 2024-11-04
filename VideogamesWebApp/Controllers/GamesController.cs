@@ -93,24 +93,18 @@ public class GamesController : Controller
                 IsVirtual = model.IsVirtual,
                 UserId = GetUserId(),
                 Notes = string.IsNullOrEmpty(model.Notes) ? null : model.Notes
-
             };
 
             _dbContext.GameTransactions.Add(newTransaction);
             _dbContext.SaveChanges();
 
+            TempData["SuccessMessage"] = "Purchase completed successfully.";
             return RedirectToAction("Index");
         }
 
-
-        ViewData["AvailableGames"] = _dbContext.Games.Select(g => new { g.GameId, g.GameName }).ToList();
-        ViewData["AvailableStores"] = _dbContext.Stores.Select(s => new { s.StoreId, s.StoreName }).ToList();
-        ViewData["AvailablePlatforms"] = _dbContext.Platforms.Select(p => new { p.PlatformId, p.PlatformName }).ToList();
-        ViewData["AvailableLaunchers"] = _dbContext.Launchers.Select(l => new { l.LauncherId, l.LauncherName }).ToList();
-
-        return View("Index", model);
+        TempData["ErrorMessage"] = "An error occurred during the purchase. Check the data entered.";
+        return RedirectToAction("Index");
     }
-
 
 
     public IActionResult ViewAllGames()
@@ -312,6 +306,6 @@ public class GamesController : Controller
         return Json(launchers);
     }
 
-  
+
 }
 

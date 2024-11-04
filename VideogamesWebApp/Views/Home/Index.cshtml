@@ -76,9 +76,16 @@
     <button type="button" class="btn btn-custom btn-add-launcher mt-2" data-bs-toggle="modal" data-bs-target="#addLauncherModal">Add Launcher</button>
 
     <hr>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
     @if (TempData["SuccessMessage"] != null)
     {
-        <div id="successMessage" class="alert alert-success" role="alert">
+        <div class="alert alert-success" role="alert">
             @TempData["SuccessMessage"]
         </div>
     }
@@ -242,7 +249,8 @@
             </div>
         </div>
     </div>
-
+    
+  
 
     <h3>My Games </h3>
     <table class="table table-striped">
@@ -433,6 +441,14 @@
             setTimeout(() => {
                 successMessage.style.display = "none";
             }, 3000); 
+        }
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const ErrorMessage = document.getElementById("ErrorMessage");
+        if (ErrorMessage) {
+            setTimeout(() => {
+                ErrorMessage.style.display = "none";
+            }, 3000);
         }
     });
 </script>
