@@ -1,5 +1,6 @@
 ﻿using GamesDataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
 
 public class GamesController : Controller
@@ -138,6 +139,27 @@ public class GamesController : Controller
     private int GetUserId()
     {
         return HttpContext.Session.GetInt32("UserId") ?? 0;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddGame(string gameName, string gameDescription, string mainGameId)
+    {
+        if (!string.IsNullOrWhiteSpace(gameName))
+        {
+            var game = new Game
+            {
+                GameName = gameName,
+                GameDescription = gameDescription,
+                MainGameId = string.IsNullOrWhiteSpace(mainGameId) ? "" : mainGameId
+            };
+
+            _dbContext.Games.Add(game);
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("ViewAllGames");
+        }
+
+        return RedirectToAction("ViewAllGames");
     }
 
     [HttpPost]
@@ -290,8 +312,6 @@ public class GamesController : Controller
         return Json(launchers);
     }
 
-
-
-
+  
 }
 

@@ -33,11 +33,6 @@ namespace VideogamesWebApp.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("GameTags")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("MainGameId")
                         .HasMaxLength(30)
                         .HasColumnType("TEXT");

@@ -17,7 +17,6 @@ public static class DbInitializer
                     GameId = 1,
                     GameName = "Grand Theft Auto V",
                     GameDescription = "An open-world game",
-                    GameTags = "Gun, Violence",
                     MainGameId = "Gta online"
 
                 },
@@ -27,7 +26,6 @@ public static class DbInitializer
                     GameId = 2,
                     GameName = "Formula 1",
                     GameDescription = "A car game.",
-                    GameTags = "Car, fast",
                     MainGameId = null
                 },
                 new Game
@@ -35,7 +33,6 @@ public static class DbInitializer
                     GameId = 3,
                     GameName = "Call Of Duty",
                     GameDescription = "Shooter game",
-                    GameTags = "gun",
                     MainGameId = "Awakeing"
 
                 },
@@ -44,7 +41,6 @@ public static class DbInitializer
                     GameId = 4,
                     GameName = "Fifa",
                     GameDescription = "football game",
-                    GameTags = "Football, ball",
                     MainGameId = null
 
                 },
@@ -53,7 +49,6 @@ public static class DbInitializer
                    GameId = 5,
                    GameName = "Battlefield",
                    GameDescription = "war game",
-                   GameTags = "War, gun, violence",
                    MainGameId = null
 
                 },
@@ -62,7 +57,6 @@ public static class DbInitializer
                    GameId = 6,
                    GameName = "Just dance",
                    GameDescription = "Dance music",
-                   GameTags = "Dance, music",
                    MainGameId = "More songs"
 
                 },
@@ -71,7 +65,6 @@ public static class DbInitializer
                    GameId = 7,
                    GameName = "League of Legends",
                    GameDescription = "Lol",
-                   GameTags = "Champion, monster",
                    MainGameId = "More champions"
                 },
                 new Game
@@ -79,7 +72,6 @@ public static class DbInitializer
                    GameId = 8,
                    GameName = "Valorant",
                    GameDescription = "war game",
-                   GameTags = "war, fantasy",
                    MainGameId = null
 
                 },
@@ -88,7 +80,6 @@ public static class DbInitializer
                    GameId = 9,
                    GameName = "Minecraft",
                    GameDescription = "cube game",
-                   GameTags = "cube, pixel",
                    MainGameId = null
 
                 },
@@ -97,7 +88,6 @@ public static class DbInitializer
                    GameId = 10,
                    GameName = "Rocket League",
                    GameDescription = "car football game",
-                   GameTags = "Football, car",
                    MainGameId = "More car"
 
                 },

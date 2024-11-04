@@ -7,6 +7,9 @@
         <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-primary">
             Back to Library
         </button>
+        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addGameModal">
+            Add New Game
+        </button>
     </div>
 
     <table class="table table-striped">
@@ -27,5 +30,34 @@
                 </tr>
             }
         </tbody>
+
     </table>
+</div>
+<!-- Modal for Adding New Game -->
+<div class="modal fade" id="addGameModal" tabindex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addGameModalLabel">Add New Game</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddGame" asp-controller="Games" method="post">
+                    <div class="mb-3">
+                        <label for="gameName" class="form-label">Game Name</label>
+                        <input type="text" class="form-control" id="gameName" name="GameName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gameDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="gameDescription" name="GameDescription" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mainGameId" class="form-label">DLC (if any)</label>
+                        <input type="text" class="form-control" id="mainGameId" name="MainGameId">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Game</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

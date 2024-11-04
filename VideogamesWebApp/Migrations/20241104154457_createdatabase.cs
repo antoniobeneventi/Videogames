@@ -19,7 +19,6 @@ namespace VideogamesWebApp.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     GameName = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     GameDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    GameTags = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     MainGameId = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true)
                 },
                 constraints: table =>

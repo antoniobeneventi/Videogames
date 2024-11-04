@@ -13,8 +13,7 @@ public class Game
     [MaxLength(50)]
     public string GameDescription { get; set; }
 
-    [MaxLength(50)]
-    public string GameTags { get; set; }
+
 
     [MaxLength(30)]
     public string? MainGameId { get; set; }

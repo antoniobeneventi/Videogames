@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241031153923_createdatabase")]
+    [Migration("20241104154457_createdatabase")]
     partial class createdatabase
     {
         /// <inheritdoc />
@@ -34,11 +34,6 @@ namespace VideogamesWebApp.Migrations
                     b.Property<string>("GameName")
                         .IsRequired()
                         .HasMaxLength(25)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GameTags")
-                        .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MainGameId")
