@@ -74,31 +74,8 @@ public class GamesController : Controller
         return View("~/Views/Home/Index.cshtml", transactions);
     }
 
-    [HttpGet]
-    public JsonResult GetDLCsByGameId(int gameId)
-    {
-        var dlcs = _dbContext.Games
-            .Where(g => g.MainGameId == gameId.ToString()) // Convert int to string
-            .Select(dlc => new { dlc.GameId, dlc.GameName })
-            .ToList();
-
-        return Json(dlcs);
-    }
-
-    [HttpGet]
-    public JsonResult SearchGamesByName(string query)
-    {
-        var games = _dbContext.Games
-            .Where(g => g.GameName.Contains(query) && g.MainGameId == null) // Fetch only main games, not DLCs
-            .Select(g => new { g.GameId, g.GameName })
-            .ToList();
-
-        return Json(games);
-    }
-
-
     [HttpPost]
-    public IActionResult BuyGame(GamePurchaseViewModel model, List<int> DlcIds)
+    public IActionResult BuyGame(GamePurchaseViewModel model)
     {
         if (ModelState.IsValid)
         {
@@ -118,27 +95,6 @@ public class GamesController : Controller
             _dbContext.GameTransactions.Add(newTransaction);
             _dbContext.SaveChanges();
 
-            // Add transactions for each selected DLC
-            foreach (var dlcId in DlcIds)
-            {
-                var dlcTransaction = new GameTransactions
-                {
-                    GameId = dlcId,
-                    StoreId = model.StoreId,
-                    PlatformId = model.PlatformId,
-                    LauncherId = model.LauncherId,
-                    PurchaseDate = model.PurchaseDate,
-                    Price = model.Price,  // Optional: you may wish to adjust DLC price here
-                    IsVirtual = model.IsVirtual,
-                    UserId = GetUserId(),
-                    Notes = "DLC for " + model.GameId
-                };
-
-                _dbContext.GameTransactions.Add(dlcTransaction);
-            }
-
-            _dbContext.SaveChanges();
-
             TempData["SuccessMessage"] = "Purchase completed successfully.";
             return RedirectToAction("Index");
         }
@@ -146,6 +102,7 @@ public class GamesController : Controller
         TempData["ErrorMessage"] = "An error occurred during the purchase. Check the data entered.";
         return RedirectToAction("Index");
     }
+
 
     public IActionResult ViewAllGames()
     {

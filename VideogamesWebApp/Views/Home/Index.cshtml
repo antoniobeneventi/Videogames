@@ -158,11 +158,7 @@
                             <label for="notes" class="form-label">Notes</label>
                             <textarea class="form-control" id="notes" name="Notes" required></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="dlcSelect" class="form-label">Select DLCs</label>
-                            <select multiple class="form-control" id="dlcSelect" name="DlcIds">
-                            </select>
-                        </div>
+
                         <button type="submit" class="btn btn-primary">Confirm Purchase</button>
                     </form>
 
@@ -453,61 +449,6 @@
             setTimeout(() => {
                 errorMessage.style.display = "none";
             }, 3000);
-        }
-    });
-
-    document.getElementById('gameSearch').addEventListener('change', function () {
-        const gameId = document.getElementById('gameId').value;
-        fetch(`/Games/GetDLCs?gameId=${gameId}`)
-            .then(response => response.json())
-            .then(dlcOptions => {
-                const dlcSelect = document.getElementById('dlcSelect');
-                dlcSelect.innerHTML = ''; // Clear current options
-                dlcOptions.forEach(dlc => {
-                    const option = document.createElement('option');
-                    option.value = dlc.dlcId;
-                    option.textContent = dlc.dlcName;
-                    dlcSelect.appendChild(option);
-                });
-            });
-    });
-    document.getElementById('gameSearch').addEventListener('input', function () {
-        let gameName = this.value;
-
-        if (gameName.length >= 2) {
-            fetch(`/Games/SearchGamesByName?query=${encodeURIComponent(gameName)}`)
-                .then(response => response.json())
-                .then(games => {
-                    let resultsContainer = document.getElementById('gameSearchResults');
-                    resultsContainer.innerHTML = '';
-
-                    games.forEach(game => {
-                        let resultItem = document.createElement('div');
-                        resultItem.className = 'result-item';
-                        resultItem.textContent = game.GameName;
-                        resultItem.onclick = function () {
-                            document.getElementById('gameSearch').value = game.GameName;
-                            document.getElementById('gameId').value = game.GameId; // Store the selected game ID
-                            resultsContainer.innerHTML = '';
-
-                            // Fetch DLCs related to the selected game ID
-                            fetch(`/Games/GetDLCsByGameId?gameId=${game.GameId}`)
-                                .then(response => response.json())
-                                .then(dlcs => {
-                                    let dlcSelect = document.getElementById('dlcSelect');
-                                    dlcSelect.innerHTML = ''; // Clear previous DLC options
-
-                                    dlcs.forEach(dlc => {
-                                        let option = document.createElement('option');
-                                        option.value = dlc.GameId;
-                                        option.textContent = dlc.GameName;
-                                        dlcSelect.appendChild(option);
-                                    });
-                                });
-                        };
-                        resultsContainer.appendChild(resultItem);
-                    });
-                });
         }
     });
 
