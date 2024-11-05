@@ -5,6 +5,8 @@ namespace VideogamesWebApp.Models;
 public class GameTransactionsViewModel
 {
     public int GameId { get; set; }
+    public int TransactionId { get; set; }
+
     public string GameName { get; set; }
     public DateOnly PurchaseDate { get; set; }
     public decimal Price { get; set; }

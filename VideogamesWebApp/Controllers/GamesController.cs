@@ -26,6 +26,7 @@ public class GamesController : Controller
                                 where transaction.UserId == userId
                                 select new GameTransactionsViewModel
                                 {
+                                    TransactionId = transaction.TransactionId,
                                     GameId = transaction.GameId,
                                     GameName = game.GameName,
                                     PurchaseDate = transaction.PurchaseDate,
@@ -53,10 +54,7 @@ public class GamesController : Controller
         ViewData["Username"] = username;
 
 
-        //if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-        //{
-        //    return Json(transactions);
-        //}
+
 
         ViewData["searchQuery"] = searchQuery;
 
@@ -138,13 +136,24 @@ public class GamesController : Controller
     [HttpPost]
     public async Task<IActionResult> AddGame(string gameName, string gameDescription, string mainGameId)
     {
-        if (!string.IsNullOrWhiteSpace(gameName))
+        if (!string.IsNullOrWhiteSpace(gameName) && !string.IsNullOrWhiteSpace(gameDescription))
         {
+            var existingGame = _dbContext.Games
+                .FirstOrDefault(g => g.GameName.ToLower() == gameName.ToLower() &&
+                                     g.GameDescription.ToLower() == gameDescription.ToLower() &&
+                                     (g.MainGameId ?? "").ToLower() == (mainGameId ?? "").ToLower());
+
+            if (existingGame != null)
+            {
+                TempData["ErrorMessage"] = "A game with the same name, description, and DLC already exists. Please enter different details.";
+                return RedirectToAction("ViewAllGames");
+            }
+
             var game = new Game
             {
                 GameName = gameName,
                 GameDescription = gameDescription,
-                MainGameId = string.IsNullOrWhiteSpace(mainGameId) ? "" : mainGameId
+                MainGameId = string.IsNullOrWhiteSpace(mainGameId) ? null : mainGameId
             };
 
             _dbContext.Games.Add(game);
@@ -153,14 +162,25 @@ public class GamesController : Controller
             return RedirectToAction("ViewAllGames");
         }
 
+        TempData["ErrorMessage"] = "Game name and description cannot be empty.";
         return RedirectToAction("ViewAllGames");
     }
+
 
     [HttpPost]
     public IActionResult AddStore(string storeName, string storeDescription, string storeLink)
     {
         if (!string.IsNullOrWhiteSpace(storeName))
         {
+            // Check if the store name already exists in the database
+            var existingStore = _dbContext.Stores.FirstOrDefault(s => s.StoreName == storeName);
+            if (existingStore != null)
+            {
+                TempData["ErrorMessage"] = "Store with this name already exists. Please enter a different name.";
+                return RedirectToAction("Index");
+            }
+
+            // Add the new store if it doesn't exist
             var newStore = new Stores
             {
                 StoreName = storeName,
@@ -172,34 +192,67 @@ public class GamesController : Controller
             _dbContext.SaveChanges();
             TempData["SuccessMessage"] = "Store created successfully";
         }
-
-        return RedirectToAction("Index");
-    }
-
-    [HttpPost]
-    public IActionResult AddPlatform(string platformName, string platformDescription, string platformLink)
-    {
-        if (!string.IsNullOrWhiteSpace(platformName))
+        else
         {
-            var newPlatform = new Platforms
-            {
-                PlatformName = platformName,
-                PlatformDescription = platformDescription,
-            };
-
-            _dbContext.Platforms.Add(newPlatform);
-            _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Platform  created successfully";
+            TempData["ErrorMessage"] = "Store name cannot be empty.";
         }
 
         return RedirectToAction("Index");
     }
+
+
+
+    [HttpPost]
+    public IActionResult AddPlatform(string platformName, string platformDescription)
+    {
+        if (!string.IsNullOrWhiteSpace(platformName))
+        {
+            // Case-insensitive check for existing platform
+            var existingPlatform = _dbContext.Platforms
+                .FirstOrDefault(p => p.PlatformName.ToLower() == platformName.ToLower());
+
+            if (existingPlatform != null)
+            {
+                TempData["ErrorMessage"] = "A platform with this name already exists. Please enter a different name.";
+                return RedirectToAction("Index");
+            }
+
+            // Add the new platform if it doesn't exist
+            var newPlatform = new Platforms
+            {
+                PlatformName = platformName,
+                PlatformDescription = platformDescription
+            };
+
+            _dbContext.Platforms.Add(newPlatform);
+            _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = "Platform created successfully.";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Platform name cannot be empty.";
+        }
+
+        return RedirectToAction("Index");
+    }
+
 
     [HttpPost]
     public IActionResult AddLauncher(string launcherName, string launcherDescription, string link)
     {
         if (!string.IsNullOrWhiteSpace(launcherName))
         {
+            // Case-insensitive check for existing launcher
+            var existingLauncher = _dbContext.Launchers
+                .FirstOrDefault(l => l.LauncherName.ToLower() == launcherName.ToLower());
+
+            if (existingLauncher != null)
+            {
+                TempData["ErrorMessage"] = "A launcher with this name already exists. Please enter a different name.";
+                return RedirectToAction("Index");
+            }
+
+            // Add the new launcher if it doesn't exist
             var newLauncher = new Launcher
             {
                 LauncherName = launcherName,
@@ -209,29 +262,35 @@ public class GamesController : Controller
 
             _dbContext.Launchers.Add(newLauncher);
             _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Launcher  created successfully";
-        }
-
-        return RedirectToAction("Index");
-    }
-
-    [HttpPost]
-    public IActionResult DeleteGame(int gameId)
-    {
-        var transaction = _dbContext.GameTransactions.FirstOrDefault(t => t.GameId == gameId && t.UserId == GetUserId());
-        if (transaction != null)
-        {
-            _dbContext.GameTransactions.Remove(transaction);
-            _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Game deleted successfully.";
+            TempData["SuccessMessage"] = "Launcher created successfully.";
         }
         else
         {
-            TempData["ErrorMessage"] = "Game not found.";
+            TempData["ErrorMessage"] = "Launcher name cannot be empty.";
         }
 
         return RedirectToAction("Index");
     }
+
+
+    [HttpPost]
+    public IActionResult DeleteGame(int transactionId)
+    {
+        var transaction = _dbContext.GameTransactions.SingleOrDefault(t => t.TransactionId == transactionId);
+
+        if (transaction == null)
+        {
+            TempData["ErrorMessage"] = "Transaction not found or already deleted.";
+            return RedirectToAction("Index");
+        }
+
+        _dbContext.GameTransactions.Remove(transaction);
+        _dbContext.SaveChanges();
+
+        TempData["SuccessMessage"] = "Game deleted successfully.";
+        return RedirectToAction("Index");
+    }
+
 
 
 

@@ -98,72 +98,7 @@ public static class DbInitializer
             context.Games.AddRange(games);
         }
 
-        if (!context.GameTransactions.Any())
-        {
-            var transactions = new GameTransactions[]
-            {
-                new GameTransactions
-                {
-                    TransactionId = 1,
-                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today),
-                    IsVirtual = true,
-                    StoreId = 2,
-                    PlatformId = 2,
-                    GameId = 1,
-                    Price = 80,
-                    Notes = "First transaction",
-                    LauncherId = 4,
-                    UserId = 1
-
-                },
-                new GameTransactions
-                {
-                    TransactionId = 2,
-                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-5)),
-                    IsVirtual = false,
-                    StoreId = 3,
-                    PlatformId = 1,
-                    GameId = 2,
-                    Price = 70,
-                    Notes = "Second transaction",
-                    LauncherId = 3,
-                    UserId = 2
-
-                },
-                 new GameTransactions
-                {
-                    TransactionId = 3,
-                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-25)),
-                    IsVirtual = false,
-                    StoreId = 1,
-                    PlatformId = 3,
-                    GameId = 3,
-                    Price = 100,
-                    Notes = "Second transaction",
-                    LauncherId = 2,
-                    UserId = 2
-
-                },
-                  new GameTransactions
-                {
-                    TransactionId = 4,
-                    PurchaseDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-10)),
-                    IsVirtual = false,
-                    StoreId = 4,
-                    PlatformId = 4,
-                    GameId = 4,
-                    Price = 90,
-                    Notes = "Second transaction",
-                    LauncherId = 1,
-                    UserId = 1
-
-
-                }
-            };
-
-            context.GameTransactions.AddRange(transactions);
-        }
-
+       
         if (!context.Stores.Any())
         {
             var stores = new Stores[]
