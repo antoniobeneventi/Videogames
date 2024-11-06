@@ -191,8 +191,7 @@ public class GamesController : Controller
             var existingStore = _dbContext.Stores.FirstOrDefault(s => s.StoreName == storeName);
             if (existingStore != null)
             {
-                TempData["ErrorMessage"] = "Store with this name already exists. Please enter a different name.";
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "Store with this name already exists. Please enter a different name." });
             }
 
             var newStore = new Stores
@@ -204,49 +203,12 @@ public class GamesController : Controller
 
             _dbContext.Stores.Add(newStore);
             _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Store created successfully";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "Store name cannot be empty.";
+            return Json(new { success = true, storeId = newStore.StoreId, storeName = newStore.StoreName });
         }
 
-        return RedirectToAction("Index");
+        return Json(new { success = false, message = "Store name cannot be empty." });
     }
 
-
-
-    [HttpPost]
-    public IActionResult AddPlatform(string platformName, string platformDescription)
-    {
-        if (!string.IsNullOrWhiteSpace(platformName))
-        {
-            var existingPlatform = _dbContext.Platforms
-                .FirstOrDefault(p => p.PlatformName.ToLower() == platformName.ToLower());
-
-            if (existingPlatform != null)
-            {
-                TempData["ErrorMessage"] = "A platform with this name already exists. Please enter a different name.";
-                return RedirectToAction("Index");
-            }
-
-            var newPlatform = new Platforms
-            {
-                PlatformName = platformName,
-                PlatformDescription = platformDescription
-            };
-
-            _dbContext.Platforms.Add(newPlatform);
-            _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Platform created successfully.";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "Platform name cannot be empty.";
-        }
-
-        return RedirectToAction("Index");
-    }
 
 
     [HttpPost]
@@ -259,8 +221,7 @@ public class GamesController : Controller
 
             if (existingLauncher != null)
             {
-                TempData["ErrorMessage"] = "A launcher with this name already exists. Please enter a different name.";
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "A launcher with this name already exists. Please enter a different name." });
             }
 
             var newLauncher = new Launcher
@@ -272,16 +233,38 @@ public class GamesController : Controller
 
             _dbContext.Launchers.Add(newLauncher);
             _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Launcher created successfully.";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "Launcher name cannot be empty.";
+            return Json(new { success = true, launcherId = newLauncher.LauncherId, launcherName = newLauncher.LauncherName });
         }
 
-        return RedirectToAction("Index");
+        return Json(new { success = false, message = "Launcher name cannot be empty." });
     }
 
+    [HttpPost]
+    public IActionResult AddPlatform(string platformName, string platformDescription)
+    {
+        if (!string.IsNullOrWhiteSpace(platformName))
+        {
+            var existingPlatform = _dbContext.Platforms
+                .FirstOrDefault(p => p.PlatformName.ToLower() == platformName.ToLower());
+
+            if (existingPlatform != null)
+            {
+                return Json(new { success = false, message = "A platform with this name already exists. Please enter a different name." });
+            }
+
+            var newPlatform = new Platforms
+            {
+                PlatformName = platformName,
+                PlatformDescription = platformDescription
+            };
+
+            _dbContext.Platforms.Add(newPlatform);
+            _dbContext.SaveChanges();
+            return Json(new { success = true, platformId = newPlatform.PlatformId, platformName = newPlatform.PlatformName });
+        }
+
+        return Json(new { success = false, message = "Platform name cannot be empty." });
+    }
 
     [HttpPost]
     public IActionResult DeleteGame(int transactionId)

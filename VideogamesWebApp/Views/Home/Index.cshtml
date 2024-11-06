@@ -310,9 +310,9 @@
 
 <script>
 
-    // Funzione per mostrare o nascondere l'errore
-    function showError(inputElement, errorElement, isValid) {
+    function showError(inputElement, errorElement, isValid, customMessage = '', buttonHtml = '') {
         if (!isValid) {
+            errorElement.innerHTML = `${customMessage} ${buttonHtml}`;
             errorElement.style.display = 'block';
             inputElement.classList.add('is-invalid');
         } else {
@@ -320,6 +320,162 @@
             inputElement.classList.remove('is-invalid');
         }
     }
+
+    function validateForm() {
+        let isValid = true;
+
+        // Valida Game
+        if (!gameSelected.value) {
+            const gameButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddGameModal()">Add New Game</button>';
+            showError(
+                gameSearch,
+                document.getElementById('gameSearchError'),
+                false,
+                "Please enter a valid game or add it if you want",
+                gameButton
+            );
+            isValid = false;
+        }
+
+        // Valida Store
+        if (!storeSelected.value) {
+            const storeButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal()">Add New Store</button>';
+            showError(
+                storeSearch,
+                document.getElementById('storeSearchError'),
+                false,
+                "Please enter a valid store or add it if you want",
+                storeButton
+            );
+            isValid = false;
+        }
+
+        // Valida Platform
+        if (!platformSelected.value) {
+            const platformButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddPlatformModal()">Add New Platform</button>';
+            showError(
+                platformSearch,
+                document.getElementById('platformSearchError'),
+                false,
+                "Please enter a valid platform or add it if you want",
+                platformButton
+            );
+            isValid = false;
+        }
+
+        // Valida Launcher
+        if (!launcherSelected.value) {
+            const launcherButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddLauncherModal()">Add New Launcher</button>';
+            showError(
+                launcherSearch,
+                document.getElementById('launcherSearchError'),
+                false,
+                "Please enter a valid launcher or add it if you want",
+                launcherButton
+            );
+            isValid = false;
+        }
+
+        return isValid;
+    }
+    function openAddStoreModal() {
+        let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
+        buyGameModal.hide();
+        let storeModal = new bootstrap.Modal(document.getElementById('addStoreModal'));
+        storeModal.show();
+    }
+
+    function openAddPlatformModal() {
+        let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
+        buyGameModal.hide();
+        let platformModal = new bootstrap.Modal(document.getElementById('addPlatformModal'));
+        platformModal.show();
+    }
+
+    function openAddLauncherModal() {
+        let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
+        buyGameModal.hide();
+        let launcherModal = new bootstrap.Modal(document.getElementById('addLauncherModal'));
+        launcherModal.show();
+    }
+
+    // Aggiungi le funzioni per gestire l'invio dei form in modo asincrono
+    function handleFormSubmit(formId, url, updateFunction) {
+        document.getElementById(formId).addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateFunction(data);
+                        // Chiudi il modale corrente
+                        bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal')).hide();
+                        // Riapri il modale di acquisto
+                        let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+                        buyGameModal.show();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    }
+
+    // Funzioni per aggiornare i campi nel modale di acquisto
+    function updateStoreField(data) {
+        document.getElementById('storeSearch').value = data.storeName;
+        document.getElementById('storeId').value = data.storeId;
+        storeSelected.value = true;
+        showError(storeSearch, document.getElementById('storeSearchError'), true);
+    }
+
+    function updatePlatformField(data) {
+        document.getElementById('platformSearch').value = data.platformName;
+        document.getElementById('platformId').value = data.platformId;
+        platformSelected.value = true;
+        showError(platformSearch, document.getElementById('platformSearchError'), true);
+    }
+
+    function updateLauncherField(data) {
+        document.getElementById('launcherSearch').value = data.launcherName;
+        document.getElementById('launcherId').value = data.launcherId;
+        launcherSelected.value = true;
+        showError(launcherSearch, document.getElementById('launcherSearchError'), true);
+    }
+
+    // Aggiungi gli event listener per i form quando il documento è caricato
+    document.addEventListener('DOMContentLoaded', function () {
+        handleFormSubmit('addStoreForm', '/Games/AddStore', updateStoreField);
+        handleFormSubmit('addPlatformForm', '/Games/AddPlatform', updatePlatformField);
+        handleFormSubmit('addLauncherForm', '/Games/AddLauncher', updateLauncherField);
+    });
+
+    document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function (e) {
+        // Controlla se stiamo aprendo un altro modal
+        if (!document.querySelector('.modal.show')) {
+            gameSearch.value = '';
+            storeSearch.value = '';
+            platformSearch.value = '';
+            launcherSearch.value = '';
+
+            gameId.value = '';
+            storeId.value = '';
+            platformId.value = '';
+            launcherId.value = '';
+        }
+    });
+
+    // Aggiungi un event listener al form per la validazione prima dell'invio
+    document.getElementById('buyGameForm').addEventListener('submit', function (event) {
+        if (!validateForm()) {
+            event.preventDefault(); // Previene l'invio del form se non è valido
+        }
+    });
 
     // Funzione per gestire la selezione di un suggerimento
     function selectSuggestion(inputElement, hiddenInputElement, selectedItem, flagRef, errorElement) {
@@ -366,11 +522,7 @@
         }
     });
 
-    gameSearch.addEventListener('blur', function () {
-        setTimeout(() => {
-            showError(gameSearch, document.getElementById('gameSearchError'), gameSelected.value);
-        }, 100);
-    });
+
     // Store Search
     const storeSelected = { value: false };
     storeSearch.addEventListener('input', function () {
@@ -402,11 +554,7 @@
         }
     });
 
-    storeSearch.addEventListener('blur', function () {
-        setTimeout(() => {
-            showError(storeSearch, document.getElementById('storeSearchError'), storeSelected.value);
-        }, 100);
-    });
+
 
 
 
@@ -441,11 +589,7 @@
         }
     });
 
-    platformSearch.addEventListener('blur', function () {
-        setTimeout(() => {
-            showError(platformSearch, document.getElementById('platformSearchError'), platformSelected.value);
-        }, 100);
-    });
+
 
 
     // Launcher Search
@@ -477,12 +621,6 @@
         } else {
             launcherSearchResults.style.display = 'none';
         }
-    });
-
-    launcherSearch.addEventListener('blur', function () {
-        setTimeout(() => {
-            showError(launcherSearch, document.getElementById('launcherSearchError'), launcherSelected.value);
-        }, 100);
     });
 
 
