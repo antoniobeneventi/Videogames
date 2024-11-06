@@ -279,7 +279,7 @@
                 <th scope="col">Store Name</th>
                 <th scope="col">Platform Name</th>
                 <th scope="col">Launcher Name</th>
-                <th scope="col">DLC</th>
+                <th scope="col">Main Game</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -289,22 +289,22 @@
                 <tr>
                     <td><strong>@transaction.GameName</strong></td>
                     <td>@transaction.PurchaseDate.ToString("dd/MM/yyyy")</td>
-                    <td>@transaction.Price.ToString("C")</td>
+                    <td>@transaction.Price.ToString("C", new System.Globalization.CultureInfo("it-IT"))</td>
                     <td>@(transaction.IsVirtual ? "Yes" : "No")</td>
                     <td>@transaction.StoreName</td>
                     <td>@transaction.PlatformName</td>
                     <td>@transaction.LauncherName</td>
-                    <td>@(transaction.MainGameId?.ToString() ?? "-")</td>
+                    <td>@(transaction.MainGameName ?? "-")</td>
                     <td>
                         <form asp-action="DeleteGame" asp-controller="Games" method="post" style="display:inline;">
                             <input type="hidden" name="transactionId" value="@transaction.TransactionId" />
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this game?');">Delete Game</button>
                         </form>
                     </td>
-
                 </tr>
             }
         </tbody>
+
     </table>
 </div>
 

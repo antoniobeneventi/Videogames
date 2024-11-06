@@ -16,5 +16,6 @@ public class GameTransactionsViewModel
     public string LauncherName { get; set; }
     public int? MainGameId { get; set; }
 
+    public string MainGameName { get; set; }
 
 }
