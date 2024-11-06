@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VideogamesWebApp.Models;
 
@@ -13,10 +14,9 @@ public class Game
     [MaxLength(50)]
     public string GameDescription { get; set; }
 
+    public int? MainGameId { get; set; }
 
-
-    [MaxLength(30)]
-    public string? MainGameId { get; set; }
-
+    [ForeignKey("MainGameId")]
+    public Game MainGame { get; set; }
 }
 

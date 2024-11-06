@@ -101,11 +101,13 @@
                 </div>
                 <div class="modal-body">
                     <form asp-action="BuyGame" asp-controller="Games" method="post" id="buyGameForm">
+
                         <div class="mb-3">
                             <label for="gameSearch">Game Name</label>
                             <div class="search-container">
                                 <input type="text" class="form-control" id="gameSearch" placeholder="Start typing to search for a game...">
                                 <div id="gameSearchResults" class="search-results"></div>
+                                <div class="invalid-feedback" id="gameSearchError">Please select a valid game.</div>
                             </div>
                             <input type="hidden" id="gameId" name="GameId">
                         </div>
@@ -113,8 +115,12 @@
                         <div class="mb-3">
                             <label for="storeSearch">Store</label>
                             <div class="search-container">
-                                <input type="text" class="form-control" id="storeSearch" placeholder="Start typing to search for a store...">
+                                <input type="text" class="form-control" id="storeSearch" required placeholder="Start typing to search for a store...">
                                 <div id="storeSearchResults" class="search-results"></div>
+                                <div class="invalid-feedback" id="storeSearchError">
+                                    Please select a valid store.
+                                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal()">Add New Store</button>
+                                </div>
                             </div>
                             <input type="hidden" id="storeId" name="StoreId">
                         </div>
@@ -124,6 +130,10 @@
                             <div class="search-container">
                                 <input type="text" class="form-control" id="platformSearch" placeholder="Start typing to search for a platform...">
                                 <div id="platformSearchResults" class="search-results"></div>
+                                <div class="invalid-feedback" id="platformSearchError">
+                                    Please select a valid platform.
+                                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddPlatformModal()">Add New Platform</button>
+                                </div>
                             </div>
                             <input type="hidden" id="platformId" name="PlatformId">
                         </div>
@@ -133,9 +143,15 @@
                             <div class="search-container">
                                 <input type="text" class="form-control" id="launcherSearch" placeholder="Start typing to search for a launcher...">
                                 <div id="launcherSearchResults" class="search-results"></div>
+                                <div class="invalid-feedback" id="launcherSearchError">
+                                    Please select a valid launcher.
+                                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddLauncherModal()">Add New Launcher</button>
+                                </div>
                             </div>
                             <input type="hidden" id="launcherId" name="LauncherId">
                         </div>
+
+
 
                         <div class="mb-3">
                             <label for="purchaseDate" class="form-label">Purchase Date</label>
@@ -278,7 +294,7 @@
                     <td>@transaction.StoreName</td>
                     <td>@transaction.PlatformName</td>
                     <td>@transaction.LauncherName</td>
-                    <td>@(string.IsNullOrEmpty(transaction.MainGameId) ? "-" : transaction.MainGameId)</td>
+                    <td>@(transaction.MainGameId?.ToString() ?? "-")</td>
                     <td>
                         <form asp-action="DeleteGame" asp-controller="Games" method="post" style="display:inline;">
                             <input type="hidden" name="transactionId" value="@transaction.TransactionId" />
@@ -294,7 +310,32 @@
 
 <script>
 
+    // Funzione per mostrare o nascondere l'errore
+    function showError(inputElement, errorElement, isValid) {
+        if (!isValid) {
+            errorElement.style.display = 'block';
+            inputElement.classList.add('is-invalid');
+        } else {
+            errorElement.style.display = 'none';
+            inputElement.classList.remove('is-invalid');
+        }
+    }
+
+    // Funzione per gestire la selezione di un suggerimento
+    function selectSuggestion(inputElement, hiddenInputElement, selectedItem, flagRef, errorElement) {
+        inputElement.value = selectedItem.textContent;
+        hiddenInputElement.value = selectedItem.dataset.id;
+        flagRef.value = true; // Aggiorna il flag di selezione
+        showError(inputElement, errorElement, true); // Nascondi errore se selezionato
+        document.querySelectorAll('.search-results').forEach(results => {
+            results.style.display = 'none';
+        });
+    }
+
+
+    const gameSelected = { value: false }; // Flag come oggetto
     gameSearch.addEventListener('input', function () {
+        gameSelected.value = false; // Resetta il flag
         const searchQuery = this.value.trim().toLowerCase();
         if (searchQuery.length > 0) {
             fetch(`/Games/SearchGames?query=${encodeURIComponent(searchQuery)}`)
@@ -306,11 +347,13 @@
                             const div = document.createElement('div');
                             div.className = 'search-result-item';
                             div.textContent = game.gameName;
-                            div.addEventListener('click', () => {
-                                gameSearch.value = game.gameName;
-                                gameId.value = game.gameId;
-                                gameSearchResults.style.display = 'none';
+                            div.dataset.id = game.gameId;
+
+                            // Usa mousedown per impostare il flag prima del blur
+                            div.addEventListener('mousedown', () => {
+                                selectSuggestion(gameSearch, gameId, div, gameSelected, document.getElementById('gameSearchError'));
                             });
+
                             gameSearchResults.appendChild(div);
                         });
                         gameSearchResults.style.display = 'block';
@@ -322,8 +365,16 @@
             gameSearchResults.style.display = 'none';
         }
     });
-    // Store search
+
+    gameSearch.addEventListener('blur', function () {
+        setTimeout(() => {
+            showError(gameSearch, document.getElementById('gameSearchError'), gameSelected.value);
+        }, 100);
+    });
+    // Store Search
+    const storeSelected = { value: false };
     storeSearch.addEventListener('input', function () {
+        storeSelected.value = false;
         const searchQuery = this.value.trim().toLowerCase();
         if (searchQuery.length > 0) {
             fetch(`/Games/SearchStores?query=${encodeURIComponent(searchQuery)}`)
@@ -335,10 +386,9 @@
                             const div = document.createElement('div');
                             div.className = 'search-result-item';
                             div.textContent = store.storeName;
-                            div.addEventListener('click', () => {
-                                storeSearch.value = store.storeName;
-                                storeId.value = store.storeId;
-                                storeSearchResults.style.display = 'none';
+                            div.dataset.id = store.storeId;
+                            div.addEventListener('mousedown', () => {
+                                selectSuggestion(storeSearch, storeId, div, storeSelected, document.getElementById('storeSearchError'));
                             });
                             storeSearchResults.appendChild(div);
                         });
@@ -352,8 +402,18 @@
         }
     });
 
-    // Platform search
+    storeSearch.addEventListener('blur', function () {
+        setTimeout(() => {
+            showError(storeSearch, document.getElementById('storeSearchError'), storeSelected.value);
+        }, 100);
+    });
+
+
+
+    // Platform Search
+    const platformSelected = { value: false };
     platformSearch.addEventListener('input', function () {
+        platformSelected.value = false;
         const searchQuery = this.value.trim().toLowerCase();
         if (searchQuery.length > 0) {
             fetch(`/Games/SearchPlatforms?query=${encodeURIComponent(searchQuery)}`)
@@ -365,10 +425,9 @@
                             const div = document.createElement('div');
                             div.className = 'search-result-item';
                             div.textContent = platform.platformName;
-                            div.addEventListener('click', () => {
-                                platformSearch.value = platform.platformName;
-                                platformId.value = platform.platformId;
-                                platformSearchResults.style.display = 'none';
+                            div.dataset.id = platform.platformId;
+                            div.addEventListener('mousedown', () => {
+                                selectSuggestion(platformSearch, platformId, div, platformSelected, document.getElementById('platformSearchError'));
                             });
                             platformSearchResults.appendChild(div);
                         });
@@ -382,8 +441,17 @@
         }
     });
 
-    // Launcher search
+    platformSearch.addEventListener('blur', function () {
+        setTimeout(() => {
+            showError(platformSearch, document.getElementById('platformSearchError'), platformSelected.value);
+        }, 100);
+    });
+
+
+    // Launcher Search
+    const launcherSelected = { value: false };
     launcherSearch.addEventListener('input', function () {
+        launcherSelected.value = false;
         const searchQuery = this.value.trim().toLowerCase();
         if (searchQuery.length > 0) {
             fetch(`/Games/SearchLaunchers?query=${encodeURIComponent(searchQuery)}`)
@@ -395,10 +463,9 @@
                             const div = document.createElement('div');
                             div.className = 'search-result-item';
                             div.textContent = launcher.launcherName;
-                            div.addEventListener('click', () => {
-                                launcherSearch.value = launcher.launcherName;
-                                launcherId.value = launcher.launcherId;
-                                launcherSearchResults.style.display = 'none';
+                            div.dataset.id = launcher.launcherId;
+                            div.addEventListener('mousedown', () => {
+                                selectSuggestion(launcherSearch, launcherId, div, launcherSelected, document.getElementById('launcherSearchError'));
                             });
                             launcherSearchResults.appendChild(div);
                         });
@@ -412,7 +479,14 @@
         }
     });
 
-    // Close search results when clicking outside
+    launcherSearch.addEventListener('blur', function () {
+        setTimeout(() => {
+            showError(launcherSearch, document.getElementById('launcherSearchError'), launcherSelected.value);
+        }, 100);
+    });
+
+
+
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.search-container')) {
             document.querySelectorAll('.search-results').forEach(results => {
