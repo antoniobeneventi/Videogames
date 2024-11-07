@@ -23,7 +23,7 @@ public class GamesController : Controller
                                 join platform in _dbContext.Platforms on transaction.PlatformId equals platform.PlatformId
                                 join launcher in _dbContext.Launchers on transaction.LauncherId equals launcher.LauncherId
                                 join mainGame in _dbContext.Games on game.MainGameId equals mainGame.GameId into mainGames
-                                from mainGame in mainGames.DefaultIfEmpty() // Left join
+                                from mainGame in mainGames.DefaultIfEmpty() 
                                 where transaction.UserId == userId
                                 select new GameTransactionsViewModel
                                 {
@@ -37,17 +37,18 @@ public class GamesController : Controller
                                     PlatformName = platform.PlatformName,
                                     LauncherName = launcher.LauncherName,
                                     MainGameId = game.MainGameId,
-                                    MainGameName = mainGame != null ? mainGame.GameName : null 
+                                    MainGameName = mainGame != null ? mainGame.GameName : null
                                 };
 
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
+            searchQuery = searchQuery.ToLower();
             transactionsQuery = transactionsQuery.Where(t =>
-                t.GameName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                t.StoreName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                t.PlatformName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                t.LauncherName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-                (t.MainGameName != null && t.MainGameName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                t.GameName.ToLower().Contains(searchQuery) ||
+                t.StoreName.ToLower().Contains(searchQuery) ||
+                t.PlatformName.ToLower().Contains(searchQuery) ||
+                t.LauncherName.ToLower().Contains(searchQuery) ||
+                (t.MainGameName != null && t.MainGameName.ToLower().Contains(searchQuery))
             );
         }
 
@@ -71,7 +72,6 @@ public class GamesController : Controller
 
         return View("~/Views/Home/Index.cshtml", transactions);
     }
-
 
     [HttpPost]
     public IActionResult BuyGame(GamePurchaseViewModel model)
@@ -105,10 +105,9 @@ public class GamesController : Controller
 
     public IActionResult ViewAllGames(int pageNumber = 1)
 {
-    int pageSize = 10; // Number of games per page
+    int pageSize = 10; 
     var username = GetUsername();
 
-    // Query with pagination
     var allGamesQuery = _dbContext.Games
                             .Include(g => g.MainGame)
                             .Select(game => new GameViewModel
@@ -203,40 +202,10 @@ public class GamesController : Controller
 
             _dbContext.Stores.Add(newStore);
             _dbContext.SaveChanges();
-            return Json(new { success = true, storeId = newStore.StoreId, storeName = newStore.StoreName });
+            return Json(new { success = true, storeId = newStore.StoreId, storeName = newStore.StoreName, message = "Store added successfully!" });
         }
 
         return Json(new { success = false, message = "Store name cannot be empty." });
-    }
-
-
-
-    [HttpPost]
-    public IActionResult AddLauncher(string launcherName, string launcherDescription, string link)
-    {
-        if (!string.IsNullOrWhiteSpace(launcherName))
-        {
-            var existingLauncher = _dbContext.Launchers
-                .FirstOrDefault(l => l.LauncherName.ToLower() == launcherName.ToLower());
-
-            if (existingLauncher != null)
-            {
-                return Json(new { success = false, message = "A launcher with this name already exists. Please enter a different name." });
-            }
-
-            var newLauncher = new Launcher
-            {
-                LauncherName = launcherName,
-                LauncherDescription = launcherDescription,
-                Link = link
-            };
-
-            _dbContext.Launchers.Add(newLauncher);
-            _dbContext.SaveChanges();
-            return Json(new { success = true, launcherId = newLauncher.LauncherId, launcherName = newLauncher.LauncherName });
-        }
-
-        return Json(new { success = false, message = "Launcher name cannot be empty." });
     }
 
     [HttpPost]
@@ -260,10 +229,38 @@ public class GamesController : Controller
 
             _dbContext.Platforms.Add(newPlatform);
             _dbContext.SaveChanges();
-            return Json(new { success = true, platformId = newPlatform.PlatformId, platformName = newPlatform.PlatformName });
+            return Json(new { success = true, platformId = newPlatform.PlatformId, platformName = newPlatform.PlatformName, message = "Platform added successfully!" });
         }
 
         return Json(new { success = false, message = "Platform name cannot be empty." });
+    }
+
+    [HttpPost]
+    public IActionResult AddLauncher(string launcherName, string launcherDescription, string link)
+    {
+        if (!string.IsNullOrWhiteSpace(launcherName))
+        {
+            var existingLauncher = _dbContext.Launchers
+                .FirstOrDefault(l => l.LauncherName.ToLower() == launcherName.ToLower());
+
+            if (existingLauncher != null)
+            {
+                return Json(new { success = false, message = "A launcher with this name already exists. Please enter a different name." });
+            }
+
+            var newLauncher = new Launcher
+            {
+                LauncherName = launcherName,
+                LauncherDescription = launcherDescription,
+                Link = link
+            };
+
+            _dbContext.Launchers.Add(newLauncher);
+            _dbContext.SaveChanges();
+            return Json(new { success = true, launcherId = newLauncher.LauncherId, launcherName = newLauncher.LauncherName, message = "Launcher added successfully!" });
+        }
+
+        return Json(new { success = false, message = "Launcher name cannot be empty." });
     }
 
     [HttpPost]

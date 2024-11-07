@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241106110023_createdatabase")]
+    [Migration("20241107113613_createdatabase")]
     partial class createdatabase
     {
         /// <inheritdoc />
