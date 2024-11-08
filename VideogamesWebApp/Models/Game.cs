@@ -18,5 +18,7 @@ public class Game
 
     [ForeignKey("MainGameId")]
     public Game MainGame { get; set; }
+
+
 }
 
