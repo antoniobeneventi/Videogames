@@ -338,13 +338,18 @@
 </div>
 
 <script>
+    //flag per l'errore del bottone
+    let fromStoreErrorButton = false;
+    let fromPlatformErrorButton = false;
+    let fromLauncherErrorButton = false; 
+
 
     function showError(inputElement, errorElement, isValid, customMessage = '', buttonHtml = '') {
         if (!isValid) {
             errorElement.innerHTML = `
-                            <div class="error-message">${customMessage}</div>
-                            ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
-                        `;
+                                        <div class="error-message">${customMessage}</div>
+                                        ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
+                                    `;
             errorElement.style.display = 'block';
             inputElement.classList.add('is-invalid');
         } else {
@@ -395,19 +400,23 @@
         let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
         buyGameModal.hide();
 
-        // Precompila il campo "storeName" nel modal di aggiunta
+        fromStoreErrorButton = true;
+
         document.getElementById('storeName').value = storeName;
 
         let storeModal = new bootstrap.Modal(document.getElementById('addStoreModal'));
         storeModal.show();
     }
 
+    // Modify the button click handler to set the flag for platform errors
     function openAddPlatformModal() {
         let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
         buyGameModal.hide();
 
-        // Pre-fill the field "platformName" in the add platform modal
         document.getElementById('platformName').value = platformSearch.value;
+
+        // Set the flag for platform error button
+        fromPlatformErrorButton = true;
 
         let platformModal = new bootstrap.Modal(document.getElementById('addPlatformModal'));
         platformModal.show();
@@ -417,8 +426,10 @@
         let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
         buyGameModal.hide();
 
-        // Pre-fill the field "launcherName" in the add launcher modal
         document.getElementById('launcherName').value = launcherSearch.value;
+
+        // Set the flag for launcher error button
+        fromLauncherErrorButton = true;
 
         let launcherModal = new bootstrap.Modal(document.getElementById('addLauncherModal'));
         launcherModal.show();
@@ -437,12 +448,38 @@
                 .then(data => {
                     if (data.success) {
                         if (formId === 'addStoreForm') {
-                            // Close the add store modal
                             let addStoreModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
                             addStoreModal.hide();
 
-                            // Open the buy game modal with the store name pre-filled
-                            openBuyGameModalWithStore(data.storeName, data.storeId); // Passa anche l'ID
+                            // Clear form data for addStoreForm after success
+                            document.getElementById(formId).reset();
+
+                            if (fromStoreErrorButton) {
+                                openBuyGameModalWithStore(data.storeName, data.storeId);
+                                fromStoreErrorButton = false;
+                            }
+                        } else if (formId === 'addPlatformForm') {
+                            let addPlatformModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
+                            addPlatformModal.hide();
+
+                            // Clear form data for addPlatformForm after success
+                            document.getElementById(formId).reset();
+
+                            if (fromPlatformErrorButton) {
+                                openBuyGameModalWithPlatform(data.platformName, data.platformId);
+                                fromPlatformErrorButton = false;
+                            }
+                        } else if (formId === 'addLauncherForm') {
+                            let addLauncherModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
+                            addLauncherModal.hide();
+
+                            // Clear form data for addLauncherForm after success
+                            document.getElementById(formId).reset();
+
+                            if (fromLauncherErrorButton) {
+                                openBuyGameModalWithLauncher(data.launcherName, data.launcherId);
+                                fromLauncherErrorButton = false;
+                            }
                         } else {
                             updateFunction(data);
                             if (closeModal) {
@@ -458,27 +495,61 @@
     }
 
 
-    function openBuyGameModalWithStore(storeName, storeId) {
-        // Nascondi il messaggio di errore e aggiorna lo stato di validità
-        const errorMessageElement = document.getElementById('storeSearchError');
-        errorMessageElement.style.display = 'none'; // Nascondi l'elemento di errore
-        errorMessageElement.innerHTML = ''; // Pulisci il contenuto (opzionale)
 
-        // Imposta il nome dello store nel campo di input e l'ID nascosto
+
+    function openBuyGameModalWithStore(storeName, storeId) {
+        // Hide the error message and update validity status
+        const errorMessageElement = document.getElementById('storeSearchError');
+        errorMessageElement.style.display = 'none';
+        errorMessageElement.innerHTML = '';
+
+        // Set the store name in the input field and the hidden store ID
         document.getElementById('storeSearch').value = storeName;
         document.getElementById('storeId').value = storeId;
 
-        // Imposta il flag di storeSelected a true, poiché è stato selezionato un nuovo store
         storeSelected.value = true;
 
-        // Rimuovi eventuali classi di errore per evitare l'indicazione di errore visivo
         document.getElementById('storeSearch').classList.remove('is-invalid');
 
-        // Mostra il modal di acquisto
+        // Show the buy game modal again
         let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
         buyGameModal.show();
     }
 
+    // Function to reopen buyGameModal and populate platform data
+    function openBuyGameModalWithPlatform(platformName, platformId) {
+        // Hide error message and reset validity
+        const errorMessageElement = document.getElementById('platformSearchError');
+        errorMessageElement.style.display = 'none';
+        errorMessageElement.innerHTML = '';
+
+        // Set platform input and hidden field
+        document.getElementById('platformSearch').value = platformName;
+        document.getElementById('platformId').value = platformId;
+
+        platformSelected.value = true;
+        document.getElementById('platformSearch').classList.remove('is-invalid');
+
+        let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+        buyGameModal.show();
+    }
+    // Function to reopen buyGameModal and populate launcher data
+function openBuyGameModalWithLauncher(launcherName, launcherId) {
+    // Hide error message and reset validity
+    const errorMessageElement = document.getElementById('launcherSearchError');
+    errorMessageElement.style.display = 'none';
+    errorMessageElement.innerHTML = '';
+
+    // Set launcher input and hidden field
+    document.getElementById('launcherSearch').value = launcherName;
+    document.getElementById('launcherId').value = launcherId;
+
+    launcherSelected.value = true;
+    document.getElementById('launcherSearch').classList.remove('is-invalid');
+
+    let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+    buyGameModal.show();
+}
 
     // Funzioni per aggiornare i campi nel modale di acquisto
     function updateStoreField(data) {
@@ -491,10 +562,9 @@
     function updatePlatformField(data) {
         document.getElementById('platformSearch').value = data.platformName;
         document.getElementById('platformId').value = data.platformId;
-        platformSelected.value = true; // Mark as selected
-        showError(platformSearch, document.getElementById('platformSearchError'), true); // Hide error
+        platformSelected.value = true;
+        showError(platformSearch, document.getElementById('platformSearchError'), true);
 
-        // Show the Buy Game modal again
         let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
         buyGameModal.show();
     }
@@ -502,10 +572,9 @@
     function updateLauncherField(data) {
         document.getElementById('launcherSearch').value = data.launcherName;
         document.getElementById('launcherId').value = data.launcherId;
-        launcherSelected.value = true; // Mark as selected
-        showError(launcherSearch, document.getElementById('launcherSearchError'), true); // Hide error
+        launcherSelected.value = true;
+        showError(launcherSearch, document.getElementById('launcherSearchError'), true);
 
-        // Show the Buy Game modal again
         let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
         buyGameModal.show();
     }
@@ -543,8 +612,8 @@
     function selectSuggestion(inputElement, hiddenInputElement, selectedItem, flagRef, errorElement) {
         inputElement.value = selectedItem.textContent;
         hiddenInputElement.value = selectedItem.dataset.id;
-        flagRef.value = true; // Aggiorna il flag di selezione
-        showError(inputElement, errorElement, true); // Nascondi errore se selezionato
+        flagRef.value = true;
+        showError(inputElement, errorElement, true);
         document.querySelectorAll('.search-results').forEach(results => {
             results.style.display = 'none';
         });
@@ -553,7 +622,7 @@
 
     const gameSelected = { value: false };
     gameSearch.addEventListener('input', function () {
-        gameSelected.value = false; // Resetta il flag
+        gameSelected.value = false;
         const searchQuery = this.value.trim().toLowerCase();
         if (searchQuery.length > 0) {
             fetch(`/Games/SearchGames?query=${encodeURIComponent(searchQuery)}`)
@@ -646,9 +715,6 @@
         }
     });
 
-
-
-
     // Launcher Search
     const launcherSelected = { value: false };
     launcherSearch.addEventListener('input', function () {
@@ -690,7 +756,7 @@
         }
     });
 
-
+    //Gestione della Chiusura dei Modali
     document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function () {
         gameSearch.value = '';
         storeSearch.value = '';
@@ -731,25 +797,21 @@
         const errorMessageElement = document.getElementById('storeSearchError');
         const storeInput = document.getElementById('storeSearch');
 
-        // Check if the input value matches any existing store
         if (existingStores.includes(inputValue)) {
-            // Valid input, remove error styles
-            errorMessageElement.style.display = 'none'; // Hide error message
-            storeInput.classList.remove('is-invalid'); // Remove invalid class
+            errorMessageElement.style.display = 'none';
+            storeInput.classList.remove('is-invalid');
         } else {
-            // Invalid input, show error message
-            errorMessageElement.style.display = 'block'; // Show error message
+            errorMessageElement.style.display = 'block';
             errorMessageElement.innerHTML = 'Store not found. Please select from the dropdown or create a new store.';
-            storeInput.classList.add('is-invalid'); // Add invalid class
+            storeInput.classList.add('is-invalid');
         }
     }
 
     function showDropdownSuggestions() {
         const storeSearchResults = document.getElementById('storeSearchResults');
-        storeSearchResults.style.display = 'block'; // Show the dropdown
+        storeSearchResults.style.display = 'block';
     }
 
-    // Call this function when the input changes
     document.getElementById('storeSearch').addEventListener('input', function () {
         showDropdownSuggestions();
     });
