@@ -1,22 +1,272 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
+/*CSS Index*/
+
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 1rem 1.5rem;
+}
+
+.modal-title {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+    .modal-title i {
+        margin-right: 8px;
+    }
+
+.list-group-item {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+    .list-group-item h5 {
+        font-weight: bold;
+    }
+
+    .list-group-item a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .list-group-item a:hover {
+            text-decoration: underline;
+        }
+
+.btn-custom {
+    font-weight: bold;
+}
+
+.btn-custom {
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-buy-game {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-add-store {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-add-platform {
+    background-color: #ffc107;
+    color: white;
+}
+
+.btn-add-launcher {
+    background-color: #17a2b8;
+    color: white;
+}
+
+
+.search-container {
+    position: relative;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.search-result-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+    .search-result-item:hover {
+        background-color: #f5f5f5;
+    }
+
+
+
+
+.error-action-button {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #dc3545;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .error-action-button:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+/*Pagination*/
+
+#paginationControls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+    #paginationControls button {
+        margin: 0 10px;
+        padding: 10px 15px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        #paginationControls button:hover {
+            transform: translateY(-2px);
+        }
+
+#prevPage {
+    background-color: #007bff;
+    color: white;
+}
+
+#nextPage {
+    background-color: #28a745;
+    color: white;
+}
+
+    #prevPage:disabled,
+    #nextPage:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    /*Style View all store*/
+
+.store-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.store-name {
+    font-size: 1.2rem; 
+    font-weight: bold;
+    color: #007bff; 
+}
+
+.store-description {
+    font-size: 0.9rem;
+    color: #6c757d; 
+}
+
+.store-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+    .store-link:hover {
+        text-decoration: underline;
+    }
+    /*style view all platform*/
+
+.platform-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.platform-name {
+    font-size: 1.2rem; 
+    font-weight: bold;
+    color: #007bff; 
+}
+
+.platform-description {
+    font-size: 0.9rem;
+    color: #6c757d; 
+}
+
+/*style view all launcher*/
+
+.launcher-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.launcher-name {
+    font-size: 1.2rem; 
+    font-weight: bold;
+    color: #007bff; 
+}
+
+.launcher-description {
+    font-size: 0.9rem;
+    color: #6c757d; 
+}
+
+.launcher-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+    .launcher-link:hover {
+        text-decoration: underline;
+    }
+
+
+
+/*CSS ViewAllGames*/
+
+.gradient-btn {
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+    .gradient-btn:hover {
+        background: linear-gradient(45deg, #0099ff, #00d4ff);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }

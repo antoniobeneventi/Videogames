@@ -1,83 +1,5 @@
 ﻿@model List<VideogamesWebApp.Models.GameTransactionsViewModel>
-<style>
-    .btn-custom {
-        border-radius: 8px;
-        font-weight: bold;
-    }
 
-    .btn-buy-game {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .btn-add-store {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-add-platform {
-        background-color: #ffc107;
-        color: white;
-    }
-
-    .btn-add-launcher {
-        background-color: #17a2b8;
-        color: white;
-    }
-
-
-    .search-container {
-        position: relative;
-    }
-
-    .search-results {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #ddd;
-        border-top: none;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 1000;
-        display: none;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .search-result-item {
-        padding: 8px 12px;
-        cursor: pointer;
-    }
-
-        .search-result-item:hover {
-            background-color: #f5f5f5;
-        }
-
-
-
-
-    .error-action-button {
-        display: inline-block;
-        padding: 8px 16px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #fff;
-        background-color: #dc3545;
-        border: none;
-        border-radius: 4px;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-        .error-action-button:hover {
-            background-color: #c82333;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-</style>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Welcome, @ViewData["Username"]!</h1>
@@ -94,11 +16,21 @@
                value="@ViewData["searchQuery"]">
         <button type="submit" class="btn btn-primary mt-2">Search in my games</button>
     </form>
+
     <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-secondary btn-custom mt-2 me-3">View Game catalog</a>
     <button type="button" class="btn btn-custom btn-buy-game mt-2 me-3" data-bs-toggle="modal" data-bs-target="#buyGameModal">Buy a New Game</button>
     <button type="button" class="btn btn-custom btn-add-store mt-2 me-3" data-bs-toggle="modal" data-bs-target="#addStoreModal">Add Store</button>
     <button type="button" class="btn btn-custom btn-add-platform mt-2 me-3" data-bs-toggle="modal" data-bs-target="#addPlatformModal">Add Platform</button>
     <button type="button" class="btn btn-custom btn-add-launcher mt-2" data-bs-toggle="modal" data-bs-target="#addLauncherModal">Add Launcher</button>
+    <button type="button" class="btn btn-outline-primary btn-custom mt-2 me-3" id="viewAllStoresBtn" data-bs-toggle="modal" data-bs-target="#viewAllStoresModal">
+        View All Stores
+    </button>
+    <button type="button" class="btn btn-outline-success btn-custom mt-2 me-3" id="viewAllPlatformsBtn" data-bs-toggle="modal" data-bs-target="#viewAllPlatformsModal">
+        View All Platforms
+    </button>
+    <button type="button" class="btn btn-outline-warning btn-custom mt-2 me-3" id="viewAllLaunchersBtn" data-bs-toggle="modal" data-bs-target="#viewAllLaunchersModal">
+        View All Launchers
+    </button>
 
     <hr>
     @if (TempData["ErrorMessage"] != null)
@@ -296,6 +228,71 @@
     </div>
 
 
+    <!-- Modal for Viewing All Stores -->
+    <div class="modal fade" id="viewAllStoresModal" tabindex="-1" aria-labelledby="viewAllStoresModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-primary shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="viewAllStoresModalLabel"><i class="bi bi-shop"></i> All Stores</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="storeListContainer"></div>
+
+                    <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
+                        <span id="pageInfo" class="me-3"></span>
+
+                        <div id="paginationContainer" class="btn-group" role="group" aria-label="Pagination">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Viewing All Platforms -->
+    <div class="modal fade" id="viewAllPlatformsModal" tabindex="-1" aria-labelledby="viewAllPlatformsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-success shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="viewAllPlatformsModalLabel"><i class="bi bi-controller"></i> All Platforms</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="platformListContainer"></div>
+
+                    <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
+                        <span id="platformPageInfo" class="me-3"></span>
+
+                        <div id="platformPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
+                            <!-- Pagination buttons will be dynamically generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <!-- Modal for Viewing All Launchers -->
+<div class="modal fade" id="viewAllLaunchersModal" tabindex="-1" aria-labelledby="viewAllLaunchersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-primary shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="viewAllLaunchersModalLabel"><i class="bi bi-rocket"></i> All Launchers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="launcherListContainer"></div>
+
+                <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
+                    <span id="launcherPageInfo" class="me-3"></span>
+
+                    <div id="launcherPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
+                        <!-- Pagination buttons will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <h3>My Games </h3>
     <table class="table table-striped">
@@ -338,18 +335,177 @@
 </div>
 
 <script>
-    //flag per l'errore del bottone
+
+    let currentPage = 1;
+    const pageSize = 5;
+
+    function fetchStores(page) {
+        fetch(`@Url.Action("GetAllStores", "Games")?page=${page}&pageSize=${pageSize}`)
+            .then(response => response.json())
+            .then(data => {
+                // Aggiorna il contenuto della lista dei negozi
+                let storeListHtml = '';
+                data.stores.forEach(store => {
+                    storeListHtml += `
+                        <div class="store-item mb-3">
+                            <h5 class="store-name">${store.storeName}</h5>
+                            <p class="store-description">${store.storeDescription || 'No description available'}</p>
+                            <a href="${store.storeLink}" target="_blank" class="store-link">Visit Store</a>
+                        </div>
+                    `;
+                });
+                document.getElementById("storeListContainer").innerHTML = storeListHtml;
+
+                // Imposta `currentPage` in base alla risposta del server
+                currentPage = data.currentPage;
+
+                // Aggiorna l'indicazione della pagina attuale
+                document.getElementById("pageInfo").innerText = `Page ${currentPage} of ${data.totalPages}`;
+
+                // Genera i pulsanti di paginazione numerati
+                let paginationHtml = '';
+                for (let i = 1; i <= data.totalPages; i++) {
+                    paginationHtml += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">
+                            ${i}
+                        </button>
+                    `;
+                }
+                document.getElementById("paginationContainer").innerHTML = paginationHtml;
+
+                // Aggiungi l'evento di click a ciascun pulsante numerato
+                document.querySelectorAll(".page-btn").forEach(button => {
+                    button.addEventListener("click", function () {
+                        const page = parseInt(this.getAttribute("data-page"));
+                        fetchStores(page); // Carica la pagina selezionata
+                    });
+                });
+            })
+            .catch(error => console.error("Error fetching store data:", error));
+    }
+
+    // Recupera i negozi quando si apre la finestra modale
+    document.getElementById("viewAllStoresBtn").addEventListener("click", function () {
+        currentPage = 1; // Resetta alla prima pagina
+        fetchStores(currentPage);
+    });
+
+
+
+    let currentPlatformPage = 1;
+    const platformPageSize = 5; // Set the number of platforms per page
+
+    function fetchPlatforms(page) {
+        fetch(`@Url.Action("GetAllPlatforms", "Games")?page=${page}&pageSize=${platformPageSize}`)
+            .then(response => response.json())
+            .then(data => {
+                let platformListHtml = '';
+                data.platforms.forEach(platform => {
+                    platformListHtml += `
+                            <div class="platform-item mb-3">
+                                <h5 class="platform-name">${platform.platformName}</h5>
+                                <p class="platform-description">${platform.platformDescription || 'No description available'}</p>
+                            </div>
+                        `;
+                });
+                document.getElementById("platformListContainer").innerHTML = platformListHtml;
+
+                // Update pagination controls
+                document.getElementById("platformPageInfo").innerText = `Page ${data.currentPage} of ${data.totalPages}`;
+                updatePaginationButtons(data.currentPage, data.totalPages);
+            })
+            .catch(error => console.error("Error fetching platform data:", error));
+    }
+
+    function updatePaginationButtons(currentPage, totalPages) {
+        const paginationContainer = document.getElementById("platformPaginationContainer");
+        paginationContainer.innerHTML = ''; // Clear existing buttons
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.className = `btn btn-secondary ${i === currentPage ? 'active' : ''}`;
+            pageButton.innerText = i;
+            pageButton.setAttribute('data-page', i);
+
+            // Add click event to fetch platforms for the selected page
+            pageButton.addEventListener('click', function () {
+                currentPlatformPage = i; // Update current page
+                fetchPlatforms(currentPlatformPage);
+            });
+
+            paginationContainer.appendChild(pageButton);
+        }
+    }
+
+    // Fetch platforms when modal is opened
+    document.getElementById("viewAllPlatformsBtn").addEventListener("click", function () {
+        currentPlatformPage = 1; // Reset to first page
+        fetchPlatforms(currentPlatformPage);
+    });
+
+
+    let currentLauncherPage = 1;
+    const launcherPageSize = 5; // Set the number of launchers per page
+
+    function fetchLaunchers(page) {
+        fetch(`@Url.Action("GetAllLaunchers", "Games")?page=${page}&pageSize=${launcherPageSize}`)
+            .then(response => response.json())
+            .then(data => {
+                let launcherListHtml = '';
+                data.launchers.forEach(launcher => {
+                    launcherListHtml += `
+                                <div class="launcher-item mb-3">
+                                    <h5 class="launcher-name">${launcher.launcherName}</h5>
+                                    <p class="launcher-description">${launcher.launcherDescription || 'No description available'}</p>
+                                </div>
+                            `;
+                });
+                document.getElementById("launcherListContainer").innerHTML = launcherListHtml;
+
+                // Update pagination controls
+                document.getElementById("launcherPageInfo").innerText = `Page ${data.currentPage} of ${data.totalPages}`;
+                updateLauncherPaginationButtons(data.currentPage, data.totalPages);
+            })
+            .catch(error => console.error("Error fetching launcher data:", error));
+    }
+
+    function updateLauncherPaginationButtons(currentPage, totalPages) {
+        const paginationContainer = document.getElementById("launcherPaginationContainer");
+        paginationContainer.innerHTML = ''; // Clear existing buttons
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.className = `btn btn-secondary ${i === currentPage ? 'active' : ''}`;
+            pageButton.innerText = i;
+            pageButton.setAttribute('data-page', i);
+
+            // Add click event to fetch launchers for the selected page
+            pageButton.addEventListener('click', function () {
+                currentLauncherPage = i; // Update current page
+                fetchLaunchers(currentLauncherPage);
+            });
+
+            paginationContainer.appendChild(pageButton);
+        }
+    }
+
+    // Fetch launchers when modal is opened
+    document.getElementById("viewAllLaunchersBtn").addEventListener("click", function () {
+        currentLauncherPage = 1; // Reset to first page
+        fetchLaunchers(currentLauncherPage);
+    });
+
     let fromStoreErrorButton = false;
     let fromPlatformErrorButton = false;
-    let fromLauncherErrorButton = false; 
+    let fromLauncherErrorButton = false;
 
 
     function showError(inputElement, errorElement, isValid, customMessage = '', buttonHtml = '') {
         if (!isValid) {
             errorElement.innerHTML = `
-                                        <div class="error-message">${customMessage}</div>
-                                        ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
-                                    `;
+                                                        <div class="error-message">${customMessage}</div>
+                                                        ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
+                                                    `;
             errorElement.style.display = 'block';
             inputElement.classList.add('is-invalid');
         } else {
@@ -408,14 +564,13 @@
         storeModal.show();
     }
 
-    // Modify the button click handler to set the flag for platform errors
+
     function openAddPlatformModal() {
         let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
         buyGameModal.hide();
 
         document.getElementById('platformName').value = platformSearch.value;
 
-        // Set the flag for platform error button
         fromPlatformErrorButton = true;
 
         let platformModal = new bootstrap.Modal(document.getElementById('addPlatformModal'));
@@ -428,7 +583,7 @@
 
         document.getElementById('launcherName').value = launcherSearch.value;
 
-        // Set the flag for launcher error button
+
         fromLauncherErrorButton = true;
 
         let launcherModal = new bootstrap.Modal(document.getElementById('addLauncherModal'));
@@ -451,7 +606,6 @@
                             let addStoreModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
                             addStoreModal.hide();
 
-                            // Clear form data for addStoreForm after success
                             document.getElementById(formId).reset();
 
                             if (fromStoreErrorButton) {
@@ -462,7 +616,6 @@
                             let addPlatformModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
                             addPlatformModal.hide();
 
-                            // Clear form data for addPlatformForm after success
                             document.getElementById(formId).reset();
 
                             if (fromPlatformErrorButton) {
@@ -473,7 +626,6 @@
                             let addLauncherModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
                             addLauncherModal.hide();
 
-                            // Clear form data for addLauncherForm after success
                             document.getElementById(formId).reset();
 
                             if (fromLauncherErrorButton) {
@@ -495,15 +647,13 @@
     }
 
 
-
-
     function openBuyGameModalWithStore(storeName, storeId) {
-        // Hide the error message and update validity status
+
         const errorMessageElement = document.getElementById('storeSearchError');
         errorMessageElement.style.display = 'none';
         errorMessageElement.innerHTML = '';
 
-        // Set the store name in the input field and the hidden store ID
+
         document.getElementById('storeSearch').value = storeName;
         document.getElementById('storeId').value = storeId;
 
@@ -511,19 +661,19 @@
 
         document.getElementById('storeSearch').classList.remove('is-invalid');
 
-        // Show the buy game modal again
+
         let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
         buyGameModal.show();
     }
 
-    // Function to reopen buyGameModal and populate platform data
+
     function openBuyGameModalWithPlatform(platformName, platformId) {
-        // Hide error message and reset validity
+
         const errorMessageElement = document.getElementById('platformSearchError');
         errorMessageElement.style.display = 'none';
         errorMessageElement.innerHTML = '';
 
-        // Set platform input and hidden field
+
         document.getElementById('platformSearch').value = platformName;
         document.getElementById('platformId').value = platformId;
 
@@ -533,23 +683,23 @@
         let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
         buyGameModal.show();
     }
-    // Function to reopen buyGameModal and populate launcher data
-function openBuyGameModalWithLauncher(launcherName, launcherId) {
-    // Hide error message and reset validity
-    const errorMessageElement = document.getElementById('launcherSearchError');
-    errorMessageElement.style.display = 'none';
-    errorMessageElement.innerHTML = '';
 
-    // Set launcher input and hidden field
-    document.getElementById('launcherSearch').value = launcherName;
-    document.getElementById('launcherId').value = launcherId;
+    function openBuyGameModalWithLauncher(launcherName, launcherId) {
 
-    launcherSelected.value = true;
-    document.getElementById('launcherSearch').classList.remove('is-invalid');
+        const errorMessageElement = document.getElementById('launcherSearchError');
+        errorMessageElement.style.display = 'none';
+        errorMessageElement.innerHTML = '';
 
-    let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
-    buyGameModal.show();
-}
+
+        document.getElementById('launcherSearch').value = launcherName;
+        document.getElementById('launcherId').value = launcherId;
+
+        launcherSelected.value = true;
+        document.getElementById('launcherSearch').classList.remove('is-invalid');
+
+        let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+        buyGameModal.show();
+    }
 
     // Funzioni per aggiornare i campi nel modale di acquisto
     function updateStoreField(data) {
@@ -619,7 +769,6 @@ function openBuyGameModalWithLauncher(launcherName, launcherId) {
         });
     }
 
-
     const gameSelected = { value: false };
     gameSearch.addEventListener('input', function () {
         gameSelected.value = false;
@@ -652,7 +801,6 @@ function openBuyGameModalWithLauncher(launcherName, launcherId) {
             gameSearchResults.style.display = 'none';
         }
     });
-
 
     // Store Search
     const storeSelected = { value: false };
@@ -746,8 +894,6 @@ function openBuyGameModalWithLauncher(launcherName, launcherId) {
         }
     });
 
-
-
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.search-container')) {
             document.querySelectorAll('.search-results').forEach(results => {
@@ -777,7 +923,6 @@ function openBuyGameModalWithLauncher(launcherName, launcherId) {
                 successMessage.style.display = "none";
             }, 3000);
         }
-
 
         const errorMessage = document.querySelector(".alert-danger");
         if (errorMessage) {

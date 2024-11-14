@@ -1,6 +1,5 @@
 ﻿using GamesDataAccess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
 
@@ -104,12 +103,11 @@ public class GamesController : Controller
     }
 
 
-    public IActionResult ViewAllGames(int pageNumber = 1, string sortOrder = "alphabetical")
+    public IActionResult ViewAllGames(int pageNumber = 1, string sortOrder = "GameNameAsc")
     {
         int pageSize = 10;
         var username = GetUsername();
 
-        // Applichiamo l'ordinamento direttamente nella query al database
         IQueryable<GameViewModel> allGamesQuery = _dbContext.Games
             .Select(game => new GameViewModel
             {
@@ -124,14 +122,15 @@ public class GamesController : Controller
         // Applichiamo il sorting in base al sortOrder selezionato
         allGamesQuery = sortOrder switch
         {
-            "alphabetical" => allGamesQuery.OrderBy(game => game.GameName),
-            "reverseAlphabetical" => allGamesQuery.OrderByDescending(game => game.GameName),
-            "mostDLC" => allGamesQuery.OrderByDescending(game => game.DLCCount),
-            "leastDLC" => allGamesQuery.OrderBy(game => game.DLCCount),
+            "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName),
+            "GameNameDesc" => allGamesQuery.OrderByDescending(game => game.GameName),
+            "GameDescriptionAsc" => allGamesQuery.OrderBy(game => game.GameDescription),
+            "GameDescriptionDesc" => allGamesQuery.OrderByDescending(game => game.GameDescription),
+            "DLCCountAsc" => allGamesQuery.OrderBy(game => game.DLCCount),
+            "DLCCountDesc" => allGamesQuery.OrderByDescending(game => game.DLCCount),
             _ => allGamesQuery.OrderBy(game => game.GameName) // Default su alfabetico
         };
 
-        // Selezioniamo i giochi principali per il menu a tendina e li ordiniamo alfabeticamente
         var mainGames = _dbContext.Games
             .Where(g => g.MainGameId == null)
             .OrderBy(g => g.GameName)
@@ -142,7 +141,7 @@ public class GamesController : Controller
 
         int totalGames = allGamesQuery.Count();
         var paginatedGames = allGamesQuery
-            .Skip((pageNumber - 1) * pageSize) // Pagina corretta con l'ordinamento applicato prima
+            .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
@@ -150,7 +149,6 @@ public class GamesController : Controller
         ViewData["TotalPages"] = (int)Math.Ceiling((double)totalGames / pageSize);
         ViewData["CurrentPage"] = pageNumber;
         ViewData["CurrentSortOrder"] = sortOrder;
-
         return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
     }
 
@@ -389,6 +387,67 @@ public class GamesController : Controller
             currentPage = page,
             totalPages = totalPages
         });
+    }
+
+    public IActionResult GetAllStores(int page = 1, int pageSize = 5)
+    {
+        var stores = _dbContext.Stores.ToList(); 
+        var totalStores = stores.Count();
+        var pagedStores = stores.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        var result = new
+        {
+            stores = pagedStores,
+            totalCount = totalStores,
+            currentPage = page,
+            totalPages = (int)Math.Ceiling(totalStores / (double)pageSize)
+        };
+
+        return Json(result);
+    }
+
+
+    public IActionResult GetAllPlatforms(int page = 1, int pageSize = 5)
+    {
+        var platforms = _dbContext.Platforms.ToList();
+        var totalPlatforms = platforms.Count();
+        var pagedPlatforms = platforms.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        var result = new
+        {
+            platforms = pagedPlatforms,
+            TotalCount = totalPlatforms,
+            currentPage = page,
+            totalPages = (int)Math.Ceiling(totalPlatforms / (double)pageSize)
+        };
+
+        return Json(result);
+    }
+
+    public IActionResult GetAllLaunchers(int page = 1, int pageSize = 5)
+    {
+        var launchers = _dbContext.Launchers
+            .Select(l => new
+            {
+                l.LauncherId,
+                l.LauncherName,
+                l.LauncherDescription,
+                l.Link
+            })
+            .ToList();
+
+        var totalLaunchers = launchers.Count();
+        var pagedLaunchers = launchers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        var result = new
+        {
+            launchers = pagedLaunchers,
+            TotalCount = totalLaunchers,
+            currentPage = page,
+            totalPages = (int)Math.Ceiling(totalLaunchers / (double)pageSize)
+        };
+
+        return Json(result);
     }
 
 
