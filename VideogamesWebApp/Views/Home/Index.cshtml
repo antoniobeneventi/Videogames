@@ -16,21 +16,25 @@
                value="@ViewData["searchQuery"]">
         <button type="submit" class="btn btn-primary mt-2">Search in my games</button>
     </form>
-
-    <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-secondary btn-custom mt-2 me-3">View Game catalog</a>
+    <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-custom btn-buy-game mt-2 me-3">View Game catalog</a>
     <button type="button" class="btn btn-custom btn-buy-game mt-2 me-3" data-bs-toggle="modal" data-bs-target="#buyGameModal">Buy a New Game</button>
+
+    <div>
+        <button type="button" class="btn btn-custom btn-add-store mt-2 me-3" id="viewAllStoresBtn" data-bs-toggle="modal" data-bs-target="#viewAllStoresModal">
+        ViewStore
+    </button>
+        <button type="button" class="btn btn-custom btn-add-platform mt-2 me-3" id="viewAllPlatformsBtn" data-bs-toggle="modal" data-bs-target="#viewAllPlatformsModal">
+        ViewPlatform
+    </button>
+        <button type="button" class="btn btn-custom btn-add-launcher mt-2" data-bs-toggle="modal" id="viewAllLaunchersBtn" data-bs-toggle="modal" data-bs-target="#viewAllLaunchersModal">
+        ViewLauncher
+    </button>
+    </div>
+
     <button type="button" class="btn btn-custom btn-add-store mt-2 me-3" data-bs-toggle="modal" data-bs-target="#addStoreModal">Add Store</button>
     <button type="button" class="btn btn-custom btn-add-platform mt-2 me-3" data-bs-toggle="modal" data-bs-target="#addPlatformModal">Add Platform</button>
     <button type="button" class="btn btn-custom btn-add-launcher mt-2" data-bs-toggle="modal" data-bs-target="#addLauncherModal">Add Launcher</button>
-    <button type="button" class="btn btn-outline-primary btn-custom mt-2 me-3" id="viewAllStoresBtn" data-bs-toggle="modal" data-bs-target="#viewAllStoresModal">
-        View All Stores
-    </button>
-    <button type="button" class="btn btn-outline-success btn-custom mt-2 me-3" id="viewAllPlatformsBtn" data-bs-toggle="modal" data-bs-target="#viewAllPlatformsModal">
-        View All Platforms
-    </button>
-    <button type="button" class="btn btn-outline-warning btn-custom mt-2 me-3" id="viewAllLaunchersBtn" data-bs-toggle="modal" data-bs-target="#viewAllLaunchersModal">
-        View All Launchers
-    </button>
+    
 
     <hr>
     @if (TempData["ErrorMessage"] != null)
@@ -233,7 +237,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-primary shadow-lg">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="viewAllStoresModalLabel"><i class="bi bi-shop"></i> All Stores</h5>
+                    <h5 class="modal-title" id="viewAllStoresModalLabel"><i class="bi bi-shop"></i>Stores</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -249,12 +253,13 @@
             </div>
         </div>
     </div>
+
     <!-- Modal for Viewing All Platforms -->
     <div class="modal fade" id="viewAllPlatformsModal" tabindex="-1" aria-labelledby="viewAllPlatformsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-success shadow-lg">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="viewAllPlatformsModalLabel"><i class="bi bi-controller"></i> All Platforms</h5>
+                    <h5 class="modal-title" id="viewAllPlatformsModalLabel"><i class="bi bi-controller"></i>Platforms</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -264,35 +269,34 @@
                         <span id="platformPageInfo" class="me-3"></span>
 
                         <div id="platformPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
-                            <!-- Pagination buttons will be dynamically generated here -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-   <!-- Modal for Viewing All Launchers -->
-<div class="modal fade" id="viewAllLaunchersModal" tabindex="-1" aria-labelledby="viewAllLaunchersModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content border-primary shadow-lg">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="viewAllLaunchersModalLabel"><i class="bi bi-rocket"></i> All Launchers</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div id="launcherListContainer"></div>
 
-                <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
-                    <span id="launcherPageInfo" class="me-3"></span>
+    <!-- Modal for Viewing All Launchers -->
+    <div class="modal fade" id="viewAllLaunchersModal" tabindex="-1" aria-labelledby="viewAllLaunchersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-primary shadow-lg">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="viewAllLaunchersModalLabel"><i class="bi bi-rocket"></i> Launchers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="launcherListContainer"></div>
 
-                    <div id="launcherPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
-                        <!-- Pagination buttons will be dynamically generated here -->
+                    <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
+                        <span id="launcherPageInfo" class="me-3"></span>
+
+                        <div id="launcherPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <h3>My Games </h3>
     <table class="table table-striped">
@@ -347,53 +351,49 @@
                 let storeListHtml = '';
                 data.stores.forEach(store => {
                     storeListHtml += `
-                        <div class="store-item mb-3">
-                            <h5 class="store-name">${store.storeName}</h5>
-                            <p class="store-description">${store.storeDescription || 'No description available'}</p>
-                            <a href="${store.storeLink}" target="_blank" class="store-link">Visit Store</a>
-                        </div>
-                    `;
+                            <div class="store-item mb-3">
+                                <h5 class="store-name">${store.storeName}</h5>
+                                <p class="store-description">${store.storeDescription || 'No description available'}</p>
+                                <a href="${store.storeLink}" target="_blank" class="store-link">Visit Store</a>
+                            </div>
+                        `;
                 });
                 document.getElementById("storeListContainer").innerHTML = storeListHtml;
 
-                // Imposta `currentPage` in base alla risposta del server
                 currentPage = data.currentPage;
 
-                // Aggiorna l'indicazione della pagina attuale
                 document.getElementById("pageInfo").innerText = `Page ${currentPage} of ${data.totalPages}`;
 
                 // Genera i pulsanti di paginazione numerati
                 let paginationHtml = '';
                 for (let i = 1; i <= data.totalPages; i++) {
                     paginationHtml += `
-                        <button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">
-                            ${i}
-                        </button>
-                    `;
+                            <button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">
+                                ${i}
+                            </button>
+                        `;
                 }
                 document.getElementById("paginationContainer").innerHTML = paginationHtml;
 
-                // Aggiungi l'evento di click a ciascun pulsante numerato
                 document.querySelectorAll(".page-btn").forEach(button => {
                     button.addEventListener("click", function () {
                         const page = parseInt(this.getAttribute("data-page"));
-                        fetchStores(page); // Carica la pagina selezionata
+                        fetchStores(page); 
                     });
                 });
             })
             .catch(error => console.error("Error fetching store data:", error));
     }
 
-    // Recupera i negozi quando si apre la finestra modale
     document.getElementById("viewAllStoresBtn").addEventListener("click", function () {
-        currentPage = 1; // Resetta alla prima pagina
+        currentPage = 1; 
         fetchStores(currentPage);
     });
 
 
 
     let currentPlatformPage = 1;
-    const platformPageSize = 5; // Set the number of platforms per page
+    const platformPageSize = 5; 
 
     function fetchPlatforms(page) {
         fetch(`@Url.Action("GetAllPlatforms", "Games")?page=${page}&pageSize=${platformPageSize}`)
@@ -402,11 +402,11 @@
                 let platformListHtml = '';
                 data.platforms.forEach(platform => {
                     platformListHtml += `
-                            <div class="platform-item mb-3">
-                                <h5 class="platform-name">${platform.platformName}</h5>
-                                <p class="platform-description">${platform.platformDescription || 'No description available'}</p>
-                            </div>
-                        `;
+                                <div class="platform-item mb-3">
+                                    <h5 class="platform-name">${platform.platformName}</h5>
+                                    <p class="platform-description">${platform.platformDescription || 'No description available'}</p>
+                                </div>
+                            `;
                 });
                 document.getElementById("platformListContainer").innerHTML = platformListHtml;
 
@@ -419,7 +419,7 @@
 
     function updatePaginationButtons(currentPage, totalPages) {
         const paginationContainer = document.getElementById("platformPaginationContainer");
-        paginationContainer.innerHTML = ''; // Clear existing buttons
+        paginationContainer.innerHTML = ''; 
 
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement('button');
@@ -427,9 +427,8 @@
             pageButton.innerText = i;
             pageButton.setAttribute('data-page', i);
 
-            // Add click event to fetch platforms for the selected page
             pageButton.addEventListener('click', function () {
-                currentPlatformPage = i; // Update current page
+                currentPlatformPage = i; 
                 fetchPlatforms(currentPlatformPage);
             });
 
@@ -437,15 +436,14 @@
         }
     }
 
-    // Fetch platforms when modal is opened
     document.getElementById("viewAllPlatformsBtn").addEventListener("click", function () {
-        currentPlatformPage = 1; // Reset to first page
+        currentPlatformPage = 1; 
         fetchPlatforms(currentPlatformPage);
     });
 
 
     let currentLauncherPage = 1;
-    const launcherPageSize = 5; // Set the number of launchers per page
+    const launcherPageSize = 5; 
 
     function fetchLaunchers(page) {
         fetch(`@Url.Action("GetAllLaunchers", "Games")?page=${page}&pageSize=${launcherPageSize}`)
@@ -454,15 +452,14 @@
                 let launcherListHtml = '';
                 data.launchers.forEach(launcher => {
                     launcherListHtml += `
-                                <div class="launcher-item mb-3">
-                                    <h5 class="launcher-name">${launcher.launcherName}</h5>
-                                    <p class="launcher-description">${launcher.launcherDescription || 'No description available'}</p>
-                                </div>
-                            `;
+                                    <div class="launcher-item mb-3">
+                                        <h5 class="launcher-name">${launcher.launcherName}</h5>
+                                        <p class="launcher-description">${launcher.launcherDescription || 'No description available'}</p>
+                                    </div>
+                                `;
                 });
                 document.getElementById("launcherListContainer").innerHTML = launcherListHtml;
 
-                // Update pagination controls
                 document.getElementById("launcherPageInfo").innerText = `Page ${data.currentPage} of ${data.totalPages}`;
                 updateLauncherPaginationButtons(data.currentPage, data.totalPages);
             })
@@ -471,7 +468,7 @@
 
     function updateLauncherPaginationButtons(currentPage, totalPages) {
         const paginationContainer = document.getElementById("launcherPaginationContainer");
-        paginationContainer.innerHTML = ''; // Clear existing buttons
+        paginationContainer.innerHTML = ''; 
 
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement('button');
@@ -479,9 +476,8 @@
             pageButton.innerText = i;
             pageButton.setAttribute('data-page', i);
 
-            // Add click event to fetch launchers for the selected page
             pageButton.addEventListener('click', function () {
-                currentLauncherPage = i; // Update current page
+                currentLauncherPage = i; 
                 fetchLaunchers(currentLauncherPage);
             });
 
@@ -489,9 +485,8 @@
         }
     }
 
-    // Fetch launchers when modal is opened
     document.getElementById("viewAllLaunchersBtn").addEventListener("click", function () {
-        currentLauncherPage = 1; // Reset to first page
+        currentLauncherPage = 1; 
         fetchLaunchers(currentLauncherPage);
     });
 
@@ -503,9 +498,9 @@
     function showError(inputElement, errorElement, isValid, customMessage = '', buttonHtml = '') {
         if (!isValid) {
             errorElement.innerHTML = `
-                                                        <div class="error-message">${customMessage}</div>
-                                                        ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
-                                                    `;
+                                                            <div class="error-message">${customMessage}</div>
+                                                            ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
+                                                        `;
             errorElement.style.display = 'block';
             inputElement.classList.add('is-invalid');
         } else {
@@ -729,7 +724,6 @@
         buyGameModal.show();
     }
 
-    // Aggiungi gli event listener per i form quando il documento è caricato
     document.addEventListener('DOMContentLoaded', function () {
         handleFormSubmit('addStoreForm', '/Games/AddStore', updateStoreField);
         handleFormSubmit('addPlatformForm', '/Games/AddPlatform', updatePlatformField);
@@ -737,7 +731,7 @@
     });
 
     document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function (e) {
-        // Controlla se stiamo aprendo un altro modal
+
         if (!document.querySelector('.modal.show')) {
             gameSearch.value = '';
             storeSearch.value = '';
@@ -751,14 +745,12 @@
         }
     });
 
-    // Aggiungi un event listener al form per la validazione prima dell'invio
     document.getElementById('buyGameForm').addEventListener('submit', function (event) {
         if (!validateForm()) {
             event.preventDefault(); // Previene l'invio del form se non è valido
         }
     });
 
-    // Funzione per gestire la selezione di un suggerimento
     function selectSuggestion(inputElement, hiddenInputElement, selectedItem, flagRef, errorElement) {
         inputElement.value = selectedItem.textContent;
         hiddenInputElement.value = selectedItem.dataset.id;
@@ -902,18 +894,7 @@
         }
     });
 
-    //Gestione della Chiusura dei Modali
-    document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function () {
-        gameSearch.value = '';
-        storeSearch.value = '';
-        platformSearch.value = '';
-        launcherSearch.value = '';
-
-        gameId.value = '';
-        storeId.value = '';
-        platformId.value = '';
-        launcherId.value = '';
-    });
+    
 
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -969,13 +950,3 @@
 
 
 </script>
-
-
-
-
-
-
-
-
-
-
