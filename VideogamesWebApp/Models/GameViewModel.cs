@@ -10,4 +10,5 @@ public class GameViewModel
     public string MainGameName { get; set; } 
     public int DLCCount { get; set; } 
 
+
 }

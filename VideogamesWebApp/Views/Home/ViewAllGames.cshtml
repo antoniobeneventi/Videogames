@@ -27,7 +27,7 @@
             @{
                 var totalPages = (int)ViewData["TotalPages"];
                 var currentPage = (int)ViewData["CurrentPage"];
-                var currentSortOrder = (string)ViewData["CurrentSortOrder"]; // Get current sort order
+                var currentSortOrder = (string)ViewData["CurrentSortOrder"];
 
                 <tr>
                     <th scope="col">
@@ -73,14 +73,11 @@
                     </td>
                     <td>
                         @{
-                            bool hasDLCs = Model.Any(g => g.MainGameId == game.GameId);
+                            bool hasDLCs = ViewBag.GamesWithDLCs != null && ViewBag.GamesWithDLCs.ContainsKey(game.GameId) && ViewBag.GamesWithDLCs[game.GameId];
                         }
                         @if (hasDLCs)
                         {
-                            <button class="btn gradient-btn btn-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#dlcModal"
-                                    onclick="loadDLCs('@game.GameId', '@game.GameName')"
+                            <button class="btn gradient-btn btn-sm" data-bs-toggle="modal" data-bs-target="#dlcModal" onclick="loadDLCs('@game.GameId','@game.GameName')"
                                     title="View DLCs">
                                 View DLCs
                             </button>
@@ -198,9 +195,9 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                                                                <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                                <strong>${dlc.gameName}</strong>
-                                                                            `;
+                                                                                                    <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                                                    <strong>${dlc.gameName}</strong>
+                                                                                                `;
                         dlcListElement.appendChild(listItem);
                     });
                 }
@@ -240,9 +237,9 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                                                    <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                    <strong>${dlc.gameName}</strong>
-                                                                `;
+                                                                                        <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                                        <strong>${dlc.gameName}</strong>
+                                                                                    `;
                         dlcListElement.appendChild(listItem);
                     });
 

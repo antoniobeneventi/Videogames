@@ -1,6 +1,5 @@
 ﻿using GamesDataAccess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
 
 public class GamesController : Controller
@@ -118,7 +117,6 @@ public class GamesController : Controller
                 MainGameName = game.MainGame != null ? game.MainGame.GameName : null,
                 DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId)
             });
-
         // Applichiamo il sorting in base al sortOrder selezionato
         allGamesQuery = sortOrder switch
         {
@@ -144,6 +142,17 @@ public class GamesController : Controller
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        var gamesWithDLCs = _dbContext.Games
+      .Where(g => g.MainGameId == null)
+      .Select(g => new
+      {
+          GameId = g.GameId,
+          HasDLCs = _dbContext.Games.Any(dlc => dlc.MainGameId == g.GameId)
+      })
+              .ToDictionary(g => g.GameId, g => g.HasDLCs);
+
+        ViewBag.GamesWithDLCs = gamesWithDLCs;
 
         ViewData["Username"] = username;
         ViewData["TotalPages"] = (int)Math.Ceiling((double)totalGames / pageSize);
