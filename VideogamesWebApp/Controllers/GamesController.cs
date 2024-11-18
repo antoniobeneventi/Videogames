@@ -196,8 +196,8 @@ public class GamesController : Controller
             _dbContext.Games.Add(game);
             await _dbContext.SaveChangesAsync();
 
-            // Reindirizza con l'ordine alfabetico per includere il nuovo gioco in ordine
-            return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
+            // Redirect back to Buy Game modal with game name
+            return RedirectToAction("Index", "Games", new { gameName = gameName });
         }
 
         TempData["ErrorMessage"] = "Il nome e la descrizione del gioco non possono essere vuoti.";

@@ -199,6 +199,25 @@ function redirectToAddGame() {
     const gameName = gameSearch.value;
     window.location.href = `ViewAllGames?gameName=${encodeURIComponent(gameName)}`;
 }
+document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameName = urlParams.get('gameName');
+
+    if (gameName) {
+        // Open the Buy New Game modal
+        const buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+        document.getElementById('gameSearch').value = gameName; // Pre-fill the game name
+        buyGameModal.show();
+    }
+
+    // Clear inputs when the modal is closed
+    document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function (e) {
+        document.getElementById('gameSearch').value = '';
+        document.getElementById('storeSearch').value = '';
+        document.getElementById('platformSearch').value = '';
+        document.getElementById('launcherSearch').value = '';
+    });
+});
 
 
 function openAddStoreModal(storeName) {
@@ -382,6 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
     handleFormSubmit('addStoreForm', '/Games/AddStore', updateStoreField);
     handleFormSubmit('addPlatformForm', '/Games/AddPlatform', updatePlatformField);
     handleFormSubmit('addLauncherForm', '/Games/AddLauncher', updateLauncherField);
+
 });
 
 document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function (e) {
