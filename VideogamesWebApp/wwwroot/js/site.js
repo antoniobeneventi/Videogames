@@ -166,7 +166,7 @@ function validateForm() {
 
     // Validate Game
     if (!gameSelected.value) {
-        const gameButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="redirectToAddGame()">Add New Game</button>';
+        const gameButton = `<button type="button" class="btn btn-sm btn-primary mt-2" onclick="redirectToAddGame('${addGameUrl}')">Add New Game</button>`;
         showError(gameSearch, document.getElementById('gameSearchError'), false, "Please enter a valid game or add it if you want", gameButton);
         isValid = false;
     }
@@ -196,9 +196,10 @@ function validateForm() {
 }
 
 function redirectToAddGame() {
-    // Reindirizza alla pagina di aggiunta del gioco
-    window.location.href = '@Url.Action("ViewAllGames", "Games")#addGameModal';
+    const gameName = gameSearch.value;
+    window.location.href = `ViewAllGames?gameName=${encodeURIComponent(gameName)}`;
 }
+
 
 function openAddStoreModal(storeName) {
     let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
@@ -585,6 +586,9 @@ function validateStoreInput(inputValue) {
         errorMessageElement.innerHTML = 'Store not found. Please select from the dropdown or create a new store.';
         storeInput.classList.add('is-invalid');
     }
+}
+function redirectToAddGame(url) {
+    window.location.href = url;
 }
 
 function showDropdownSuggestions() {
