@@ -166,7 +166,7 @@ function validateForm() {
 
     // Validate Game
     if (!gameSelected.value) {
-        const gameButton = `<button type="button" class="btn btn-sm btn-primary mt-2" onclick="redirectToAddGame('${addGameUrl}')">Add New Game</button>`;
+        const gameButton = `<button type="button" class="btn btn-sm btn-primary mt-2" onclick="redirectToAddGame()">Add New Game</button>`;
         showError(gameSearch, document.getElementById('gameSearchError'), false, "Please enter a valid game or add it if you want", gameButton);
         isValid = false;
     }
@@ -587,9 +587,9 @@ function validateStoreInput(inputValue) {
         storeInput.classList.add('is-invalid');
     }
 }
-function redirectToAddGame(url) {
-    window.location.href = url;
-}
+//function redirectToAddGame(url) {
+//    window.location.href = url;
+//}
 
 function showDropdownSuggestions() {
     const storeSearchResults = document.getElementById('storeSearchResults');
