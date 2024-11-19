@@ -197,6 +197,15 @@ function validateForm() {
 
 function redirectToAddGame() {
     const gameName = gameSearch.value;
+    const payload = {
+        storeName: storeSearch.value,
+        platformName: platformSearch.value,
+        launcherName: launcherSearch.value
+        
+    };
+
+    sessionStorage.setItem("payload", JSON.stringify(payload));
+
     window.location.href = `ViewAllGames?gameName=${encodeURIComponent(gameName)}`;
 }
 document.addEventListener("DOMContentLoaded", function () {
@@ -204,9 +213,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const gameName = urlParams.get('gameName');
 
     if (gameName) {
-        // Open the Buy New Game modal
         const buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
-        document.getElementById('gameSearch').value = gameName; // Pre-fill the game name
+        const payload = JSON.parse(sessionStorage.getItem("payload"));
+        if (payload) {
+            document.getElementById('storeSearch').value = payload.storeName; 
+            document.getElementById('platformSearch').value = payload.platformName; 
+
+            document.getElementById('launcherSearch').value = payload.launcherName; 
+
+            sessionStorage.removeItem("payload");
+        }
+        document.getElementById('gameSearch').value = gameName; 
         buyGameModal.show();
     }
 
