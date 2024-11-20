@@ -183,6 +183,16 @@ function redirectToAddGame() {
 
     sessionStorage.setItem("payload", JSON.stringify(payload));
 
+    // Set validation flags to true
+    storeSelected.value = true;
+    platformSelected.value = true;
+    launcherSelected.value = true;
+
+    // Show that the inputs are valid
+    showError(storeSearch, document.getElementById('storeSearchError'), true);
+    showError(platformSearch, document.getElementById('platformSearchError'), true);
+    showError(launcherSearch, document.getElementById('launcherSearchError'), true);
+
     window.location.href = `ViewAllGames?gameName=${encodeURIComponent(gameName)}&price=${encodeURIComponent(price)}&purchaseDate=${encodeURIComponent(purchaseDate)}&notes=${encodeURIComponent(notes)}`;
 }
 document.addEventListener("DOMContentLoaded", function () {
@@ -200,13 +210,21 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('purchaseDate').value = payload.purchaseDate;
             document.getElementById('notes').value = payload.notes;
 
+            // Set validation flags to true
+            storeSelected.value = true;
+            platformSelected.value = true;
+            launcherSelected.value = true;
+
+            // Show that the inputs are valid
+            showError(storeSearch, document.getElementById('storeSearchError'), true);
+            showError(platformSearch, document.getElementById('platformSearchError'), true);
+            showError(launcherSearch, document.getElementById('launcherSearchError'), true);
 
             sessionStorage.removeItem("payload");
         }
         document.getElementById('gameSearch').value = gameName;
         buyGameModal.show();
     }
-
 });
 
 function openAddStoreModal(storeName) {
@@ -281,6 +299,7 @@ function handleFormSubmit(formId, url, updateFunction, closeModal = true) {
             .catch(error => console.error('Error:', error));
     });
 }
+
 function openBuyGameModalWithStore(storeName, storeId) {
     const errorMessageElement = document.getElementById('storeSearchError');
     errorMessageElement.style.display = 'none';
