@@ -173,9 +173,18 @@ function redirectToAddGame() {
     const notes = document.getElementById('notes').value; // Get the notes input
 
     const payload = {
-        storeName: storeSearch.value,
-        platformName: platformSearch.value,
-        launcherName: launcherSearch.value,
+        store: {
+            id: storeId.value,
+            name: storeSearch.value,
+        },
+        platformName: {
+            id: platformId.value,
+            name: platformSearch.value,
+        },
+        launcherName: {
+            id: launcherId.value,
+            name: launcherSearch.value,
+        },
         price: price,
         purchaseDate: purchaseDate,
         notes: notes
@@ -198,31 +207,45 @@ function redirectToAddGame() {
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const gameName = urlParams.get('gameName');
+    const newGameId = urlParams.get('gameId');
 
-    if (gameName) {
+    debugger;("gameName: " + gameName + "newGameId:" + newGameId);
+
+    if (gameName && gameId) {
         const buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
         const payload = JSON.parse(sessionStorage.getItem("payload"));
         if (payload) {
-            document.getElementById('storeSearch').value = payload.storeName;
-            document.getElementById('platformSearch').value = payload.platformName;
-            document.getElementById('launcherSearch').value = payload.launcherName;
-            document.getElementById('price').value = payload.price;
-            document.getElementById('purchaseDate').value = payload.purchaseDate;
-            document.getElementById('notes').value = payload.notes;
+            storeSearch.value = payload.store.name;
+            platformSearch.value = payload.platformName.name;
+            launcherSearch.value = payload.launcherName.name;
+            price.value = payload.price;
+            purchaseDate.value = payload.purchaseDate;
+            notes.value = payload.notes;
+
+            storeId.value = payload.store.id;
+            platformId.value = payload.platformName.id;
+            launcherId.value = payload.launcherName.id;
+
+
+
+
 
             // Set validation flags to true
+            gameSelected.value = true;
             storeSelected.value = true;
             platformSelected.value = true;
             launcherSelected.value = true;
 
             // Show that the inputs are valid
+            showError(gameSearch, document.getElementById('gameSearchError'), true);
             showError(storeSearch, document.getElementById('storeSearchError'), true);
             showError(platformSearch, document.getElementById('platformSearchError'), true);
             showError(launcherSearch, document.getElementById('launcherSearchError'), true);
 
             sessionStorage.removeItem("payload");
         }
-        document.getElementById('gameSearch').value = gameName;
+        gameSearch.value = gameName;
+        gameId.value = newGameId;
         buyGameModal.show();
     }
 });

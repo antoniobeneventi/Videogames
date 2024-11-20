@@ -197,7 +197,7 @@ public class GamesController : Controller
             await _dbContext.SaveChangesAsync();
 
             // Redirect back to Buy Game modal with game name
-            return RedirectToAction("Index", "Games", new { gameName = gameName });
+            return RedirectToAction("Index", "Games", new { gameName = gameName, gameId = game.GameId });
         }
 
         TempData["ErrorMessage"] = "Il nome e la descrizione del gioco non possono essere vuoti.";
