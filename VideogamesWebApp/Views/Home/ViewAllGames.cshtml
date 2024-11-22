@@ -1,7 +1,5 @@
 ﻿@model List<VideogamesWebApp.Models.GameViewModel>
 
-
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <div class="container mt-4">
     <h1>All Games</h1>
@@ -29,28 +27,28 @@
                 var currentPage = (int)ViewData["CurrentPage"];
                 var currentSortOrder = (string)ViewData["CurrentSortOrder"];
 
-                    <tr>
-                        <th scope="col">
-                            <a href="@Url.Action("ViewAllGames", new { sortOrder = currentSortOrder == "GameNameAsc" ? "GameNameDesc" : "GameNameAsc", pageNumber = currentPage })">
-                                Game Name
-                                <i class="fas @(currentSortOrder == "GameNameAsc" ? "fa-sort-up" : "fa-sort-down")"></i>
-                            </a>
-                        </th>
-                        <th scope="col">
-                            <a href="@Url.Action("ViewAllGames", new { sortOrder = currentSortOrder == "GameDescriptionAsc" ? "GameDescriptionDesc" : "GameDescriptionAsc", pageNumber = currentPage })">
-                                Description
-                                <i class="fas @(currentSortOrder == "GameNameAsc" ? "fa-sort-up" : "fa-sort-down")"></i>
-                            </a>
-                        </th>
-                        <th scope="col">Is DLC of:</th>
-                        <th scope="col">
-                            <a href="@Url.Action("ViewAllGames", new { sortOrder = currentSortOrder == "DLCCountAsc" ? "DLCCountDesc" : "DLCCountAsc", pageNumber = currentPage })">
-                                Number of DLCs
-                                <i class="fas @(currentSortOrder == "DLCCountAsc" ? "fa-sort-up" : "fa-sort-down")"></i>
-                            </a>
-                        </th>
-                        <th scope="col">List of DLC:</th>
-                    </tr>
+                <tr>
+                    <th scope="col">
+                        <a href="@Url.Action("ViewAllGames", new { sortOrder = currentSortOrder == "GameNameAsc" ? "GameNameDesc" : "GameNameAsc", pageNumber = currentPage })">
+                            Game Name
+                            <i class="fas @(currentSortOrder == "GameNameAsc" ? "fa-sort-up" : "fa-sort-down")"></i>
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a href="@Url.Action("ViewAllGames", new { sortOrder = currentSortOrder == "GameDescriptionAsc" ? "GameDescriptionDesc" : "GameDescriptionAsc", pageNumber = currentPage })">
+                            Description
+                            <i class="fas @(currentSortOrder == "GameNameAsc" ? "fa-sort-up" : "fa-sort-down")"></i>
+                        </a>
+                    </th>
+                    <th scope="col">Is DLC of:</th>
+                    <th scope="col">
+                        <a href="@Url.Action("ViewAllGames", new { sortOrder = currentSortOrder == "DLCCountAsc" ? "DLCCountDesc" : "DLCCountAsc", pageNumber = currentPage })">
+                            Number of DLCs
+                            <i class="fas @(currentSortOrder == "DLCCountAsc" ? "fa-sort-up" : "fa-sort-down")"></i>
+                        </a>
+                    </th>
+                    <th scope="col">List of DLC:</th>
+                </tr>
 
             }
         </thead>
@@ -95,23 +93,23 @@
 
                 if (currentPage > 1)
                 {
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage - 1, sortOrder = currentSortOrder })">Previous</a>
-                        </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage - 1, sortOrder = currentSortOrder })">Previous</a>
+                    </li>
                 }
 
                 for (int i = 1; i <= totalPages; i++)
                 {
-                        <li class="page-item @(i == currentPage ? "active" : "")">
-                            <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = i, sortOrder = currentSortOrder })">@i</a>
-                        </li>
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = i, sortOrder = currentSortOrder })">@i</a>
+                    </li>
                 }
 
                 if (currentPage < totalPages)
                 {
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage + 1, sortOrder = currentSortOrder })">Next</a>
-                        </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage + 1, sortOrder = currentSortOrder })">Next</a>
+                    </li>
                 }
             }
         </ul>
@@ -126,6 +124,7 @@
                 </div>
                 <div class="modal-body">
                     <form asp-action="AddGame" asp-controller="Games" method="post" id="addGameForm">
+                        <input type="hidden" name="fromViewAllGames" id="fromAllViewGames" value="false" /> <!-- Hidden input to indicate the source -->
                         <div class="mb-3">
                             <label for="gameNameInput" class="form-label">Game Name</label>
                             <input type="text" class="form-control" id="gameNameInput" name="GameName" required>
@@ -199,9 +198,9 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                                                                                        <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                                                        <strong>${dlc.gameName}</strong>
-                                                                                                    `;
+                                                                                                            <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                                                            <strong>${dlc.gameName}</strong>
+                                                                                                        `;
                         dlcListElement.appendChild(listItem);
                     });
                 }
@@ -214,9 +213,10 @@
     if (gameName) {
         const gameModal = new bootstrap.Modal(document.getElementById('addGameModal'));
         document.getElementById('gameNameInput').value = gameName;
+        fromAllViewGames.value = urlParams.get('fromAllViewGames');
         gameModal.show();
     }
-    
+
     document.addEventListener("DOMContentLoaded", function () {
         if (window.location.hash === '#addGameModal') {
             var addGameModal = new bootstrap.Modal(document.getElementById('addGameModal'));
@@ -251,9 +251,9 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                                                                            <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                                            <strong>${dlc.gameName}</strong>
-                                                                                        `;
+                                                                                                <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                                                <strong>${dlc.gameName}</strong>
+                                                                                            `;
                         dlcListElement.appendChild(listItem);
                     });
 
