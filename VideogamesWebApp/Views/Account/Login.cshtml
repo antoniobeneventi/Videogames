@@ -8,95 +8,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .login-container {
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
             margin-top: 5rem;
             text-align: center;
-            border: 1px solid #e0e0e0;
-            max-width: 400px;
+            max-width: 450px;
             width: 100%;
-            transition: transform 0.3s;
-            margin-left: auto;
-            margin-right: auto;
+            transition: all 0.3s ease;
         }
 
             .login-container:hover {
-                transform: translateY(-5px);
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             }
 
         h2 {
-            color: #343a40;
+            color: #4a4a4a;
             margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
         }
 
         .form-control {
-            width: 100%;
-            margin: 0 auto;
-            border-radius: 20px;
-            border: 1px solid #007bff;
-            transition: border-color 0.3s;
+            border-radius: 25px;
+            padding-left: 40px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
         }
 
             .form-control:focus {
-                border-color: #0056b3;
-                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+                border-color: #667eea;
+                box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
             }
 
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0a0a0;
+        }
+
+        .btn-custom {
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
         .btn-primary {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-            padding: 0.375rem 0.75rem;
-            width: 100px;
-            border-radius: 20px;
-            transition: background-color 0.3s;
         }
 
             .btn-primary:hover {
-                background-color: #0056b3;
+                transform: scale(1.05);
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
             }
 
         .btn-secondary {
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             border: none;
-            padding: 0.375rem 0.75rem;
-            width: 100px;
-            border-radius: 20px;
-            margin-left: 10px;
-            transition: background-color 0.3s;
-        }
-
-            .btn-secondary:hover {
-                background-color: #5a6268;
-            }
-
-        .modal-header {
-            background-color: #007bff;
             color: white;
         }
 
-        .alert {
-            margin-top: 1rem;
-        }
+            .btn-secondary:hover {
+                transform: scale(1.05);
+                background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            }
 
         .button-container {
-            margin-top: 1rem;
             display: flex;
             justify-content: center;
+            gap: 15px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+        }
+
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
+        .input-group-text {
+            background-color: transparent !important;
+            border-color: #e0e0e0;
+        }
+
+        .form-control-lg {
+            font-size: 1rem;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
         }
     </style>
 </head>
 <body>
     <div class="container login-container mt-4">
-        <h2>Login</h2>
+        <h2><i class="fas fa-user-lock mr-2"></i>Login</h2>
 
         @if (ViewData["Error"] != null)
         {
@@ -105,16 +137,20 @@
 
         <form method="post" asp-controller="Account" asp-action="Login">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" maxlength="20" class="form-control" id="username" name="username" required>
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" maxlength="30" class="form-control" id="username" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" maxlength="20" class="form-control" id="password" name="password" required>
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" maxlength="10" class="form-control" id="password" name="password" placeholder="Password" required>
             </div>
             <div class="button-container">
-                <button type="submit" class="btn btn-primary">Login</button>
-                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#registerModal">Register</button>
+                <button type="submit" class="btn btn-primary btn-custom">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                </button>
+                <button type="button" class="btn btn-secondary btn-custom" data-toggle="modal" data-target="#registerModal">
+                    <i class="fas fa-user-plus mr-2"></i>Register
+                </button>
             </div>
         </form>
 
@@ -129,31 +165,81 @@
 
     <!-- Registration Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-gradient-primary text-white py-4 border-0">
+                    <h5 class="modal-title" id="registerModalLabel">
+                        <i class="fas fa-user-plus mr-3 text-white"></i>
+                        Create New Account
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-white">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <form id="registerForm" method="post" asp-controller="Account" asp-action="Register">
-                        <div class="form-group">
-                            <label for="regUsername">Username</label>
-                            <input type="text" maxlength="20" class="form-control" id="regUsername" name="regUsername" required>
+                        <div class="form-group position-relative mb-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-transparent border-right-0">
+                                        <i class="fas fa-user text-primary"></i>
+                                    </span>
+                                </div>
+                                <input type="text"
+                                       maxlength="30"
+                                       class="form-control form-control-lg border-left-0 pl-0"
+                                       id="regUsername"
+                                       name="regUsername"
+                                       placeholder="Choose a Username"
+                                       required>
+                            </div>
+                            <small class="form-text text-muted ml-4">Username must be 4-30 characters long</small>
                         </div>
-                        <div class="form-group">
-                            <label for="regPassword">Password</label>
-                            <input type="password" maxlength="20" class="form-control" id="regPassword" name="regPassword" required>
+
+                        <div class="form-group position-relative mb-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-transparent border-right-0">
+                                        <i class="fas fa-lock text-primary"></i>
+                                    </span>
+                                </div>
+                                <input type="password"
+                                       maxlength="10"
+                                       class="form-control form-control-lg border-left-0 pl-0"
+                                       id="regPassword"
+                                       name="regPassword"
+                                       placeholder="Create a Strong Password"
+                                       required>
+                                
+                            </div>
+                            <small class="form-text text-muted ml-4">Password must be at least 10 characters</small>
                         </div>
+
                         @if (ViewData["RegisterError"] != null)
                         {
-                            <div id="registerErrorMessage" class="alert alert-danger">@ViewData["RegisterError"]</div>
+                            <div id="registerErrorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                @ViewData["RegisterError"]
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         }
 
-                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block btn-lg rounded-pill shadow-sm">
+                                <i class="fas fa-user-plus mr-2"></i>Create Account
+                            </button>
+                        </div>
                     </form>
+
+                    <div class="text-center mt-3">
+                        <p class="text-muted">
+                            Already have an account?
+                            <a href="#" class="text-primary" data-dismiss="modal" data-toggle="modal" data-target="#loginModal">
+                                Log in
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

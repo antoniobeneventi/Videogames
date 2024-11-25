@@ -124,7 +124,7 @@
                 </div>
                 <div class="modal-body">
                     <form asp-action="AddGame" asp-controller="Games" method="post" id="addGameForm">
-                        <input type="hidden" name="fromViewAllGames" id="fromAllViewGames" value="false" /> <!-- Hidden input to indicate the source -->
+                        <input type="hidden" name="fromViewAllGames" id="fromAllViewGames" value="false" />
                         <div class="mb-3">
                             <label for="gameNameInput" class="form-label">Game Name</label>
                             <input type="text" class="form-control" id="gameNameInput" name="GameName" required>
@@ -198,9 +198,9 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                                                                                            <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                                                            <strong>${dlc.gameName}</strong>
-                                                                                                        `;
+                                                                                                                    <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                                                                    <strong>${dlc.gameName}</strong>
+                                                                                                                `;
                         dlcListElement.appendChild(listItem);
                     });
                 }
@@ -251,9 +251,9 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                                                                                <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                                                <strong>${dlc.gameName}</strong>
-                                                                                            `;
+                                                                                                        <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                                                        <strong>${dlc.gameName}</strong>
+                                                                                                    `;
                         dlcListElement.appendChild(listItem);
                     });
 

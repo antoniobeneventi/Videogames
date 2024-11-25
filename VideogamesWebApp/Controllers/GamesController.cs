@@ -183,7 +183,7 @@ public class GamesController : Controller
 
             if (existingGame != null)
             {
-                TempData["ErrorMessage"] = "Un gioco con lo stesso nome, descrizione e gioco principale esiste già. Inserisci dettagli diversi.";
+                TempData["ErrorMessage"] = "A game with the same name, description already exists. Enter different details.";
                 return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
             }
 
@@ -196,20 +196,21 @@ public class GamesController : Controller
             _dbContext.Games.Add(game);
             await _dbContext.SaveChangesAsync();
 
-            // Redirect based on the fromViewAllGames parameter
+            TempData["SuccessMessage"] = "The game has been successfully added!";
+
             if (fromViewAllGames)
             {
-                // Redirect back to the ViewAllGames page with new game name and id
+                //  ritorna la pagina di ViewAllGames con il nome gioco
                 return RedirectToAction("index", "Games", new { sortOrder = "alphabetical", gameName = gameName, gameId = game.GameId });
             }
             else
             {
-                // Redirect to the Index page
+                // Ritorna pagina Index 
                 return RedirectToAction("ViewAllGames", "Games");
             }
         }
 
-        TempData["ErrorMessage"] = "Il nome e la descrizione del gioco non possono essere vuoti.";
+        TempData["ErrorMessage"] = "The game name and description cannot be empty.";
         return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
     }
 
@@ -218,7 +219,7 @@ public class GamesController : Controller
     {
         if (!string.IsNullOrWhiteSpace(storeName))
         {
-            var existingStore = _dbContext.Stores.FirstOrDefault(s => s.StoreName == storeName);
+            var existingStore = _dbContext.Stores.FirstOrDefault(s => s.StoreName.ToLower() == storeName.ToLower());
             if (existingStore != null)
             {
                 return Json(new { success = false, message = "Store with this name already exists. Please enter a different name." });
@@ -233,11 +234,20 @@ public class GamesController : Controller
 
             _dbContext.Stores.Add(newStore);
             _dbContext.SaveChanges();
-            return Json(new { success = true, storeId = newStore.StoreId, storeName = newStore.StoreName, message = "Store added successfully!" });
+
+            // Ritorna messaggio di successo con dettagli sullo store creato
+            return Json(new
+            {
+                success = true,
+                storeId = newStore.StoreId,
+                storeName = newStore.StoreName,
+                message = "Store added successfully!"
+            });
         }
 
         return Json(new { success = false, message = "Store name cannot be empty." });
     }
+
 
     [HttpPost]
     public IActionResult AddPlatform(string platformName, string platformDescription)
@@ -260,7 +270,13 @@ public class GamesController : Controller
 
             _dbContext.Platforms.Add(newPlatform);
             _dbContext.SaveChanges();
-            return Json(new { success = true, platformId = newPlatform.PlatformId, platformName = newPlatform.PlatformName, message = "Platform added successfully!" });
+            return Json(new
+            {
+                success = true,
+                platformId = newPlatform.PlatformId,
+                platformName = newPlatform.PlatformName,
+                message = "Platform added successfully!"
+            });
         }
 
         return Json(new { success = false, message = "Platform name cannot be empty." });
@@ -288,7 +304,13 @@ public class GamesController : Controller
 
             _dbContext.Launchers.Add(newLauncher);
             _dbContext.SaveChanges();
-            return Json(new { success = true, launcherId = newLauncher.LauncherId, launcherName = newLauncher.LauncherName, message = "Launcher added successfully!" });
+            return Json(new
+            {
+                success = true,
+                launcherId = newLauncher.LauncherId,
+                launcherName = newLauncher.LauncherName,
+                message = "Launcher added successfully!"
+            });
         }
 
         return Json(new { success = false, message = "Launcher name cannot be empty." });
@@ -310,6 +332,24 @@ public class GamesController : Controller
 
         TempData["SuccessMessage"] = "Game deleted successfully.";
         return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult DeleteAllGame(int GameId)
+    {
+        var game = _dbContext.Games.SingleOrDefault(t => t.GameId == GameId);
+
+        if (game == null)
+        {
+            TempData["ErrorMessage"] = "Transaction not found or already deleted.";
+            return RedirectToAction("Index");
+        }
+
+        _dbContext.Games.Remove(game);
+        _dbContext.SaveChanges();
+
+        TempData["SuccessMessage"] = "Game deleted successfully.";
+        return RedirectToAction("ViewAllGames");
     }
 
 
@@ -472,4 +512,5 @@ public class GamesController : Controller
 
 
 }
+
 

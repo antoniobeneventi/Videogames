@@ -170,10 +170,44 @@ let fromStoreErrorButton = false;
 let fromPlatformErrorButton = false;
 let fromLauncherErrorButton = false;
 
+// Salva gli errori dei campi nel sessionStorage.
+function saveFieldErrors() {
+    const errors = {
+        store: storeSelected.value ? null : {
+            message: "Please enter a valid store or add it if you want",
+            buttonHtml: `<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal('${storeSearch.value}')">Add New Store</button>`
+        },
+        platform: platformSelected.value ? null : {
+            message: "Please enter a valid platform or add it if you want",
+            buttonHtml: '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddPlatformModal()">Add New Platform</button>'
+        },
+        launcher: launcherSelected.value ? null : {
+            message: "Please enter a valid launcher or add it if you want",
+            buttonHtml: '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddLauncherModal()">Add New Launcher</button>'
+        }
+    };
+    sessionStorage.setItem("fieldErrors", JSON.stringify(errors));
+}
+
+// Ripristina gli errori salvati al caricamento della pagina.
+function restoreFieldErrors() {
+    const errors = JSON.parse(sessionStorage.getItem("fieldErrors"));
+    if (errors) {
+        if (errors.store) {
+            showError(storeSearch, document.getElementById('storeSearchError'), false, errors.store.message, errors.store.buttonHtml);
+        }
+        if (errors.platform) {
+            showError(platformSearch, document.getElementById('platformSearchError'), false, errors.platform.message, errors.platform.buttonHtml);
+        }
+        if (errors.launcher) {
+            showError(launcherSearch, document.getElementById('launcherSearchError'), false, errors.launcher.message, errors.launcher.buttonHtml);
+        }
+    }
+}
+
 // Mostra o nasconde messaggi di errore per un dato campo di input.
 function showError(inputElement, errorElement, isValid, customMessage = '', buttonHtml = '') {
     if (!isValid) {
-        // Mostra il messaggio di errore e il pulsante azione personalizzato.
         errorElement.innerHTML = `
             <div class="error-message">${customMessage}</div>
             ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
@@ -181,7 +215,6 @@ function showError(inputElement, errorElement, isValid, customMessage = '', butt
         errorElement.style.display = 'block';
         inputElement.classList.add('is-invalid');
     } else {
-        // Nasconde il messaggio di errore e rimuove la classe di errore dall'input.
         errorElement.style.display = 'none';
         inputElement.classList.remove('is-invalid');
     }
@@ -224,12 +257,13 @@ function validateForm() {
 
 // Reindirizza alla pagina "View All Games" con i parametri del gioco nella URL.
 function redirectToAddGame() {
+    saveFieldErrors(); // Salva gli errori correnti.
+
     const gameName = gameSearch.value;
     const price = document.getElementById('price').value;
     const purchaseDate = document.getElementById('purchaseDate').value;
     const notes = document.getElementById('notes').value;
 
-    // Costruisce il payload da salvare nella sessione.
     const payload = {
         store: {
             id: storeId.value,
@@ -249,16 +283,6 @@ function redirectToAddGame() {
     };
 
     sessionStorage.setItem("payload", JSON.stringify(payload));
-
-    // Imposta i campi di input come validi.
-    storeSelected.value = true;
-    platformSelected.value = true;
-    launcherSelected.value = true;
-    showError(storeSearch, document.getElementById('storeSearchError'), true);
-    showError(platformSearch, document.getElementById('platformSearchError'), true);
-    showError(launcherSearch, document.getElementById('launcherSearchError'), true);
-
-    // Reindirizza alla pagina "View All Games".
     window.location.href = "ViewAllGames?" +
         `gameName=${encodeURIComponent(gameName)}&` +
         `price=${encodeURIComponent(price)}&` +
@@ -267,18 +291,17 @@ function redirectToAddGame() {
         `fromAllViewGames=true`;
 }
 
+// Gestione del caricamento della pagina.
 document.addEventListener("DOMContentLoaded", function () {
-    // Ottiene i parametri dalla URL.
     const urlParams = new URLSearchParams(window.location.search);
     const gameName = urlParams.get('gameName');
     const newGameId = urlParams.get('gameId');
 
-    if (gameName && gameId) {
+    if (gameName && newGameId) {
         const buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
         const payload = JSON.parse(sessionStorage.getItem("payload"));
 
         if (payload) {
-            // Ripristina i dati dal payload nella sessione.
             storeSearch.value = payload.store.name;
             platformSearch.value = payload.platformName.name;
             launcherSearch.value = payload.launcherName.name;
@@ -290,7 +313,6 @@ document.addEventListener("DOMContentLoaded", function () {
             platformId.value = payload.platformName.id;
             launcherId.value = payload.launcherName.id;
 
-            // Imposta i campi come validati.
             gameSelected.value = true;
             storeSelected.value = true;
             platformSelected.value = true;
@@ -301,12 +323,16 @@ document.addEventListener("DOMContentLoaded", function () {
             showError(platformSearch, document.getElementById('platformSearchError'), true);
             showError(launcherSearch, document.getElementById('launcherSearchError'), true);
 
-            sessionStorage.removeItem("payload"); // Rimuove il payload dalla sessione.
+            sessionStorage.removeItem("payload");
         }
+
+        restoreFieldErrors(); // Ripristina eventuali errori salvati.
 
         gameSearch.value = gameName;
         gameId.value = newGameId;
-        buyGameModal.show(); // Mostra il modal di acquisto.
+        buyGameModal.show();
+    } else {
+        restoreFieldErrors(); // Ripristina eventuali errori salvati.
     }
 });
 
@@ -362,6 +388,9 @@ function handleFormSubmit(formId, url, updateFunction, closeModal = true) {
                             openBuyGameModalWithStore(data.storeName, data.storeId);
                             fromStoreErrorButton = false;
                         }
+
+                        // Mostra il toast di successo
+                        showToast('Success!', data.message, 'success');
                     } else if (formId === 'addPlatformForm') {
                         let addPlatformModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
                         addPlatformModal.hide();
@@ -371,6 +400,9 @@ function handleFormSubmit(formId, url, updateFunction, closeModal = true) {
                             openBuyGameModalWithPlatform(data.platformName, data.platformId);
                             fromPlatformErrorButton = false;
                         }
+
+                        // Mostra il toast di successo
+                        showToast('Success!', data.message, 'success');
                     } else if (formId === 'addLauncherForm') {
                         let addLauncherModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
                         addLauncherModal.hide();
@@ -380,11 +412,16 @@ function handleFormSubmit(formId, url, updateFunction, closeModal = true) {
                             openBuyGameModalWithLauncher(data.launcherName, data.launcherId);
                             fromLauncherErrorButton = false;
                         }
+
+                        // Mostra il toast di successo
+                        showToast('Success!', data.message, 'success');
                     } else {
                         updateFunction(data);
                         if (closeModal) {
                             bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal')).hide();
                         }
+                        // Mostra il toast di successo
+                        showToast('Success!', data.message, 'success');
                     }
                 } else {
                     alert(data.message); // Mostra il messaggio di errore.
@@ -393,6 +430,40 @@ function handleFormSubmit(formId, url, updateFunction, closeModal = true) {
             .catch(error => console.error('Error:', error)); // Gestisce gli errori della richiesta.
     });
 }
+
+// Funzione per mostrare il toast
+function showToast(title, message, type) {
+    const toastContainer = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-bg-${type} border-0 shadow-lg custom-toast`;
+    toast.role = 'alert';
+    toast.ariaLive = 'assertive';
+    toast.ariaAtomic = 'true';
+
+    // Seleziona un'icona basata sul tipo di toast
+    const icons = {
+        success: '✅'
+    };
+    const icon = icons[type] || icons.info;
+
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <span class="toast-icon me-2">${icon}</span>
+                <strong>${title}</strong> ${message}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+
+    toastContainer.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+
+    // Rimuovi il toast dopo che è scomparso
+    toast.addEventListener('hidden.bs.toast', () => toast.remove());
+}
+
 
 
 // Ripristina il modal di acquisto con lo store selezionato.
@@ -678,5 +749,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const today = new Date().toISOString().split("T")[0];
     purchaseDateInput.value = today;
 });
+
+
 
 
