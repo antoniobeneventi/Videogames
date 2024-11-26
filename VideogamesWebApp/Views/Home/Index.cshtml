@@ -366,7 +366,7 @@
                     <tr>
                         <td><strong><i class="bi bi-controller"></i> @transaction.GameName</strong></td>
                         <td><i class="bi bi-calendar"></i> @transaction.PurchaseDate.ToString("dd/MM/yyyy")</td>
-                        <td><i class="bi bi-currency-euro"></i> @transaction.Price</td>
+                        <td><i class="bi bi-currency-euro"></i> @transaction.Price.ToString("F2")</td>
                         <td><i class="bi bi-cloud"></i>@(transaction.IsVirtual ? "Yes" : "No")</td>
                         <td><i class="bi bi-shop"></i> @transaction.StoreName</td>
                         <td><i class="bi bi-controller"></i>@transaction.PlatformName</td>

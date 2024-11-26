@@ -104,7 +104,7 @@ public class GamesController : Controller
 
     public IActionResult ViewAllGames(int pageNumber = 1, string sortOrder = "GameNameAsc")
     {
-        int pageSize = 10;
+        int pageSize = 7;
         var username = GetUsername();
 
         IQueryable<GameViewModel> allGamesQuery = _dbContext.Games

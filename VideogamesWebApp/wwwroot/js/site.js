@@ -331,9 +331,8 @@ document.addEventListener("DOMContentLoaded", function () {
         gameSearch.value = gameName;
         gameId.value = newGameId;
         buyGameModal.show();
-    } else {
-        restoreFieldErrors(); // Ripristina eventuali errori salvati.
     }
+
 });
 
 // Mostra il modal per aggiungere un nuovo store.

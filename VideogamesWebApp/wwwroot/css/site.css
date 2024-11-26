@@ -1,9 +1,5 @@
-
-
-
 /*CSS Index*/
 
-/* General styling */
 html, body {
     height: 100%;
     margin: 0;
@@ -20,17 +16,17 @@ html, body {
 }
 
 .welcome-container {
-    background-color: #f8f9fa; /* Sfondo chiaro */
-    border-left: 5px solid #007bff; /* Decorazione con un bordo colorato */
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
 }
 
 .welcome-text h1 {
-    color: #1d3557; /* Colore scuro per il testo */
-    font-size: 2rem; /* Grandezza maggiore per evidenziare */
+    color: #1d3557;
+    font-size: 2rem;
 }
 
 .welcome-text p {
-    color: #6c757d; /* Colore testo secondario */
+    color: #6c757d;
     font-size: 1rem;
 }
 
@@ -50,7 +46,7 @@ html, body {
 .input-group-text {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
-    background-color: #457b9d; /* Blu scuro */
+    background-color: #457b9d;
     color: white;
 }
 
@@ -86,10 +82,10 @@ html, body {
 
 
 .container-bg {
-    background-color: #ffffff; /* Sfondo bianco */
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombreggiatura */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Bottoni personalizzati */
@@ -147,13 +143,11 @@ html, body {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-/* Icon styling inside buttons */
 .btn-custom i {
     margin-right: 8px;
     font-size: 1.2rem;
 }
 
-/* Modal styling */
 .modal-content {
     border-radius: 12px;
     overflow: hidden;
@@ -171,7 +165,6 @@ html, body {
     margin-right: 8px;
 }
 
-/* Table styling */
 table {
     border-collapse: collapse;
     width: 100%;
@@ -181,8 +174,8 @@ table {
 }
 
 th {
-    background-color: #457b9d; /* Sfondo blu scuro */
-    color: black; /* Testo bianco */
+    background-color: #457b9d;
+    color: black;
     text-align: left;
     padding: 10px;
     font-size: 14px;
@@ -191,7 +184,7 @@ th {
 }
 
 thead th {
-    border-bottom: 2px solid #1d3557; /* Bordo decorativo */
+    border-bottom: 2px solid #1d3557;
 }
 
 
@@ -204,7 +197,6 @@ tr:hover {
     background-color: #f1f1f1;
 }
 
-/* Search Bar */
 .search-container {
     position: relative;
     margin-top: 10px;
@@ -223,7 +215,7 @@ tr:hover {
             box-shadow: 0 0 4px rgba(69, 123, 157, 0.5);
         }
 
-/* Add store/platform/launcher view sections */
+/* Add store/platform/launcher  */
 .store-item, .platform-item, .launcher-item {
     padding: 15px;
     border-bottom: 1px solid #ddd;
@@ -253,7 +245,6 @@ tr:hover {
             text-decoration: underline;
         }
 
-/* Pagination Buttons */
 #paginationControls button {
     background-color: #1d3557;
     color: white;
@@ -264,7 +255,6 @@ tr:hover {
         transform: translateY(-2px);
     }
 
-/* Improved feedback message styling */
 .alert {
     border-radius: 8px;
     padding: 15px;
@@ -284,7 +274,6 @@ tr:hover {
 }
 
 
-/*Pagination*/
 
 #paginationControls {
     display: flex;
@@ -323,7 +312,6 @@ tr:hover {
         cursor: not-allowed;
     }
 
-/*Style View all store*/
 
 .store-item {
     border-bottom: 1px solid #ddd;
@@ -442,7 +430,7 @@ tr:hover {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    /*tasto delete*/
+/*tasto delete*/
 .btn-delete {
     background-color: #dc3545; /* Rosso */
     color: white;
@@ -460,23 +448,6 @@ tr:hover {
     .btn-delete:hover {
         background-color: #c82333; /* Colore più scuro al passaggio del mouse */
         transform: translateY(-2px); /* Leggera elevazione al passaggio del mouse */
-    }
-
-
-
-/*CSS ViewAllGames*/
-
-.gradient-btn {
-    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
-    border: none;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-    .gradient-btn:hover {
-        background: linear-gradient(45deg, #0099ff, #00d4ff);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
 /* Contenitore dei toast */
@@ -545,3 +516,148 @@ tr:hover {
         opacity: 0;
     }
 }
+
+
+/*CSS ViewAllGames*/
+
+
+.games-container {
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+    .games-container:hover {
+        box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        transform: translateY(-5px);
+    }
+
+.table-games td {
+    background-color: #f9fafb;
+    color: #333;
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.3s ease;
+}
+
+    .table-games td:hover {
+        background-color: #e9f4ff;
+    }
+
+.table-games thead th {
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+.table-games tbody tr:hover {
+    background-color: rgba(0,123,255,0.1);
+    transition: background-color 0.3s ease;
+}
+
+.gradient-header {
+    background: linear-gradient(to right, #007bff, #0056b3);
+    color: white;
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+    .action-buttons .btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .action-buttons .btn:hover {
+            transform: scale(1.05);
+        }
+
+.custom-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+    .custom-pagination .page-item {
+        margin: 0 5px;
+    }
+
+    .custom-pagination .page-link {
+        color: #007bff;
+        background-color: white;
+        border: 2px solid #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+        .custom-pagination .page-link:hover {
+            background-color: #007bff;
+            color: white;
+            transform: scale(1.1);
+        }
+
+    .custom-pagination .page-item.active .page-link {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+        z-index: 3;
+    }
+
+    .custom-pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #dee2e6;
+    }
+
+    .custom-pagination .page-item:first-child .page-link,
+    .custom-pagination .page-item:last-child .page-link {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .custom-pagination .page-item:first-child .page-link {
+        margin-right: 15px;
+    }
+
+    .custom-pagination .page-item:last-child .page-link {
+        margin-left: 15px;
+    }
+
+    .custom-pagination .page-link i {
+        font-size: 18px;
+    }
+
+.table-header-icon {
+    color: #6c757d;
+    margin-left: 4px;
+}
+
+    .table-header-icon.active {
+        color: red;
+        font-weight: bold;
+    }
