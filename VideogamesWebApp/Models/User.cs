@@ -14,4 +14,5 @@ public class User
 
     [Required]
     public string PasswordHash { get; set; }
+ 
 }

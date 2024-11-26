@@ -145,7 +145,6 @@
                 int startPage = Math.Max(1, currentPage - 2);
                 int endPage = Math.Min(totalPages, currentPage + 2);
 
-                // Aggiungi prima pagina se non è già mostrata
                 if (startPage > 1)
                 {
                     <li class="page-item">
@@ -159,7 +158,6 @@
                     }
                 }
 
-                // Pagine centrali
                 for (int i = startPage; i <= endPage; i++)
                 {
                     <li class="page-item @(i == currentPage ? "active" : "")">
@@ -167,7 +165,6 @@
                     </li>
                 }
 
-                // Aggiungi ultima pagina se non è già mostrata
                 if (endPage < totalPages)
                 {
                     if (endPage < totalPages - 1)
@@ -211,14 +208,14 @@
                 </div>
                 <div class="modal-body">
                     <form asp-action="AddGame" asp-controller="Games" method="post" id="addGameForm">
-                        <input type="hidden" name="fromViewAllGames" id="fromAllViewGames" value="false" />
+                        <input maxlength="30" type="hidden" name="fromViewAllGames" id="fromAllViewGames" value="false" />
                         <div class="mb-3">
                             <label for="gameNameInput" class="form-label">Game Name</label>
-                            <input type="text" class="form-control" id="gameNameInput" name="GameName" required>
+                            <input maxlength="30" type="text" class="form-control" id="gameNameInput" name="GameName" required>
                         </div>
                         <div class="mb-3">
                             <label for="gameDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="gameDescription" name="GameDescription" required></textarea>
+                            <textarea maxlength="100" class="form-control" id="gameDescription" name="GameDescription" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="mainGameId" class="form-label">Main Game (optional)</label>

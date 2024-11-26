@@ -88,4 +88,48 @@ public class AccountController : Controller
 
         return RedirectToAction("Login", "Account");
     }
+    [HttpGet]
+    public IActionResult EditAccount()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult ChangePassword(string currentPassword, string newPassword, string confirmNewPassword)
+    {
+        if (newPassword != confirmNewPassword)
+        {
+            TempData["ErrorMessage"] = "The new passwords do not match.";
+            return RedirectToAction("Index", "Games");
+        }
+
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
+        {
+            TempData["ErrorMessage"] = "User not found.";
+            return RedirectToAction("Login", "Account");
+        }
+
+        var user = _context.Users.SingleOrDefault(u => u.UserId == userId);
+        if (user == null)
+        {
+            TempData["ErrorMessage"] = "User not found.";
+            return RedirectToAction("Login", "Account");
+        }
+
+        if (!VerifyPasswordHash(currentPassword, user.PasswordHash))
+        {
+            TempData["ErrorMessage"] = "Current password is incorrect.";
+            return RedirectToAction("Index", "Games");
+        }
+
+        // Aggiorna la password
+        user.PasswordHash = HashPassword(newPassword);
+        _context.SaveChanges();
+
+        TempData["SuccessMessage"] = "Password changed successfully!";
+        return RedirectToAction("Index", "Games");
+    }
+
+
 }
