@@ -41,39 +41,50 @@
 
                 <tr>
                     <th scope="col">
-                        <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameNameAsc", pageNumber = currentPage })"
-                           class="table-header-link">
-                            Game Name
-                            <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "GameNameAsc" ? "active" : "")"></i>
-                        </a>
-                        <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameNameDesc", pageNumber = currentPage })"
-                           class="table-header-link">
-                            <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "GameNameDesc" ? "active" : "")"></i>
-                        </a>
+                        <div class="table-header-link-container">
+                            <span>Game Name</span>
+                            <span class="table-header-icons">
+                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameNameAsc", pageNumber = currentPage })" class="table-header-icon-link">
+                                    <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "GameNameAsc" ? "active" : "")"></i>
+                                </a>
+                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameNameDesc", pageNumber = currentPage })" class="table-header-icon-link">
+                                    <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "GameNameDesc" ? "active" : "")"></i>
+                                </a>
+                            </span>
+                        </div>
                     </th>
+
                     <th scope="col">
-                        <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameDescriptionAsc", pageNumber = currentPage })"
-                           class="table-header-link">
-                            Description
-                            <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "GameDescriptionAsc" ? "active" : "")"></i>
-                        </a>
-                        <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameDescriptionDesc", pageNumber = currentPage })"
-                           class="table-header-link">
-                            <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "GameDescriptionDesc" ? "active" : "")"></i>
-                        </a>
+                        <div class="table-header-link-container">
+                            <span>Description</span>
+                            <span class="table-header-icons">
+                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameDescriptionAsc", pageNumber = currentPage })" class="table-header-icon-link">
+                                    <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "GameDescriptionAsc" ? "active" : "")"></i>
+                                </a>
+                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameDescriptionDesc", pageNumber = currentPage })" class="table-header-icon-link">
+                                    <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "GameDescriptionDesc" ? "active" : "")"></i>
+                                </a>
+                            </span>
+                        </div>
                     </th>
+                   
                     <th scope="col">Is DLC of:</th>
                     <th scope="col">
-                        <a href="@Url.Action("ViewAllGames", new { sortOrder = "DLCCountAsc", pageNumber = currentPage })"
-                           class="table-header-link">
-                            Number of DLCs
-                            <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "DLCCountAsc" ? "active" : "")"></i>
-                        </a>
-                        <a href="@Url.Action("ViewAllGames", new { sortOrder = "DLCCountDesc", pageNumber = currentPage })"
-                           class="table-header-link">
-                            <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "DLCCountDesc" ? "active" : "")"></i>
-                        </a>
+                        <div class="table-header-link-container">
+                            <span>
+                                Number of DLCs
+                            </span>
+                            <span class="table-header-icons">
+                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "DLCCountAsc", pageNumber = currentPage })" class="table-header-icon-link">
+                                    <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "DLCCountAsc" ? "active" : "")"></i>
+                                </a>
+                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "DLCCountDesc", pageNumber = currentPage })" class="table-header-icon-link">
+                                    <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "DLCCountDesc" ? "active" : "")"></i>
+                                </a>
+                            </span>
+                        </div>
                     </th>
+                   
                     <th scope="col">List of DLC:</th>
                     <th>Actions</th>
                 </tr>

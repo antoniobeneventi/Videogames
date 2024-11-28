@@ -40,18 +40,18 @@ namespace GamesDataAccess
                 .HasForeignKey(t => t.PlatformId);
 
             modelBuilder.Entity<GameTransactions>()
-                .HasOne<Game>()
+         .HasOne(t => t.Game)
                 .WithMany()
                 .HasForeignKey(t => t.GameId);
 
-           
+
 
             modelBuilder.Entity<GameTransactions>()
                 .HasOne<Launcher>()
                 .WithMany()
                 .HasForeignKey(t => t.LauncherId);
 
-          
+            
 
             modelBuilder.Entity<Launcher>().HasKey(l => l.LauncherId);
             modelBuilder.Entity<Launcher>().Property(l => l.LauncherName).IsRequired();

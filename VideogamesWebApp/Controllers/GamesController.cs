@@ -11,10 +11,14 @@ public class GamesController : Controller
         _dbContext = dbContext;
     }
 
-    public IActionResult Index(string searchQuery)
+
+
+
+    public IActionResult Index(string searchQuery, int pageNumber = 1)
     {
         var userId = GetUserId();
         var username = GetUsername();
+        int pageSize = 4;
 
         var transactionsQuery = from transaction in _dbContext.GameTransactions
                                 join game in _dbContext.Games on transaction.GameId equals game.GameId
@@ -24,6 +28,7 @@ public class GamesController : Controller
                                 join mainGame in _dbContext.Games on game.MainGameId equals mainGame.GameId into mainGames
                                 from mainGame in mainGames.DefaultIfEmpty()
                                 where transaction.UserId == userId
+                                orderby game.GameName
                                 select new GameTransactionsViewModel
                                 {
                                     TransactionId = transaction.TransactionId,
@@ -50,10 +55,16 @@ public class GamesController : Controller
                 (t.MainGameName != null && t.MainGameName.ToLower().Contains(searchQuery))
             );
         }
+        var totalTransactions = transactionsQuery.Count();
+        var transactions = transactionsQuery
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
 
-        var transactions = transactionsQuery.ToList();
         ViewData["Username"] = username;
         ViewData["searchQuery"] = searchQuery;
+        ViewData["TotalPages"] = (int)Math.Ceiling((double)totalTransactions / pageSize);
+        ViewData["CurrentPage"] = pageNumber;
 
         ViewData["AvailableGames"] = _dbContext.Games
                                     .Select(g => new { g.GameId, g.GameName })
@@ -72,11 +83,15 @@ public class GamesController : Controller
         return View("~/Views/Home/Index.cshtml", transactions);
     }
 
+
+
+
     [HttpPost]
     public IActionResult BuyGame(GamePurchaseViewModel model)
     {
         if (ModelState.IsValid)
         {
+
             var newTransaction = new GameTransactions
             {
                 GameId = model.GameId,
@@ -160,7 +175,120 @@ public class GamesController : Controller
         ViewData["CurrentSortOrder"] = sortOrder;
         return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
     }
+    public IActionResult ViewStats()
+    {
+        var userId = GetUserId();
 
+        //prezzo totale speso
+        var totalSpent = _dbContext.GameTransactions
+            .Where(t => t.UserId == userId)
+            .Sum(t => t.Price);
+
+        ViewData["TotalSpent"] = totalSpent;
+
+        //giochi totali che hai l'utente
+        var totalGames = _dbContext.GameTransactions
+    .Where(t => t.UserId == userId)
+    .Select(t => t.GameId)
+    .Distinct()
+    .Count();
+
+        ViewData["TotalGames"] = totalGames;
+
+        //prezzo medio per ogni gioco
+        var averagePrice = _dbContext.GameTransactions
+    .Where(t => t.UserId == userId)
+    .Average(t => (double?)t.Price) ?? 0;
+
+        ViewData["AveragePrice"] = averagePrice;
+
+        //giorno con il maggior numero di acquisti
+        var mostActiveDay = _dbContext.GameTransactions
+    .Where(t => t.UserId == userId)
+    .GroupBy(t => t.PurchaseDate)
+    .OrderByDescending(g => g.Count())
+    .Select(g => new { Date = g.Key, Count = g.Count() })
+    .FirstOrDefault();
+
+        ViewData["MostActiveDay"] = mostActiveDay != null
+            ? $"{mostActiveDay.Date:dd/MM/yyyy} ({mostActiveDay.Count} shopping)"
+            : "No transactions.";
+
+        //Percentuale di giochi virtuali
+        var totalVirtual = _dbContext.GameTransactions
+      .Where(t => t.UserId == userId && t.IsVirtual)
+      .Count();
+
+        var totalTransactions = _dbContext.GameTransactions
+            .Where(t => t.UserId == userId)
+            .Count();
+
+        var percentageVirtual = totalTransactions > 0
+            ? Math.Ceiling((double)totalVirtual / totalTransactions * 100) // Approssimazione per eccesso
+            : 0;
+
+        ViewData["PercentageVirtual"] = $"{percentageVirtual}% ({totalVirtual} virtual games)";
+
+        //most expensive game
+        var mostExpensiveGame = _dbContext.GameTransactions
+    .Where(t => t.UserId == userId)
+    .AsEnumerable() 
+    .OrderByDescending(t => t.Price) 
+    .Select(t => new { t.GameId, t.Price })
+    .FirstOrDefault(); 
+
+        if (mostExpensiveGame != null)
+        {
+            var gameName = _dbContext.Games
+                .Where(g => g.GameId == mostExpensiveGame.GameId)
+                .Select(g => g.GameName)
+                .FirstOrDefault();
+
+            ViewData["MostExpensiveGame"] = gameName != null
+                ? $"{gameName} ({mostExpensiveGame.Price} €)"
+                : "Nessun gioco trovato.";
+        }
+        else
+        {
+            ViewData["MostExpensiveGame"] = "Nessuna transazione trovata.";
+        }
+
+        //last purchase
+        var lastPurchase = _dbContext.GameTransactions
+    .Where(t => t.UserId == userId)
+    .OrderByDescending(t => t.PurchaseDate)
+    .Select(t => new { t.Game.GameName, t.PurchaseDate })
+    .FirstOrDefault();
+
+        ViewData["LastPurchase"] = lastPurchase != null
+            ? $"{lastPurchase.GameName} on {lastPurchase.PurchaseDate:dd/MM/yyyy}"
+            : "No transactions.";
+
+        //Shopping by days of the week
+        var activeDaysOfWeek = _dbContext.GameTransactions
+    .Where(t => t.UserId == userId)
+    .GroupBy(t => t.PurchaseDate.DayOfWeek)
+    .OrderByDescending(g => g.Count())
+    .Select(g => new { Day = g.Key, Count = g.Count() })
+    .ToList();
+
+        ViewData["ActiveDaysOfWeek"] = activeDaysOfWeek;
+
+
+        //Shopping by month
+        var activeMonths = _dbContext.GameTransactions
+    .Where(t => t.UserId == userId)
+    .GroupBy(t => new { Year = t.PurchaseDate.Year, Month = t.PurchaseDate.Month })
+    .Select(g => new
+    {
+        Year = g.Key.Year,
+        Month = g.Key.Month,
+        Count = g.Count()
+    })
+    .ToList();
+        ViewData["ActiveMonths"] = activeMonths;
+        return View("~/Views/Home/ViewStats.cshtml");
+    }
     private string GetUsername()
     {
         return HttpContext.Session.GetString("Username") ?? "Guest";
@@ -341,8 +469,15 @@ public class GamesController : Controller
 
         if (game == null)
         {
-            TempData["ErrorMessage"] = "Transaction not found or already deleted.";
+            TempData["ErrorMessage"] = "Game not found or already deleted.";
             return RedirectToAction("Index");
+        }
+
+        // Verifica se il gioco ha DLC associati
+        if (_dbContext.Games.Any(dlc => dlc.MainGameId == game.GameId))
+        {
+            TempData["ErrorMessage"] = "Cannot delete this game because it has at least one associated DLC.";
+            return RedirectToAction("ViewAllGames");
         }
 
         _dbContext.Games.Remove(game);
@@ -509,6 +644,15 @@ public class GamesController : Controller
         return Json(result);
     }
 
+    [HttpGet]
+    public JsonResult CheckDuplicatePurchase(int gameId, int storeId)
+    {
+        var userId = GetUserId();
+        var isDuplicate = _dbContext.GameTransactions
+            .Any(t => t.GameId == gameId && t.StoreId == storeId && t.UserId == userId);
+
+        return Json(new { isDuplicate });
+    }
 
 
 }

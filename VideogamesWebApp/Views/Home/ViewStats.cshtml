@@ -1,0 +1,83 @@
+﻿@using System.Globalization
+
+<div>
+    <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Library
+    </button>
+    <h2>Personal Stats</h2>
+
+    <p><strong>Total Spent:</strong> @ViewData["TotalSpent"] €</p>
+
+    <p><strong>Total number of games purchased:</strong> @ViewData["TotalGames"]</p>
+
+    <p><strong>Average price per game:</strong> @ViewData["AveragePrice"] €</p>
+
+    <p><strong>Day with the most purchases:</strong> @ViewData["MostActiveDay"]</p>
+
+    <p><strong>Percentage of virtual games:</strong> @ViewData["PercentageVirtual"]</p>
+
+    <p><strong>Last Purchase:</strong> @ViewData["LastPurchase"]</p>
+
+    <p><strong>Most Expensive Game:</strong> @ViewData["MostExpensiveGame"]</p>
+
+    <p><strong>Shopping by days of the week:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Day of the week</th>
+                <th>Counting days</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewData["ActiveDaysOfWeek"] != null)
+            {
+                var activeDays = ViewData["ActiveDaysOfWeek"] as IEnumerable<dynamic>;
+                foreach (var item in activeDays)
+                {
+                    <tr>
+                        <td>@item.Day</td>
+                        <td>@item.Count</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2">Nessun dato disponibile.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p><strong>Purchases by months:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Counting days</th>
+            </tr>
+        </thead>
+        <tbody>
+                @if (ViewData["ActiveMonths"] != null)
+                {
+                    var activeMonths = ViewData["ActiveMonths"] as IEnumerable<dynamic>;
+                    foreach (var item in activeMonths)
+                    {
+                    <tr>
+                        <td>@item.Year</td>
+                        <td>@DateTimeFormatInfo.CurrentInfo.GetMonthName(item.Month)</td>
+                        <td>@item.Count</td>
+                    </tr>
+                    }
+                }
+                else
+                {
+                <tr>
+                    <td colspan="3">Nessun dato disponibile.</td>
+                </tr>
+                }
+        </tbody>
+    </table>
+    
+</div>
+

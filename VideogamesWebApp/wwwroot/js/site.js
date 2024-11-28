@@ -1,4 +1,5 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿
+document.addEventListener("DOMContentLoaded", function () {
     let currentPage = 1;
     const pageSize = 5;
 
@@ -123,6 +124,8 @@
                                             <div class="launcher-item mb-3">
                                                 <h5 class="launcher-name">${launcher.launcherName}</h5>
                                                 <p class="launcher-description">${launcher.launcherDescription || 'No description available'}</p>
+                                                <a href="${launcher.Link}" target="_blank" class="launcher-link">Visit Launcher</a>
+
                                             </div>
                                         `;
                 });
@@ -560,6 +563,7 @@ document.getElementById('buyGameForm').addEventListener('submit', function (even
     }
 });
 
+
 // Gestisce la selezione di un suggerimento nelle ricerche.
 function selectSuggestion(inputElement, hiddenInputElement, selectedItem, flagRef, errorElement) {
     inputElement.value = selectedItem.textContent; // Imposta il testo selezionato.
@@ -748,3 +752,56 @@ document.addEventListener("DOMContentLoaded", function () {
     const today = new Date().toISOString().split("T")[0];
     purchaseDateInput.value = today;
 });
+
+
+async function checkDuplicatePurchase(event) {
+    event.preventDefault(); // Impedisce il submit automatico del form.
+
+    const gameId = document.getElementById("gameId").value;
+    const storeId = document.getElementById("storeId").value;
+
+    if (!gameId || !storeId) {
+        alert("Please select a valid game and store.");
+        return false;
+    }
+
+    try {
+        // Chiamata AJAX per controllare duplicati.
+        const response = await fetch(`/Games/CheckDuplicatePurchase?gameId=${gameId}&storeId=${storeId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const result = await response.json();
+        if (result.isDuplicate) {
+            // Mostra il warning con scelta OK/Cancel.
+            const confirmAdd = confirm("You have already purchased this game from this store. Are you sure you want to continue?");
+
+            if (confirmAdd) {
+                // Se OK, esegue il submit del form.
+                document.getElementById("buyGameForm").submit();
+            } else {
+                // Se Cancel, resetta il form.
+                document.getElementById("buyGameForm").reset();
+            }
+            return false; // Blocca ulteriori azioni.
+        }
+    } catch (error) {
+        console.error("Error checking duplicate purchase:", error);
+        alert("An error occurred while checking duplicate purchases.");
+        return false;
+    }
+
+    // Se non è duplicato, invia il form normalmente.
+    document.getElementById("buyGameForm").submit();
+    return true;
+}
+
+
+
+
+
+
+

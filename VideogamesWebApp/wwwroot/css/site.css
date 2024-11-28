@@ -653,9 +653,23 @@ tr:hover {
         font-size: 18px;
     }
 
+.table-header-link-container {
+    display: flex;
+    align-items: center; /* Allinea il contenuto verticalmente al centro */
+    gap: 8px; /* Spazio tra il testo e le frecce */
+}
+
+.table-header-icons {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    line-height: 1;
+}
+
 .table-header-icon {
     color: #6c757d;
-    margin-left: 4px;
+    font-size: 0.9rem; 
+    cursor: pointer; 
 }
 
     .table-header-icon.active {
