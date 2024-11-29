@@ -175,67 +175,68 @@ public class GamesController : Controller
         ViewData["CurrentSortOrder"] = sortOrder;
         return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
     }
-    public IActionResult ViewStats()
+    public IActionResult ViewStats(int? storeId, int? platformId, int? launcherId)
     {
         var userId = GetUserId();
 
-        //prezzo totale speso
-        var totalSpent = _dbContext.GameTransactions
-            .Where(t => t.UserId == userId)
-            .Sum(t => t.Price);
+        var filteredTransactionsQuery = _dbContext.GameTransactions
+            .Where(t => t.UserId == userId);
 
+        if (storeId.HasValue)
+            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.StoreId == storeId.Value);
+
+        if (platformId.HasValue)
+            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.PlatformId == platformId.Value);
+
+        if (launcherId.HasValue)
+            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.LauncherId == launcherId.Value);
+
+
+        // Aggiorna le statistiche come prima
+        var totalSpent = filteredTransactionsQuery.Sum(t => t.Price);
         ViewData["TotalSpent"] = totalSpent;
 
-        //giochi totali che hai l'utente
-        var totalGames = _dbContext.GameTransactions
-    .Where(t => t.UserId == userId)
-    .Select(t => t.GameId)
-    .Distinct()
-    .Count();
 
+        // Giochi totali che ha l'utente
+        var totalGames = filteredTransactionsQuery
+            .Select(t => t.GameId)
+            .Distinct()
+            .Count();
         ViewData["TotalGames"] = totalGames;
 
-        //prezzo medio per ogni gioco
-        var averagePrice = _dbContext.GameTransactions
-    .Where(t => t.UserId == userId)
-    .Average(t => (double?)t.Price) ?? 0;
+        // Prezzo medio per ogni gioco
+        var averagePrice = filteredTransactionsQuery.Any()
+     ? Math.Round(filteredTransactionsQuery.Average(t => (double?)t.Price) ?? 0, 2)
+     : 0;
 
-        ViewData["AveragePrice"] = averagePrice;
+        ViewData["AveragePrice"] = averagePrice.ToString("F2"); // Format to two decimal places
 
-        //giorno con il maggior numero di acquisti
-        var mostActiveDay = _dbContext.GameTransactions
-    .Where(t => t.UserId == userId)
-    .GroupBy(t => t.PurchaseDate)
-    .OrderByDescending(g => g.Count())
-    .Select(g => new { Date = g.Key, Count = g.Count() })
-    .FirstOrDefault();
-
+        // Giorno con il maggior numero di acquisti
+        var mostActiveDay = filteredTransactionsQuery
+            .GroupBy(t => t.PurchaseDate)
+            .OrderByDescending(g => g.Count())
+            .Select(g => new { Date = g.Key, Count = g.Count() })
+            .FirstOrDefault();
         ViewData["MostActiveDay"] = mostActiveDay != null
             ? $"{mostActiveDay.Date:dd/MM/yyyy} ({mostActiveDay.Count} shopping)"
             : "No transactions.";
 
-        //Percentuale di giochi virtuali
-        var totalVirtual = _dbContext.GameTransactions
-      .Where(t => t.UserId == userId && t.IsVirtual)
-      .Count();
-
-        var totalTransactions = _dbContext.GameTransactions
-            .Where(t => t.UserId == userId)
-            .Count();
-
+        // Percentuale di giochi virtuali
+        var totalVirtual = filteredTransactionsQuery
+            .Count(t => t.IsVirtual);
+        var totalTransactions = filteredTransactionsQuery.Count();
         var percentageVirtual = totalTransactions > 0
-            ? Math.Ceiling((double)totalVirtual / totalTransactions * 100) // Approssimazione per eccesso
+            ? Math.Ceiling((double)totalVirtual / totalTransactions * 100)
             : 0;
-
         ViewData["PercentageVirtual"] = $"{percentageVirtual}% ({totalVirtual} virtual games)";
 
         //most expensive game
-        var mostExpensiveGame = _dbContext.GameTransactions
+        var mostExpensiveGame = filteredTransactionsQuery
     .Where(t => t.UserId == userId)
-    .AsEnumerable() 
-    .OrderByDescending(t => t.Price) 
+    .AsEnumerable()
+    .OrderByDescending(t => t.Price)
     .Select(t => new { t.GameId, t.Price })
-    .FirstOrDefault(); 
+    .FirstOrDefault();
 
         if (mostExpensiveGame != null)
         {
@@ -253,42 +254,39 @@ public class GamesController : Controller
             ViewData["MostExpensiveGame"] = "Nessuna transazione trovata.";
         }
 
-        //last purchase
-        var lastPurchase = _dbContext.GameTransactions
-    .Where(t => t.UserId == userId)
-    .OrderByDescending(t => t.PurchaseDate)
-    .Select(t => new { t.Game.GameName, t.PurchaseDate })
-    .FirstOrDefault();
-
+        // Last purchase
+        var lastPurchase = filteredTransactionsQuery
+            .OrderByDescending(t => t.PurchaseDate)
+            .Select(t => new { t.Game.GameName, t.PurchaseDate })
+            .FirstOrDefault();
         ViewData["LastPurchase"] = lastPurchase != null
             ? $"{lastPurchase.GameName} on {lastPurchase.PurchaseDate:dd/MM/yyyy}"
             : "No transactions.";
 
-        //Shopping by days of the week
-        var activeDaysOfWeek = _dbContext.GameTransactions
-    .Where(t => t.UserId == userId)
-    .GroupBy(t => t.PurchaseDate.DayOfWeek)
-    .OrderByDescending(g => g.Count())
-    .Select(g => new { Day = g.Key, Count = g.Count() })
-    .ToList();
-
+        // Shopping by days of the week
+        var activeDaysOfWeek = filteredTransactionsQuery
+            .GroupBy(t => t.PurchaseDate.DayOfWeek)
+            .OrderByDescending(g => g.Count())
+            .Select(g => new { Day = g.Key, Count = g.Count() })
+            .ToList();
         ViewData["ActiveDaysOfWeek"] = activeDaysOfWeek;
 
-
-        //Shopping by month
-        var activeMonths = _dbContext.GameTransactions
-    .Where(t => t.UserId == userId)
-    .GroupBy(t => new { Year = t.PurchaseDate.Year, Month = t.PurchaseDate.Month })
-    .Select(g => new
-    {
-        Year = g.Key.Year,
-        Month = g.Key.Month,
-        Count = g.Count()
-    })
-    .ToList();
+        // Shopping by month
+        var activeMonths = filteredTransactionsQuery
+            .GroupBy(t => new { Year = t.PurchaseDate.Year, Month = t.PurchaseDate.Month })
+            .Select(g => new
+            {
+                Year = g.Key.Year,
+                Month = g.Key.Month,
+                Count = g.Count()
+            })
+            .ToList();
         ViewData["ActiveMonths"] = activeMonths;
+
         return View("~/Views/Home/ViewStats.cshtml");
     }
+
+
     private string GetUsername()
     {
         return HttpContext.Session.GetString("Username") ?? "Guest";

@@ -1,0 +1,120 @@
+﻿body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+.btn {
+    margin-right: 10px;
+}
+
+#activeFiltersContainer {
+    margin-top: 10px;
+}
+
+.badge {
+    font-size: 1.1em;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Ridotto a 120px */
+    gap: 10px; /* Ridotto a 10px */
+    margin-top: 20px;
+}
+
+.stat-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 8px; /* Ridotto a 8px */
+    text-align: center;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    max-width: 150px; /* Imposta una larghezza massima */
+}
+
+    .stat-card i {
+        font-size: 20px; /* Ridotto a 20px */
+        color: #007bff;
+        margin-bottom: 5px;
+    }
+
+    .stat-card h4 {
+        font-size: 1em; /* Ridotto a 1em */
+        margin: 5px 0;
+    }
+
+    .stat-card p {
+        font-size: 0.8em; /* Ridotto a 0.8em */
+        margin: 0;
+    }
+
+    .stat-card:hover {
+        transform: scale(1.03); /* Ridotto l'effetto di ingrandimento */
+    }
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Prevents overflow of rounded corners */
+}
+
+thead {
+    background-color: #007bff; /* Blue background for header */
+    color: white;
+}
+
+th {
+    padding: 12px;
+    text-align: left;
+    font-size: 1.1em; /* Slightly larger font for headers */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey for even rows */
+}
+
+tbody tr:hover {
+    background-color: #e9ecef; /* Light hover effect */
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 1em; /* Standard font size for data */
+}
+
+    td[colspan] {
+        text-align: center;
+        font-weight: bold; /* Bold text for no data message */
+    }
+
+.text-danger {
+    font-weight: bold;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-results {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ced4da;
+    z-index: 1000;
+    width: 100%;
+}
+
+    .search-results div {
+        padding: 8px;
+        cursor: pointer;
+    }
+
+        .search-results div:hover {
+            background-color: #f1f1f1;
+        }

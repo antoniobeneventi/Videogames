@@ -1,35 +1,119 @@
 ﻿@using System.Globalization
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="~/css/ViewStats.css">
 
 <div>
     <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-secondary">
         <i class="fas fa-arrow-left"></i> Back to Library
     </button>
-    <h2>Personal Stats</h2>
+    <h2><i class="fas fa-chart-bar"></i> Personal Stats</h2>
+    <!-- Modal Trigger Button -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+        <i class="fas fa-filter"></i> Open Filters
+    </button>
+    <button type="button" id="resetFiltersButton" class="btn btn-warning">
+        <i class="fas fa-times-circle"></i> Reset Filters
+    </button>
 
-    <p><strong>Total Spent:</strong> @ViewData["TotalSpent"] €</p>
+    <div id="activeFiltersContainer" class="mt-2">
+        <span class="badge bg-info text-dark" id="activeFiltersText">
+            <i class="fas fa-tags"></i> Filtered by:
+        </span>
+    </div>
 
-    <p><strong>Total number of games purchased:</strong> @ViewData["TotalGames"]</p>
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel"><i class="fas fa-filter"></i> Filter Statistics</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Store Search -->
+                    <div class="mb-3 search-container">
+                        <label for="storeSearch" class="form-label">Store Name</label>
+                        <input type="text" class="form-control" id="storeSearch" placeholder="Search Store">
+                        <input type="hidden" id="storeId">
+                        <div id="storeSearchResults" class="search-results"></div>
+                        <div id="storeSearchError" class="text-danger" style="display: none;">Error searching store</div>
+                    </div>
 
-    <p><strong>Average price per game:</strong> @ViewData["AveragePrice"] €</p>
+                    <!-- Platform Search -->
+                    <div class="mb-3 search-container">
+                        <label for="platformSearch" class="form-label">Platform Name</label>
+                        <input type="text" class="form-control" id="platformSearch" placeholder="Search Platform">
+                        <input type="hidden" id="platformId">
+                        <div id="platformSearchResults" class="search-results"></div>
+                        <div id="platformSearchError" class="text-danger" style="display: none;">Error searching platform</div>
+                    </div>
 
-    <p><strong>Day with the most purchases:</strong> @ViewData["MostActiveDay"]</p>
+                    <!-- Launcher Search -->
+                    <div class="mb-3 search-container">
+                    <label for="launcherSearch" class="form-label">Launcher Name</label>
+                    <input type="text" class="form-control" id="launcherSearch" placeholder="Search Launcher">
+                    <input type="hidden" id="launcherId">
+                    <div id="launcherSearchResults" class="search-results"></div>
+                    <div id="launcherSearchError" class="text-danger" style="display: none;">Error searching launcher</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="applyFiltersButton"><i class="fas fa-check"></i> Apply Filters</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <p><strong>Percentage of virtual games:</strong> @ViewData["PercentageVirtual"]</p>
+    <div id="statsContainer" class="stats-container">
+        <div class="stat-card">
+            <i class="bi bi-currency-euro" style="font-size: 2rem;"></i> 
+            <h4>Total Spent</h4>
+            <p><span id="totalSpentStat">@ViewData["TotalSpent"] €</span></p>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-controller" style="font-size: 2rem;"></i> 
+            <h4>Total Games</h4>
+            <p><span id="totalGamesStat">@ViewData["TotalGames"]</span></p>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-tag" style="font-size: 2rem;"></i> 
+            <h4>Average Price</h4>
+            <p><span id="averagePriceStat">@ViewData["AveragePrice"] €</span></p>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-calendar" style="font-size: 2rem;"></i> 
+            <h4>Most Active Day</h4>
+            <p><span id="mostActiveDayStat">@ViewData["MostActiveDay"]</span></p>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-badge-vr" style="font-size: 2rem;"></i> 
+            <h4>Virtual Games</h4>
+            <p><span id="virtualGamesStat">@ViewData["PercentageVirtual"]</span></p>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-clock" style="font-size: 2rem;"></i> 
+            <h4>Last Purchase</h4>
+            <p><span id="lastPurchaseStat">@ViewData["LastPurchase"]</span></p>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-wallet" style="font-size: 2rem;"></i>
+            <h4>Most Expensive Game</h4>
+            <p><span id="mostExpensiveGameStat">@ViewData["MostExpensiveGame"]</span></p>
+        </div>
+    </div>
 
-    <p><strong>Last Purchase:</strong> @ViewData["LastPurchase"]</p>
-
-    <p><strong>Most Expensive Game:</strong> @ViewData["MostExpensiveGame"]</p>
-
-    <p><strong>Shopping by days of the week:</strong></p>
-    <table>
+   
+    <p><strong><i class="fas fa-calendar-week"></i> Shopping by days of the week:</strong></p>
+    <table id="daysOfWeekTable">
         <thead>
             <tr>
-                <th>Day of the week</th>
-                <th>Counting days</th>
+                <th><i class="fas fa-calendar-day"></i> Day of the week</th>
+                <th><i class="fas fa-count"></i> Counting days</th>
             </tr>
         </thead>
-        <tbody>
-            @if (ViewData["ActiveDaysOfWeek"] != null)
+        <tbody id="daysOfWeekTableBody">
+            @if (ViewData["ActiveDaysOfWeek"] != null && ((IEnumerable<dynamic>)ViewData["ActiveDaysOfWeek"]).Any())
             {
                 var activeDays = ViewData["ActiveDaysOfWeek"] as IEnumerable<dynamic>;
                 foreach (var item in activeDays)
@@ -43,41 +127,42 @@
             else
             {
                 <tr>
-                    <td colspan="2">Nessun dato disponibile.</td>
+                    <td colspan="2">No data available.</td>
                 </tr>
             }
         </tbody>
     </table>
-    <p><strong>Purchases by months:</strong></p>
-    <table>
+
+    <p><strong><i class="fas fa-calendar-alt"></i> Purchases by months:</strong></p>
+    <table id="monthsTable">
         <thead>
             <tr>
-                <th>Year</th>
-                <th>Month</th>
-                <th>Counting days</th>
+                <th><i class="fas fa-calendar-year"></i> Year</th>
+                <th><i class="fas fa-calendar-month"></i> Month</th>
+                <th><i class="fas fa-count"></i> Counting days</th>
             </tr>
         </thead>
-        <tbody>
-                @if (ViewData["ActiveMonths"] != null)
+        <tbody id="monthsTableBody">
+            @if (ViewData["ActiveMonths"] != null && ((IEnumerable<dynamic>)ViewData["ActiveMonths"]).Any())
+            {
+                var activeMonths = ViewData["ActiveMonths"] as IEnumerable<dynamic>;
+                foreach (var item in activeMonths)
                 {
-                    var activeMonths = ViewData["ActiveMonths"] as IEnumerable<dynamic>;
-                    foreach (var item in activeMonths)
-                    {
                     <tr>
                         <td>@item.Year</td>
                         <td>@DateTimeFormatInfo.CurrentInfo.GetMonthName(item.Month)</td>
                         <td>@item.Count</td>
                     </tr>
-                    }
                 }
-                else
-                {
+            }
+            else
+            {
                 <tr>
-                    <td colspan="3">Nessun dato disponibile.</td>
+                    <td colspan="3">No data available</td>
                 </tr>
-                }
+            }
         </tbody>
     </table>
-    
 </div>
 
+<script src="~/js/ViewStats.js"></script>

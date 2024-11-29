@@ -655,8 +655,8 @@ tr:hover {
 
 .table-header-link-container {
     display: flex;
-    align-items: center; /* Allinea il contenuto verticalmente al centro */
-    gap: 8px; /* Spazio tra il testo e le frecce */
+    align-items: center; 
+    gap: 8px; 
 }
 
 .table-header-icons {
