@@ -1,21 +1,36 @@
 ﻿@model List<VideogamesWebApp.Models.GameTransactionsViewModel>
+
+@{
+    var image = ViewData["ProfileImage"];
+}
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <div class="container mt-4 container-bg">
     <div class="welcome-container d-flex align-items-center justify-content-between p-4 rounded mb-4 shadow">
         <div class="welcome-text d-flex align-items-center">
-            <i class="bi bi-person-circle me-3 text-primary" style="font-size: 3rem;"></i>
+            <!-- Make the icon clickable by wrapping it with a button -->
+            <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editAvatarModal">
+                @{
+                    if (image != null)
+                    {
+                        <img id="userProfileImage" src="@image" alt="Profile Image" class="img-fluid rounded-circle" style="width: 3rem; height: 3rem;" />
+                    }
+                    else
+                    {
+                        <!-- Placeholder image (initial user icon) -->
+                        <img id="userProfileImage" src="/images/utenteStock.png" alt="Profile Image" class="img-fluid rounded-circle" style="width: 3rem; height: 3rem;" />
+                    }
+                }
+            </button>
             <div>
                 <h1 class="fw-bold mb-1">Welcome, @ViewData["Username"]!</h1>
             </div>
 
-            <button style="margin-left : 15px" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAccountModal">
+            <button style="margin-left: 15px" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAccountModal">
                 <i class="bi bi-pencil"></i> Edit Account
             </button>
         </div>
-
-
-
 
         <form method="post" asp-controller="Account" asp-action="Logout">
             <button type="submit" class="btn btn-outline-danger">
@@ -24,9 +39,58 @@
         </form>
     </div>
 
+    <!-- Modal for editing account -->
+    <div class="modal fade" id="editAvatarModal" tabindex="-1" aria-labelledby="editAvatarModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- You can add your form fields here for editing account -->
+                <form method="post" asp-controller="Account" asp-action="EditAvatar">
+                    <input type="hidden" id="userId" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAvatarModalLabel">Edit Avatar</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Image selection section -->
+                        <div class="mb-3">
+                            <label for="profileImage" class="form-label">Select Profile Image</label>
+                            <div class="d-flex gap-3">
+                                <!-- Image 1 -->
+                                <div>
+                                    <input type="radio" id="profileImage" name="profileImage" value="/images/avatar2.jpg" class="form-check-input" />
+                                    <label for="image">
+                                        <img src="/images/avatar2.jpg" alt="Image 1" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" />
+                                    </label>
+                                </div>
+                                <!-- Image 2 -->
+                                <div>
+                                    <input type="radio" id="profileImage" name="profileImage" value="/images/avatar3.jpg" class="form-check-input" />
+                                    <label for="image">
+                                        <img src="/images/avatar3.jpg" alt="Image 2" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" />
+                                    </label>
+                                </div>
+                                <!-- Image 3 -->
+                                <div>
+                                    <input type="radio" id="profileImage" name="profileImage" value="/images/avatar4.jpg" class="form-check-input" />
+                                    <label for="image">
+                                        <img src="/images/avatar4.jpg" alt="Image 3" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Add JavaScript function to update the icon when saving -->
+                        <button type="submit" class="btn btn-primary" id="saveChangesButton">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <form method="get" asp-controller="Games" asp-action="Index" class="d-flex mt-3 align-items-center gap-2">
         <div class="input-group w-25">
-
             <input maxlength="30" type="text" id="searchQuery" name="searchQuery" class="form-control"
                    placeholder="Search games..." value="@ViewData["searchQuery"]">
         </div>
@@ -35,459 +99,467 @@
             <i class="bi bi-search"></i> Search in My Games
         </button>
     </form>
-    <!-- Modal per la modifica della password -->
-    <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editAccountModalLabel">Change Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+</div>
+<!-- Modal per la modifica della password -->
+<div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAccountModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
 
-                    <form method="post" asp-controller="Account" asp-action="ChangePassword">
-                        <div class="mb-3">
-                            <label for="currentPassword" class="form-label">Current Password</label>
-                            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label">New Password</label>
-                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
-                            <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
+                <form method="post" asp-controller="Account" asp-action="ChangePassword">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
 
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="d-flex gap-3 mt-3">
-        <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-custom btn-buy-game">
-            <i class="bi bi-collection"></i> View Game Catalog
-        </a>
-        <button type="button" class="btn btn-custom btn-buy-game" data-bs-toggle="modal" data-bs-target="#buyGameModal">
-            <i class="bi bi-cart-plus"></i> Buy a New Game
-        </button>
-        <a href="@Url.Action("ViewStats", "Games")" class="btn btn-custom btn-buy-game">
-            <i class="fas fa-chart-line"></i> View Personal Stats
-        </a>
-    </div>
+<div class="d-flex gap-3 mt-3">
+    <a href="@Url.Action("ViewAllGames", "Games")" class="btn btn-custom btn-buy-game">
+        <i class="bi bi-collection"></i> View Game Catalog
+    </a>
+    <button type="button" class="btn btn-custom btn-buy-game" data-bs-toggle="modal" data-bs-target="#buyGameModal">
+        <i class="bi bi-cart-plus"></i> Buy a New Game
+    </button>
+    <a href="@Url.Action("ViewStats", "Games")" class="btn btn-custom btn-buy-game">
+        <i class="fas fa-chart-line"></i> View Personal Stats
+    </a>
+
+</div>
 
 
-    <div class="container mt-4">
-        <!-- Riga dei pulsanti "View" -->
-        <div class="row mb-3">
-            <div class="col">
-                <button type="button" class="btn btn-custom btn-add-store w-100" id="viewAllStoresBtn" data-bs-toggle="modal" data-bs-target="#viewAllStoresModal">
-                    <i class="bi bi-shop"></i> View Store
-                </button>
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-custom btn-add-platform w-100" id="viewAllPlatformsBtn" data-bs-toggle="modal" data-bs-target="#viewAllPlatformsModal">
-                    <i class="bi bi-controller"></i> View Platform
-                </button>
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-custom btn-add-launcher w-100" id="viewAllLaunchersBtn" data-bs-toggle="modal" data-bs-target="#viewAllLaunchersModal">
-                    <i class="bi bi-rocket"></i> View Launcher
-                </button>
-            </div>
+<div class="container mt-4">
+    <!-- Riga dei pulsanti "View" -->
+    <div class="row mb-3">
+        <div class="col">
+            <button type="button" class="btn btn-custom btn-add-store w-100" id="viewAllStoresBtn" data-bs-toggle="modal" data-bs-target="#viewAllStoresModal">
+                <i class="bi bi-shop"></i> View Store
+            </button>
         </div>
-
-        <!-- Riga dei pulsanti "Add" -->
-        <div class="row">
-            <div class="col">
-                <button type="button" class="btn btn-custom btn-add-store w-100" data-bs-toggle="modal" data-bs-target="#addStoreModal">
-                    <i class="bi bi-plus-circle"></i> Add Store
-                </button>
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-custom btn-add-platform w-100" data-bs-toggle="modal" data-bs-target="#addPlatformModal">
-                    <i class="bi bi-plus-circle"></i> Add Platform
-                </button>
-            </div>
-            <div class="col">
-                <button type="button" class="btn btn-custom btn-add-launcher w-100" data-bs-toggle="modal" data-bs-target="#addLauncherModal">
-                    <i class="bi bi-plus-circle"></i> Add Launcher
-                </button>
-            </div>
+        <div class="col">
+            <button type="button" class="btn btn-custom btn-add-platform w-100" id="viewAllPlatformsBtn" data-bs-toggle="modal" data-bs-target="#viewAllPlatformsModal">
+                <i class="bi bi-controller"></i> View Platform
+            </button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-custom btn-add-launcher w-100" id="viewAllLaunchersBtn" data-bs-toggle="modal" data-bs-target="#viewAllLaunchersModal">
+                <i class="bi bi-rocket"></i> View Launcher
+            </button>
         </div>
     </div>
 
-
-    <hr>
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            <i class="bi bi-exclamation-circle-fill"></i> @TempData["ErrorMessage"]
+    <!-- Riga dei pulsanti "Add" -->
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-custom btn-add-store w-100" data-bs-toggle="modal" data-bs-target="#addStoreModal">
+                <i class="bi bi-plus-circle"></i> Add Store
+            </button>
         </div>
-    }
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+        <div class="col">
+            <button type="button" class="btn btn-custom btn-add-platform w-100" data-bs-toggle="modal" data-bs-target="#addPlatformModal">
+                <i class="bi bi-plus-circle"></i> Add Platform
+            </button>
         </div>
-    }
+        <div class="col">
+            <button type="button" class="btn btn-custom btn-add-launcher w-100" data-bs-toggle="modal" data-bs-target="#addLauncherModal">
+                <i class="bi bi-plus-circle"></i> Add Launcher
+            </button>
+        </div>
+    </div>
+</div>
 
-    <div class="modal fade" id="buyGameModal" tabindex="-1" aria-labelledby="buyGameModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="buyGameModalLabel">Buy a New Game</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form asp-action="BuyGame" asp-controller="Games" method="post" id="buyGameForm" onsubmit="return checkDuplicatePurchase(event)">
 
-                        <!-- Game Name Input -->
-                        <div class="mb-3">
-                            <label for="gameSearch">Game Name</label>
-                            <div class="search-container">
-                                <input maxlength="30" type="text" class="form-control" id="gameSearch" placeholder="Start typing to search for a game...">
-                                <div id="gameSearchResults" class="search-results"></div>
-                                <div class="invalid-feedback" id="gameSearchError">Please select a valid game.</div>
+<hr>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-circle-fill"></i> @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="modal fade" id="buyGameModal" tabindex="-1" aria-labelledby="buyGameModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buyGameModalLabel">Buy a New Game</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="BuyGame" asp-controller="Games" method="post" id="buyGameForm" onsubmit="return checkDuplicatePurchase(event)">
+
+                    <!-- Game Name Input -->
+                    <div class="mb-3">
+                        <label for="gameSearch">Game Name</label>
+                        <div class="search-container">
+                            <input maxlength="30" type="text" class="form-control" id="gameSearch" placeholder="Start typing to search for a game...">
+                            <div id="gameSearchResults" class="search-results"></div>
+                            <div class="invalid-feedback" id="gameSearchError">Please select a valid game.</div>
+                        </div>
+                        <input type="hidden" id="gameId" name="GameId">
+                    </div>
+
+                    <!-- Store Input -->
+                    <div class="mb-3">
+                        <label for="storeSearch">Store</label>
+                        <div class="search-container">
+                            <input maxlength="30" type="text" class="form-control" id="storeSearch" required placeholder="Start typing to search for a store...">
+                            <div id="storeSearchResults" class="search-results"></div>
+                            <div class="invalid-feedback" id="storeSearchError">
+                                Please select a valid store.
+                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal()">Add New Store</button>
                             </div>
-                            <input type="hidden" id="gameId" name="GameId">
                         </div>
+                        <input type="hidden" id="storeId" name="StoreId">
+                    </div>
 
-                        <!-- Store Input -->
-                        <div class="mb-3">
-                            <label for="storeSearch">Store</label>
-                            <div class="search-container">
-                                <input maxlength="30" type="text" class="form-control" id="storeSearch" required placeholder="Start typing to search for a store...">
-                                <div id="storeSearchResults" class="search-results"></div>
-                                <div class="invalid-feedback" id="storeSearchError">
-                                    Please select a valid store.
-                                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal()">Add New Store</button>
-                                </div>
+                    <!-- Platform Input -->
+                    <div class="mb-3">
+                        <label for="platformSearch">Platform</label>
+                        <div class="search-container">
+                            <input maxlength="30" type="text" class="form-control" id="platformSearch" placeholder="Start typing to search for a platform...">
+                            <div id="platformSearchResults" class="search-results"></div>
+                            <div class="invalid-feedback" id="platformSearchError">
+                                Please select a valid platform.
+                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddPlatformModal()">Add New Platform</button>
                             </div>
-                            <input type="hidden" id="storeId" name="StoreId">
                         </div>
+                        <input type="hidden" id="platformId" name="PlatformId">
+                    </div>
 
-                        <!-- Platform Input -->
-                        <div class="mb-3">
-                            <label for="platformSearch">Platform</label>
-                            <div class="search-container">
-                                <input maxlength="30" type="text" class="form-control" id="platformSearch" placeholder="Start typing to search for a platform...">
-                                <div id="platformSearchResults" class="search-results"></div>
-                                <div class="invalid-feedback" id="platformSearchError">
-                                    Please select a valid platform.
-                                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddPlatformModal()">Add New Platform</button>
-                                </div>
+                    <!-- Launcher Input -->
+                    <div class="mb-3">
+                        <label for="launcherSearch">Launcher</label>
+                        <div class="search-container">
+                            <input maxlength="30" type="text" class="form-control" id="launcherSearch" placeholder="Start typing to search for a launcher...">
+                            <div id="launcherSearchResults" class="search-results"></div>
+                            <div class="invalid-feedback" id="launcherSearchError">
+                                Please select a valid launcher.
+                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddLauncherModal()">Add New Launcher</button>
                             </div>
-                            <input type="hidden" id="platformId" name="PlatformId">
                         </div>
+                        <input type="hidden" id="launcherId" name="LauncherId">
+                    </div>
 
-                        <!-- Launcher Input -->
-                        <div class="mb-3">
-                            <label for="launcherSearch">Launcher</label>
-                            <div class="search-container">
-                                <input maxlength="30" type="text" class="form-control" id="launcherSearch" placeholder="Start typing to search for a launcher...">
-                                <div id="launcherSearchResults" class="search-results"></div>
-                                <div class="invalid-feedback" id="launcherSearchError">
-                                    Please select a valid launcher.
-                                    <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddLauncherModal()">Add New Launcher</button>
-                                </div>
-                            </div>
-                            <input type="hidden" id="launcherId" name="LauncherId">
-                        </div>
+                    <div class="mb-3">
+                        <label for="purchaseDate" class="form-label">Purchase Date</label>
+                        <input type="date" class="form-control" id="purchaseDate" name="PurchaseDate" required>
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="purchaseDate" class="form-label">Purchase Date</label>
-                            <input type="date" class="form-control" id="purchaseDate" name="PurchaseDate" required>
-                        </div>
+                    <!-- Price Input -->
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" step="0.01" class="form-control" id="price" name="Price" required>
+                    </div>
 
-                        <!-- Price Input -->
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Price</label>
-                            <input type="number" step="0.01" class="form-control" id="price" name="Price" required>
-                        </div>
+                    <!-- Is Virtual Copy Dropdown -->
+                    <div class="mb-3">
+                        <label for="isVirtual" class="form-label">Is Virtual Copy</label>
+                        <select class="form-control" id="isVirtual" name="IsVirtual" required>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
 
-                        <!-- Is Virtual Copy Dropdown -->
-                        <div class="mb-3">
-                            <label for="isVirtual" class="form-label">Is Virtual Copy</label>
-                            <select class="form-control" id="isVirtual" name="IsVirtual" required>
-                                <option value="true">Yes</option>
-                                <option value="false">No</option>
-                            </select>
-                        </div>
+                    <!-- Notes Input -->
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea maxlength="100" class="form-control" id="notes" name="Notes" required></textarea>
+                    </div>
 
-                        <!-- Notes Input -->
-                        <div class="mb-3">
-                            <label for="notes" class="form-label">Notes</label>
-                            <textarea maxlength="100" class="form-control" id="notes" name="Notes" required></textarea>
-                        </div>
+                    <button type="submit" class="btn btn-primary">Confirm Purchase</button>
+                </form>
 
-                        <button type="submit" class="btn btn-primary">Confirm Purchase</button>
-                    </form>
-
-                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal for Adding Store -->
-    <div class="modal fade" id="addStoreModal" tabindex="-1" aria-labelledby="addStoreModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addStoreModalLabel">Add New Store</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form asp-action="AddStore" asp-controller="Games" method="post" id="addStoreForm">
-                        <div class="mb-3">
-                            <label for="storeName" class="form-label">Store Name</label>
-                            <input maxlength="30" type="text" class="form-control" id="storeName" name="StoreName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="storeDescription" class="form-label">Store Description</label>
-                            <textarea maxlength="100" class="form-control" id="storeDescription" name="StoreDescription"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="storeLink" class="form-label">Store Link</label>
-                            <input maxlength="50" type="url" class="form-control" id="storeLink" name="StoreLink">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Store</button>
-                    </form>
-                </div>
+<!-- Modal for Adding Store -->
+<div class="modal fade" id="addStoreModal" tabindex="-1" aria-labelledby="addStoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStoreModalLabel">Add New Store</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddStore" asp-controller="Games" method="post" id="addStoreForm">
+                    <div class="mb-3">
+                        <label for="storeName" class="form-label">Store Name</label>
+                        <input maxlength="30" type="text" class="form-control" id="storeName" name="StoreName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="storeDescription" class="form-label">Store Description</label>
+                        <textarea maxlength="100" class="form-control" id="storeDescription" name="StoreDescription"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="storeLink" class="form-label">Store Link</label>
+                        <input maxlength="50" type="url" class="form-control" id="storeLink" name="StoreLink">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Store</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal for Adding Platform -->
-    <div class="modal fade" id="addPlatformModal" tabindex="-1" aria-labelledby="addPlatformModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPlatformModalLabel">Add New Platform</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form asp-action="AddPlatform" asp-controller="Games" method="post" id="addPlatformForm">
-                        <div class="mb-3">
-                            <label for="platformName" class="form-label">Platform Name</label>
-                            <input maxlength="30" type="text" class="form-control" id="platformName" name="PlatformName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="platformDescription" class="form-label">Platform Description</label>
-                            <textarea maxlength="100" class="form-control" id="platformDescription" name="PlatformDescription"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Platform</button>
-                    </form>
-                </div>
+<!-- Modal for Adding Platform -->
+<div class="modal fade" id="addPlatformModal" tabindex="-1" aria-labelledby="addPlatformModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPlatformModalLabel">Add New Platform</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddPlatform" asp-controller="Games" method="post" id="addPlatformForm">
+                    <div class="mb-3">
+                        <label for="platformName" class="form-label">Platform Name</label>
+                        <input maxlength="30" type="text" class="form-control" id="platformName" name="PlatformName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="platformDescription" class="form-label">Platform Description</label>
+                        <textarea maxlength="100" class="form-control" id="platformDescription" name="PlatformDescription"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Platform</button>
+                </form>
             </div>
         </div>
     </div>
-    <!-- Modal for Adding Launcher -->
-    <div class="modal fade" id="addLauncherModal" tabindex="-1" aria-labelledby="addLauncherModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addLauncherModalLabel">Add New Launcher</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form asp-action="AddLauncher" asp-controller="Games" method="post" id="addLauncherForm">
-                        <div class="mb-3">
-                            <label for="launcherName" class="form-label">Launcher Name</label>
-                            <input maxlength="30" type="text" class="form-control" id="launcherName" name="LauncherName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="launcherDescription" class="form-label">Launcher Description</label>
-                            <textarea maxlength="100" class="form-control" id="launcherDescription" name="LauncherDescription"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="link" class="form-label">Launcher Link</label>
-                            <input maxlength="50" type="url" class="form-control" id="link" name="Link">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Launcher</button>
-                    </form>
-                </div>
+</div>
+
+<!-- Modal for Adding Launcher -->
+<div class="modal fade" id="addLauncherModal" tabindex="-1" aria-labelledby="addLauncherModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLauncherModalLabel">Add New Launcher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddLauncher" asp-controller="Games" method="post" id="addLauncherForm">
+                    <div class="mb-3">
+                        <label for="launcherName" class="form-label">Launcher Name</label>
+                        <input maxlength="30" type="text" class="form-control" id="launcherName" name="LauncherName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="launcherDescription" class="form-label">Launcher Description</label>
+                        <textarea maxlength="100" class="form-control" id="launcherDescription" name="LauncherDescription"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="link" class="form-label">Launcher Link</label>
+                        <input maxlength="50" type="url" class="form-control" id="link" name="Link">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Launcher</button>
+                </form>
             </div>
         </div>
     </div>
-    <!-- Modal for Viewing All Stores -->
-    <div class="modal fade" id="viewAllStoresModal" tabindex="-1" aria-labelledby="viewAllStoresModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-primary shadow-lg">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="viewAllStoresModalLabel"><i class="bi bi-shop"></i>Stores</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div id="storeListContainer"></div>
+</div>
 
-                    <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
-                        <span id="pageInfo" class="me-3"></span>
 
-                        <div id="paginationContainer" class="btn-group" role="group" aria-label="Pagination">
-                        </div>
+<!-- Modal for Viewing All Stores -->
+<div class="modal fade" id="viewAllStoresModal" tabindex="-1" aria-labelledby="viewAllStoresModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-primary shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="viewAllStoresModalLabel"><i class="bi bi-shop"></i>Stores</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="storeListContainer"></div>
+
+                <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
+                    <span id="pageInfo" class="me-3"></span>
+
+                    <div id="paginationContainer" class="btn-group" role="group" aria-label="Pagination">
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Modal for Viewing All Platforms -->
-    <div class="modal fade" id="viewAllPlatformsModal" tabindex="-1" aria-labelledby="viewAllPlatformsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-success shadow-lg">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="viewAllPlatformsModalLabel"><i class="bi bi-controller"></i>Platforms</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div id="platformListContainer"></div>
+</div>
 
-                    <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
-                        <span id="platformPageInfo" class="me-3"></span>
+<!-- Modal for Viewing All Platforms -->
+<div class="modal fade" id="viewAllPlatformsModal" tabindex="-1" aria-labelledby="viewAllPlatformsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-success shadow-lg">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="viewAllPlatformsModalLabel"><i class="bi bi-controller"></i>Platforms</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="platformListContainer"></div>
 
-                        <div id="platformPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
-                        </div>
+                <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
+                    <span id="platformPageInfo" class="me-3"></span>
+
+                    <div id="platformPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Modal for Viewing All Launchers -->
-    <div class="modal fade" id="viewAllLaunchersModal" tabindex="-1" aria-labelledby="viewAllLaunchersModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-primary shadow-lg">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="viewAllLaunchersModalLabel"><i class="bi bi-shop"></i>Launchers</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div id="launcherListContainer"></div>
+</div>
 
-                    <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
-                        <span id="pageInfo" class="me-3"></span>
+<!-- Modal for Viewing All Launchers -->
+<div class="modal fade" id="viewAllLaunchersModal" tabindex="-1" aria-labelledby="viewAllLaunchersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-primary shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="viewAllLaunchersModalLabel"><i class="bi bi-rocket"></i> Launchers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="launcherListContainer"></div>
 
-                        <div id="paginationContainer" class="btn-group" role="group" aria-label="Pagination">
-                        </div>
+                <div id="paginationControls" class="mt-3 d-flex justify-content-center align-items-center">
+                    <span id="launcherPageInfo" class="me-3"></span>
+
+                    <div id="launcherPaginationContainer" class="btn-group" role="group" aria-label="Pagination">
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <h3>My Games </h3>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
+</div>
+
+<h3>My Games </h3>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Game Name</th>
+                <th scope="col">Purchase Date</th>
+                <th scope="col">Price</th>
+                <th scope="col">Virtual Copy</th>
+                <th scope="col">Store Name</th>
+                <th scope="col">Platform Name</th>
+                <th scope="col">Launcher Name</th>
+                <th scope="col">Main Game</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="transactionsTableBody">
+            @foreach (var transaction in Model)
+            {
                 <tr>
-                    <th scope="col">Game Name</th>
-                    <th scope="col">Purchase Date</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Virtual Copy</th>
-                    <th scope="col">Store Name</th>
-                    <th scope="col">Platform Name</th>
-                    <th scope="col">Launcher Name</th>
-                    <th scope="col">Main Game</th>
-                    <th scope="col">Actions</th>
+                    <td><strong><i class="bi bi-controller"></i> @transaction.GameName</strong></td>
+                    <td><i class="bi bi-calendar"></i> @transaction.PurchaseDate.ToString("dd/MM/yyyy")</td>
+                    <td><i class="bi bi-currency-euro"></i> @transaction.Price.ToString("F2")</td>
+                    <td><i class="bi bi-cloud"></i>@(transaction.IsVirtual ? "Yes" : "No")</td>
+                    <td><i class="bi bi-shop"></i> @transaction.StoreName</td>
+                    <td><i class="bi bi-controller"></i>@transaction.PlatformName</td>
+                    <td><i class="bi bi-rocket"></i>@transaction.LauncherName</td>
+                    <td>@(transaction.MainGameName ?? "-")</td>
+
+                    <td>
+                        <form asp-action="DeleteGame" asp-controller="Games" method="post" style="display:inline;">
+                            <input type="hidden" name="transactionId" value="@transaction.TransactionId" />
+                            <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Are you sure you want to delete this game?');">
+                                <i class="bi bi-trash"></i> Delete Game
+                            </button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
-            <tbody id="transactionsTableBody">
-                @foreach (var transaction in Model)
+            }
+        </tbody>
+
+    </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination custom-pagination">
+            @{
+                int totalPages = (int)ViewData["TotalPages"];
+                int currentPage = (int)ViewData["CurrentPage"];
+                int range = 2; // Numero di pagine prima e dopo la corrente da mostrare
+
+                if (currentPage > 1)
                 {
-                    <tr>
-                        <td><strong><i class="bi bi-controller"></i> @transaction.GameName</strong></td>
-                        <td><i class="bi bi-calendar"></i> @transaction.PurchaseDate.ToString("dd/MM/yyyy")</td>
-                        <td><i class="bi bi-currency-euro"></i> @transaction.Price.ToString("F2")</td>
-                        <td><i class="bi bi-cloud"></i>@(transaction.IsVirtual ? "Yes" : "No")</td>
-                        <td><i class="bi bi-shop"></i> @transaction.StoreName</td>
-                        <td><i class="bi bi-controller"></i>@transaction.PlatformName</td>
-                        <td><i class="bi bi-rocket"></i>@transaction.LauncherName</td>
-                        <td>@(transaction.MainGameName ?? "-")</td>
-
-                        <td>
-                            <form asp-action="DeleteGame" asp-controller="Games" method="post" style="display:inline;">
-                                <input type="hidden" name="transactionId" value="@transaction.TransactionId" />
-                                <button type="submit" class="btn btn-delete btn-sm" onclick="return confirm('Are you sure you want to delete this game?');">
-                                    <i class="bi bi-trash"></i> Delete Game
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = currentPage - 1, searchQuery = ViewData["searchQuery"] })" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
                 }
-            </tbody>
 
-        </table>
-        <nav aria-label="Page navigation">
-            <ul class="pagination custom-pagination">
-                @{
-                    int totalPages = (int)ViewData["TotalPages"];
-                    int currentPage = (int)ViewData["CurrentPage"];
-                    int range = 2; // Numero di pagine prima e dopo la corrente da mostrare
-
-                    if (currentPage > 1)
+                // Sempre mostra la prima pagina se non inclusa nella finestra
+                if (currentPage > range + 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = 1, searchQuery = ViewData["searchQuery"] })">1</a>
+                    </li>
+                    if (currentPage > range + 2)
                     {
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = currentPage - 1, searchQuery = ViewData["searchQuery"] })" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    }
-
-                    // Sempre mostra la prima pagina se non inclusa nella finestra
-                    if (currentPage > range + 1)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = 1, searchQuery = ViewData["searchQuery"] })">1</a>
-                        </li>
-                        if (currentPage > range + 2)
-                        {
-                            <li class="page-item disabled">
-                                <span class="page-link">...</span>
-                            </li>
-                        }
-                    }
-
-                    // Mostra pagine nell'intervallo specificato
-                    for (int i = Math.Max(1, currentPage - range); i <= Math.Min(totalPages, currentPage + range); i++)
-                    {
-                        <li class="page-item @(i == currentPage ? "active" : "")">
-                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, searchQuery = ViewData["searchQuery"] })">@i</a>
-                        </li>
-                    }
-
-                    // Sempre mostra l'ultima pagina se non inclusa nella finestra
-                    if (currentPage < totalPages - range)
-                    {
-                        if (currentPage < totalPages - range - 1)
-                        {
-                            <li class="page-item disabled">
-                                <span class="page-link">...</span>
-                            </li>
-                        }
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = totalPages, searchQuery = ViewData["searchQuery"] })">@totalPages</a>
-                        </li>
-                    }
-
-                    if (currentPage < totalPages)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" href="@Url.Action("Index", new { pageNumber = currentPage + 1, searchQuery = ViewData["searchQuery"] })" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
                         </li>
                     }
                 }
-            </ul>
-        </nav>
+
+                // Mostra pagine nell'intervallo specificato
+                for (int i = Math.Max(1, currentPage - range); i <= Math.Min(totalPages, currentPage + range); i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, searchQuery = ViewData["searchQuery"] })">@i</a>
+                    </li>
+                }
+
+                // Sempre mostra l'ultima pagina se non inclusa nella finestra
+                if (currentPage < totalPages - range)
+                {
+                    if (currentPage < totalPages - range - 1)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = totalPages, searchQuery = ViewData["searchQuery"] })">@totalPages</a>
+                    </li>
+                }
+
+                if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { pageNumber = currentPage + 1, searchQuery = ViewData["searchQuery"] })" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
 
 
-        <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
-    </div>
+    <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+</div>
 </div>
 
 
@@ -499,6 +571,5 @@
     const getAllLaunchersUrl = '@Url.Action("GetAllLaunchers", "Games")';
     const addGameUrl = '@Url.Action("ViewAllGames", "Games")#addGameModal';
 </script>
-
 
 

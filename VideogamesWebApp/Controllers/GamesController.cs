@@ -16,10 +16,21 @@ public class GamesController : Controller
 
     public IActionResult Index(string searchQuery, int pageNumber = 1)
     {
-        var userId = GetUserId();
-        var username = GetUsername();
+        var userId = GetUserId(); // Metodo per ottenere l'ID dell'utente
+        var username = GetUsername(); // Metodo per ottenere il nome utente
         int pageSize = 4;
 
+        // Recupera l'utente per ottenere anche l'immagine del profilo
+        var user = _dbContext.Users.SingleOrDefault(u => u.UserId == userId);
+
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+
+
+        // Recupera la lista delle transazioni del gioco
         var transactionsQuery = from transaction in _dbContext.GameTransactions
                                 join game in _dbContext.Games on transaction.GameId equals game.GameId
                                 join store in _dbContext.Stores on transaction.StoreId equals store.StoreId
@@ -44,6 +55,7 @@ public class GamesController : Controller
                                     MainGameName = mainGame != null ? mainGame.GameName : null
                                 };
 
+        // Filtro di ricerca, se presente
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
             searchQuery = searchQuery.ToLower();
@@ -55,33 +67,39 @@ public class GamesController : Controller
                 (t.MainGameName != null && t.MainGameName.ToLower().Contains(searchQuery))
             );
         }
+
+        // Paginazione
         var totalTransactions = transactionsQuery.Count();
         var transactions = transactionsQuery
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
+
+        // Passa i dati alla vista
         ViewData["Username"] = username;
         ViewData["searchQuery"] = searchQuery;
         ViewData["TotalPages"] = (int)Math.Ceiling((double)totalTransactions / pageSize);
         ViewData["CurrentPage"] = pageNumber;
+        ViewData["ProfileImage"] = user.ProfileImage;
 
         ViewData["AvailableGames"] = _dbContext.Games
-                                    .Select(g => new { g.GameId, g.GameName })
-                                    .ToList();
+                                        .Select(g => new { g.GameId, g.GameName })
+                                        .ToList();
 
         ViewData["AvailableStores"] = _dbContext.Stores
-                                     .Select(s => new { s.StoreId, s.StoreName })
-                                     .ToList();
+                                         .Select(s => new { s.StoreId, s.StoreName })
+                                         .ToList();
         ViewData["AvailablePlatforms"] = _dbContext.Platforms
-                                                   .Select(p => new { p.PlatformId, p.PlatformName })
-                                                   .ToList();
+                                                       .Select(p => new { p.PlatformId, p.PlatformName })
+                                                       .ToList();
         ViewData["AvailableLaunchers"] = _dbContext.Launchers
-                                                   .Select(l => new { l.LauncherId, l.LauncherName })
-                                                   .ToList();
+                                                       .Select(l => new { l.LauncherId, l.LauncherName })
+                                                       .ToList();
 
         return View("~/Views/Home/Index.cshtml", transactions);
     }
+
 
 
 
@@ -251,7 +269,7 @@ public class GamesController : Controller
         }
         else
         {
-            ViewData["MostExpensiveGame"] = "Nessuna transazione trovata.";
+            ViewData["MostExpensiveGame"] = "No transactions.";
         }
 
         // Last purchase

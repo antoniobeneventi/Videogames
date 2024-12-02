@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241126145458_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241202134236_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,6 +177,9 @@ namespace VideogamesWebApp.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -198,7 +201,7 @@ namespace VideogamesWebApp.Migrations
 
             modelBuilder.Entity("VideogamesWebApp.Models.GameTransactions", b =>
                 {
-                    b.HasOne("VideogamesWebApp.Models.Game", null)
+                    b.HasOne("VideogamesWebApp.Models.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -221,6 +224,8 @@ namespace VideogamesWebApp.Migrations
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Game");
                 });
 #pragma warning restore 612, 618
         }

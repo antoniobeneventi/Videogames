@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using VideogamesWebApp.Models;
 using GamesDataAccess;
+
 
 namespace VideogamesWebApp.Controllers;
 
@@ -21,6 +22,8 @@ public class AccountController : Controller
         return View();
     }
 
+
+
     [HttpPost]
     public IActionResult Login(string username, string password)
     {
@@ -35,6 +38,8 @@ public class AccountController : Controller
         ViewData["Error"] = "Invalid username or password";
         return View();
     }
+
+
 
     [HttpPost]
     public IActionResult Register(string regUsername, string regPassword)
@@ -55,7 +60,7 @@ public class AccountController : Controller
         var newUser = new User
         {
             Username = regUsername,
-            PasswordHash = HashPassword(regPassword)
+            PasswordHash = HashPassword(regPassword),
         };
 
         _context.Users.Add(newUser);
@@ -81,13 +86,14 @@ public class AccountController : Controller
         var hashOfInput = HashPassword(password);
         return hashOfInput == storedHash;
     }
-     [HttpPost]
+    [HttpPost]
     public IActionResult Logout()
     {
-        HttpContext.Session.Clear(); 
+        HttpContext.Session.Clear();
 
         return RedirectToAction("Login", "Account");
     }
+
     [HttpGet]
     public IActionResult EditAccount()
     {
@@ -131,5 +137,35 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Games");
     }
 
+    [HttpPost]
+    public IActionResult EditAvatar(string profileImage)
+    {
+        var userId = HttpContext.Session.GetInt32("UserId");
+
+        if (userId == null)
+        {
+            TempData["ErrorMessage"] = "User not found.";
+            return RedirectToAction("Index", "Games");
+        }
+
+        var user = _context.Users.Single(u => u.UserId == userId);
+
+        user.ProfileImage = profileImage;
+
+        try
+        {
+            _context.SaveChanges();
+        }
+        catch (Exception)
+        {
+            TempData["ErrorMessage"] = "An error occurred while updating the profile image.";
+            return RedirectToAction("Index", "Games");
+        }
+
+        TempData["SuccessMessage"] = "Profile image updated successfully!";
+        return RedirectToAction("Index", "Games");
+    }
 
 }
+
+

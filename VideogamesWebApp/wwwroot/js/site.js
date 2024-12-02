@@ -124,8 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                             <div class="launcher-item mb-3">
                                                 <h5 class="launcher-name">${launcher.launcherName}</h5>
                                                 <p class="launcher-description">${launcher.launcherDescription || 'No description available'}</p>
-                                                <a href="${launcher.Link}" target="_blank" class="launcher-link">Visit Launcher</a>
-
                                             </div>
                                         `;
                 });
@@ -798,8 +796,33 @@ async function checkDuplicatePurchase(event) {
     document.getElementById("buyGameForm").submit();
     return true;
 }
+document.querySelector('.btn.btn-primary').addEventListener('click', function () {
+    // Get the selected profile image value from the radio buttons
+    const selectedImage = document.querySelector('input[name="profileImage"]:checked');
 
+    if (selectedImage) {
+        // Get the value (e.g., 'image1', 'image2', 'image3')
+        let imageName = selectedImage.value;
 
+        // Update the profile image shown on the page
+        let profileImage = document.getElementById('userProfileImage');
+
+        // Based on the selected image, set the corresponding image URL
+        if (imageName === 'image1') {
+            profileImage.src = "/images/avatar2.jpeg"; // Image 1 URL
+        } else if (imageName === 'image2') {
+            profileImage.src = "/images/avatar3.jpg"; // Image 2 URL
+        } else if (imageName === 'image3') {
+            profileImage.src = "/images/avatar4.jpg"; // Image 3 URL
+        }
+
+        // Close the modal after saving changes
+        var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
+        modal.hide();
+    } else {
+        alert('Please select an image.');
+    }
+});
 
 
 

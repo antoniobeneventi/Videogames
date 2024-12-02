@@ -1,5 +1,4 @@
-﻿// Wait for the document to be ready before executing the script
-$(document).ready(function () {
+﻿$(document).ready(function () {
     setTimeout(function () {
         $('#successMessage').fadeOut('slow');
     }, 3000);

@@ -111,14 +111,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (platformName) activeFilters.push(`Platform: ${platformName}`);
         if (launcherName) activeFilters.push(`Launcher: ${launcherName}`);
 
-        // Always show the "Filtered by" label
         activeFiltersText.textContent = activeFilters.length > 0 ? `Filtered by: ${activeFilters.join(' | ')}` : 'Filtered by:';
 
-        // Show or hide the container depending on whether there are active filters
         if (activeFilters.length > 0) {
-            activeFiltersContainer.style.display = 'block';  // Show active filters
+            activeFiltersContainer.style.display = 'block';  
         } else {
-            activeFiltersContainer.style.display = 'none';  // Hide if no filters
+            activeFiltersContainer.style.display = 'none';  
         }
     }
 
