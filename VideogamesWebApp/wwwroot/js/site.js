@@ -749,27 +749,46 @@ document.addEventListener("DOMContentLoaded", function () {
     purchaseDateInput.value = today;
 });
 document.querySelector('.btn.btn-primary').addEventListener('click', function () {
-    // Get the selected profile image value from the radio buttons
+    // Ottieni il valore dell'immagine del profilo selezionata dai pulsanti radio
     const selectedImage = document.querySelector('input[name="profileImage"]:checked');
+    const customImageInput = document.getElementById('customImage');
+    const profileImage = document.getElementById('userProfileImage');
+
+    // Controlla se è stata selezionata un'immagine predefinita
     if (selectedImage) {
-        // Get the value (e.g., 'image1', 'image2', 'image3')
-        let imageName = selectedImage.value;
-        // Update the profile image shown on the page
-        let profileImage = document.getElementById('userProfileImage');
-        // Based on the selected image, set the corresponding image URL
-        if (imageName === 'image1') {
-            profileImage.src = "/images/avatar2.jpeg"; // Image 1 URL
-        } else if (imageName === 'image2') {
-            profileImage.src = "/images/avatar3.jpg"; // Image 2 URL
-        } else if (imageName === 'image3') {
-            profileImage.src = "/images/avatar4.jpg"; // Image 3 URL
-        }
-        // Close the modal after saving changes
+        // Aggiorna l'immagine del profilo con l'avatar selezionato
+        profileImage.src = selectedImage.value;
+
+        // Chiudi il modal dopo aver salvato le modifiche
         var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
         modal.hide();
-    } else {
-        alert('Please select an image.');
     }
+    // Controlla se è stato caricato un file immagine personalizzato
+    else if (customImageInput.files && customImageInput.files[0]) {
+        const fileReader = new FileReader();
+
+        fileReader.onload = function (event) {
+            // Imposta l'anteprima dell'immagine caricata
+            profileImage.src = event.target.result;
+
+            // Chiudi il modal dopo aver aggiornato l'anteprima
+            var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
+            modal.hide();
+        };
+
+        // Leggi il file caricato come URL dei dati
+        fileReader.readAsDataURL(customImageInput.files[0]);
+    }
+    // Nessuna immagine selezionata o caricata, mostra un avviso
+    else {
+        alert('Per favore seleziona un\'immagine o carica un\'immagine personalizzata.');
+    }
+});
+
+
+document.getElementById('customImage').addEventListener('change', function () {
+    const fileName = this.files && this.files.length > 0 ? this.files[0].name : 'No file chosen';
+    document.getElementById('fileSelected').textContent = fileName;
 });
 
 async function checkDuplicatePurchase(event) {
