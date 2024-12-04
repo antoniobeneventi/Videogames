@@ -203,14 +203,16 @@
                                     </span>
                                 </div>
                                 <input type="password"
-                                       maxlength="10"
+                                       maxlength="30"
                                        class="form-control form-control-lg border-left-0 pl-0"
                                        id="regPassword"
                                        name="regPassword"
                                        placeholder="Create a Strong Password"
                                        required>
-                                
                             </div>
+                            <small class="form-text text-muted">
+                                The password must contain at least 8 characters, a number, and a special character..
+                            </small>
                         </div>
 
                         @if (ViewData["RegisterError"] != null)
@@ -269,6 +271,19 @@
                 registerErrorMessage.style.display = "none";
             }
         }, 3000);
+
+    
+    
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+                const password = document.getElementById('regPassword').value;
+                const passwordRequirements = new RegExp("^(?=.*[0-9])(?=.*[!#$%^&*])[A-Za-z0-9!#$%^&*]{8,}$");
+
+                if (!passwordRequirements.test(password)) {
+                    event.preventDefault(); // Impedisce l'invio del modulo
+                alert('The password must contain at least 8 characters, a number, and a special character.');
+                }
+            });
+
 
 
     </script>

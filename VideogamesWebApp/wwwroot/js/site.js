@@ -1,4 +1,5 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿
+document.addEventListener("DOMContentLoaded", function () {
     let currentPage = 1;
     const pageSize = 5;
 
@@ -560,6 +561,7 @@ document.getElementById('buyGameForm').addEventListener('submit', function (even
     }
 });
 
+
 // Gestisce la selezione di un suggerimento nelle ricerche.
 function selectSuggestion(inputElement, hiddenInputElement, selectedItem, flagRef, errorElement) {
     inputElement.value = selectedItem.textContent; // Imposta il testo selezionato.
@@ -720,34 +722,97 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Aggiunge un listener all'input del campo storeSearch per validare il valore inserito
 document.getElementById('storeSearch').addEventListener('input', function () {
-    const inputValue = this.value;
+    const inputValue = this.value; // Ottiene il valore corrente dell'input
     validateStoreInput(inputValue);
 });
+
+// Funzione per validare l'input del negozio
 function validateStoreInput(inputValue) {
-    const errorMessageElement = document.getElementById('storeSearchError');
-    const storeInput = document.getElementById('storeSearch');
+    const errorMessageElement = document.getElementById('storeSearchError'); // Elemento per visualizzare errori
+    const storeInput = document.getElementById('storeSearch'); // Campo di input del negozio
+
+    // Controlla se il valore inserito è presente nell'elenco dei negozi esistenti
     if (existingStores.includes(inputValue)) {
-        errorMessageElement.style.display = 'none';
-        storeInput.classList.remove('is-invalid');
+        errorMessageElement.style.display = 'none'; // Nasconde il messaggio di errore
+        storeInput.classList.remove('is-invalid'); // Rimuove la classe di errore
     } else {
-        errorMessageElement.style.display = 'block';
-        errorMessageElement.innerHTML = 'Store not found. Please select from the dropdown or create a new store.';
-        storeInput.classList.add('is-invalid');
+        errorMessageElement.style.display = 'block'; // Mostra il messaggio di errore
+        errorMessageElement.innerHTML = 'Store not found. Please select from the dropdown or create a new store.'; // Messaggio di errore
+        storeInput.classList.add('is-invalid'); // Aggiunge la classe di errore
     }
 }
+
+// Funzione per mostrare i suggerimenti del dropdown
 function showDropdownSuggestions() {
     const storeSearchResults = document.getElementById('storeSearchResults');
-    storeSearchResults.style.display = 'block';
+    storeSearchResults.style.display = 'block'; // Mostra il dropdown
 }
+
+// Aggiunge un listener all'input del campo storeSearch per mostrare i suggerimenti del dropdown
 document.getElementById('storeSearch').addEventListener('input', function () {
     showDropdownSuggestions();
 });
+
+// Aggiunge un listener che inizializza il campo della data di acquisto quando la pagina è caricata
 document.addEventListener("DOMContentLoaded", function () {
     const purchaseDateInput = document.getElementById("purchaseDate");
     const today = new Date().toISOString().split("T")[0];
     purchaseDateInput.value = today;
 });
+
+// Funzione asincrona per controllare se un acquisto è duplicato
+async function checkDuplicatePurchase(event) {
+    event.preventDefault();
+
+    // Ottiene i valori dei campi necessari
+    const gameId = document.getElementById("gameId").value;
+    const storeId = document.getElementById("storeId").value;
+    const platformId = document.getElementById("platformId").value;
+    const launcherId = document.getElementById("launcherId").value;
+
+    // Controlla che tutti i campi siano compilati
+    if (!gameId || !storeId || !platformId || !launcherId) {
+        alert("Please select a valid game, store, platform, and launcher.");
+        return false; // Blocca il processo
+    }
+
+    try {
+        // Richiesta al server per verificare acquisti duplicati
+        const response = await fetch(`/Games/CheckDuplicatePurchase?gameId=${gameId}&storeId=${storeId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+
+        // Se l'acquisto è duplicato, mostra un messaggio di conferma
+        if (result.isDuplicate) {
+            const confirmAdd = confirm("You have already purchased this game from this store. Are you sure you want to continue?");
+
+            if (confirmAdd) {
+                // Se l'utente conferma, invia il modulo
+                document.getElementById("buyGameForm").submit();
+            } else {
+                // Se l'utente annulla, resetta il modulo
+                document.getElementById("buyGameForm").reset();
+            }
+            return false; // Blocca il processo successivo
+        }
+    } catch (error) {
+        console.error("Error checking duplicate purchase:", error);
+        alert("An error occurred while checking duplicate purchases.");
+        return false; // Blocca il processo
+    }
+
+    // Se non ci sono duplicati, invia il modulo
+    document.getElementById("buyGameForm").submit();
+    return true; // Conferma il completamento
+}
+
+// Per cambiare l'immagine dell'utente
 document.querySelector('.btn.btn-primary').addEventListener('click', function () {
     // Ottieni il valore dell'immagine del profilo selezionata dai pulsanti radio
     const selectedImage = document.querySelector('input[name="profileImage"]:checked');
@@ -759,7 +824,7 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function ()
         // Aggiorna l'immagine del profilo con l'avatar selezionato
         profileImage.src = selectedImage.value;
 
-        // Chiudi il modal dopo aver salvato le modifiche
+
         var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
         modal.hide();
     }
@@ -768,15 +833,14 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function ()
         const fileReader = new FileReader();
 
         fileReader.onload = function (event) {
-            // Imposta l'anteprima dell'immagine caricata
+
             profileImage.src = event.target.result;
 
-            // Chiudi il modal dopo aver aggiornato l'anteprima
             var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
             modal.hide();
         };
 
-        // Leggi il file caricato come URL dei dati
+        // file caricato come URL dei dati
         fileReader.readAsDataURL(customImageInput.files[0]);
     }
     // Nessuna immagine selezionata o caricata, mostra un avviso
@@ -785,48 +849,19 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function ()
     }
 });
 
-
 document.getElementById('customImage').addEventListener('change', function () {
     const fileName = this.files && this.files.length > 0 ? this.files[0].name : 'No file chosen';
     document.getElementById('fileSelected').textContent = fileName;
 });
 
-async function checkDuplicatePurchase(event) {
-    event.preventDefault(); 
 
-    const gameId = document.getElementById("gameId").value;
-    const storeId = document.getElementById("storeId").value;
-    const platformId = document.getElementById("platformId").value;
-    const launcherId = document.getElementById("launcherId").value;
+document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+    const newPassword = document.getElementById('newPassword').value;
+    const passwordRequirements = new RegExp("^(?=.*[0-9])(?=.*[!#$%^&*])[A-Za-z0-9!#$%^&*]{8,}$");
 
-    if (!gameId || !storeId || !platformId || !launcherId) { 
-        alert("Please select a valid game, store, platform, and launcher.");
-        return false;
+    if (!passwordRequirements.test(newPassword)) {
+        event.preventDefault(); 
+        alert('The password must contain at least 8 characters, a number, and a special character.');
     }
+});
 
-    try {
-        const response = await fetch(`/Games/CheckDuplicatePurchase?gameId=${gameId}&storeId=${storeId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const result = await response.json();
-        if (result.isDuplicate) {
-            const confirmAdd = confirm("You have already purchased this game from this store. Are you sure you want to continue?");
-
-            if (confirmAdd) {
-                document.getElementById("buyGameForm").submit();
-            } else {
-                document.getElementById("buyGameForm").reset();
-            }
-            return false; 
-        }
-    } catch (error) {
-        console.error("Error checking duplicate purchase:", error);
-        alert("An error occurred while checking duplicate purchases.");
-        return false;
-    }
-    document.getElementById("buyGameForm").submit();
-    return true;
-}

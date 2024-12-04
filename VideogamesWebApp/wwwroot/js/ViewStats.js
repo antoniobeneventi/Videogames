@@ -13,6 +13,8 @@ const launcherSearchResults = document.getElementById('launcherSearchResults');
 const launcherSearchError = document.getElementById('launcherSearchError');
 const launcherId = document.getElementById('launcherId');
 
+
+
 storeSearch.addEventListener('input', function () {
     const searchQuery = this.value.trim().toLowerCase();
     if (searchQuery.length > 0) {
@@ -114,9 +116,9 @@ document.addEventListener('DOMContentLoaded', function () {
         activeFiltersText.textContent = activeFilters.length > 0 ? `Filtered by: ${activeFilters.join(' | ')}` : 'Filtered by:';
 
         if (activeFilters.length > 0) {
-            activeFiltersContainer.style.display = 'block';  
+            activeFiltersContainer.style.display = 'block';
         } else {
-            activeFiltersContainer.style.display = 'none';  
+            activeFiltersContainer.style.display = 'none';
         }
     }
 
@@ -250,4 +252,46 @@ document.addEventListener('DOMContentLoaded', function () {
         launcherSearchResults.style.display = 'none';
 
     });
+});
+
+document.getElementById('createPdfButton').addEventListener('click', function () {
+    // Create a new element for the title
+    const titleElement = document.createElement('div');
+    titleElement.textContent = 'Recap Stats';
+
+    // Set inline styles for the title
+    titleElement.style.textAlign = 'center'; // Center the title
+    titleElement.style.marginBottom = '20px'; // Space below the title
+    titleElement.style.fontSize = '32px'; // Increase font size for the title
+    titleElement.style.fontWeight = 'bold'; // Make the title bold
+    titleElement.style.lineHeight = '1.2'; // Adjust line height for better spacing
+
+    // Select the element to convert
+    const element = document.getElementById('statsContainer');
+
+    // Clone the element to avoid modifying it in the DOM
+    const clone = element.cloneNode(true);
+
+    // Create a wrapper for the title and the stats
+    const pdfContent = document.createElement('div');
+    pdfContent.appendChild(titleElement); // Add the title
+    pdfContent.appendChild(clone); // Add the cloned stats
+
+    // Include the tables
+    const daysOfWeekTable = document.getElementById('daysOfWeekTable').cloneNode(true);
+    const monthsTable = document.getElementById('monthsTable').cloneNode(true);
+
+    pdfContent.appendChild(daysOfWeekTable); // Add the days of the week table
+    pdfContent.appendChild(monthsTable); // Add the months table
+
+    const options = {
+        margin: 1,
+        filename: 'stats.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    // Generate the PDF from the wrapper
+    html2pdf().from(pdfContent).set(options).save();
 });

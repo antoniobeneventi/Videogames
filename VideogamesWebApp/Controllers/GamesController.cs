@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using VideogamesWebApp.Models;
 
+
 public class GamesController : Controller
 {
     private readonly DatabaseContext _dbContext;
@@ -672,5 +673,4 @@ public class GamesController : Controller
 
 
 }
-
 

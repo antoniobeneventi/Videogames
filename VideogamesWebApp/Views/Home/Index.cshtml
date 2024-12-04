@@ -1,5 +1,4 @@
 ﻿@model List<VideogamesWebApp.Models.GameTransactionsViewModel>
-
 @{
     var image = ViewData["ProfileImage"];
 }
@@ -9,17 +8,16 @@
 <div class="container mt-4 container-bg">
     <div class="welcome-container d-flex align-items-center justify-content-between p-4 rounded mb-4 shadow">
         <div class="welcome-text d-flex align-items-center">
-            <!-- Make the icon clickable by wrapping it with a button -->
+
             <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editAvatarModal">
                 @{
                     if (image != null)
                     {
-                        <img id="userProfileImage" src="@image" alt="Profile Image" class="img-fluid rounded-circle" style="width: 3rem; height: 3rem;" />
+                        <img id="userProfileImage" src="@image" alt="Profile Image" class="img-fluid rounded-circle" style="width: 5rem; height: 5rem;" />
                     }
                     else
                     {
-                        <!-- Placeholder image (initial user icon) -->
-                        <img id="userProfileImage" src="/images/utenteStock.png" alt="Profile Image" class="img-fluid rounded-circle" style="width: 3rem; height: 3rem;" />
+                        <img id="userProfileImage" src="/images/utenteStock.png" alt="Profile Image" class="img-fluid rounded-circle" style="width: 5rem; height: 5rem;" />
                     }
                 }
             </button>
@@ -39,7 +37,7 @@
         </form>
     </div>
 
-    <!-- Modal for Edit Account -->
+    <!-- Modal for Edit Avatar -->
     <div class="modal fade" id="editAvatarModal" tabindex="-1" aria-labelledby="editAvatarModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -85,11 +83,6 @@
         </div>
     </div>
 
-
-
-
-
-
     <form method="get" asp-controller="Games" asp-action="Index" class="d-flex mt-3 align-items-center gap-2">
         <div class="input-group w-25">
             <input maxlength="30" type="text" id="searchQuery" name="searchQuery" class="form-control"
@@ -101,6 +94,8 @@
         </button>
     </form>
 </div>
+
+<!-- Modal per la modifica della password -->
 <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -109,8 +104,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
-                <form method="post" asp-controller="Account" asp-action="ChangePassword">
+                <form method="post" asp-controller="Account" asp-action="ChangePassword" id="changePasswordForm">
                     <div class="mb-3">
                         <label for="currentPassword" class="form-label">Current Password</label>
                         <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
@@ -127,7 +121,6 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -498,7 +491,7 @@
             @{
                 int totalPages = (int)ViewData["TotalPages"];
                 int currentPage = (int)ViewData["CurrentPage"];
-                int range = 2; // Numero di pagine prima e dopo la corrente da mostrare
+                int range = 2;
 
                 if (currentPage > 1)
                 {
@@ -562,6 +555,7 @@
 </div>
 
 
+
 <script src="~/js/site.js"></script>
 
 <script>
@@ -570,5 +564,4 @@
     const getAllLaunchersUrl = '@Url.Action("GetAllLaunchers", "Games")';
     const addGameUrl = '@Url.Action("ViewAllGames", "Games")#addGameModal';
 </script>
-
 

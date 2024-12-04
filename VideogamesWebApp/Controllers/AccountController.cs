@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using VideogamesWebApp.Models;
 using GamesDataAccess;
+using System.Text.RegularExpressions;
 
 
 namespace VideogamesWebApp.Controllers;
@@ -47,6 +48,14 @@ public class AccountController : Controller
         if (string.IsNullOrEmpty(regUsername) || string.IsNullOrEmpty(regPassword))
         {
             ViewData["RegisterError"] = "Username and password are required.";
+            return View("Login");
+        }
+
+        // Validazione della password
+        var passwordRequirements = new Regex(@"^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+        if (!passwordRequirements.IsMatch(regPassword))
+        {
+            ViewData["RegisterError"] = "La password deve contenere almeno 8 caratteri, un numero e un carattere speciale.";
             return View("Login");
         }
 
@@ -109,18 +118,25 @@ public class AccountController : Controller
             return RedirectToAction("Index", "Games");
         }
 
+        var passwordRequirements = new Regex(@"^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+        if (!passwordRequirements.IsMatch(newPassword))
+        {
+            TempData["ErrorMessage"] = "La password deve contenere almeno 8 caratteri, un numero e un carattere speciale.";
+            return RedirectToAction("Index", "Games");
+        }
+
         var userId = HttpContext.Session.GetInt32("UserId");
         if (userId == null)
         {
-            TempData["ErrorMessage"] = "User not found.";
-            return RedirectToAction("Login", "Account");
+            TempData["ErrorMessage"] = "User  not found.";
+            return RedirectToAction("Index", "Games");
         }
 
         var user = _context.Users.SingleOrDefault(u => u.UserId == userId);
         if (user == null)
         {
-            TempData["ErrorMessage"] = "User not found.";
-            return RedirectToAction("Login", "Account");
+            TempData["ErrorMessage"] = "User  not found.";
+            return RedirectToAction("Index", "Games");
         }
 
         if (!VerifyPasswordHash(currentPassword, user.PasswordHash))
@@ -129,7 +145,6 @@ public class AccountController : Controller
             return RedirectToAction("Index", "Games");
         }
 
-        // Aggiorna la password
         user.PasswordHash = HashPassword(newPassword);
         _context.SaveChanges();
 
