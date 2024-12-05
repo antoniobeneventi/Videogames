@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241204084144_InitialCreate")]
+    [Migration("20241205135538_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -26,6 +26,10 @@ namespace VideogamesWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CoverImageUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("GameDescription")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -35,6 +39,9 @@ namespace VideogamesWebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsImported")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("MainGameId")
                         .HasColumnType("INTEGER");

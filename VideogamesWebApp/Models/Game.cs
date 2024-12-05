@@ -19,6 +19,8 @@ public class Game
     [ForeignKey("MainGameId")]
     public Game MainGame { get; set; }
 
+    public bool IsImported { get; set; }
+    public string CoverImageUrl { get; set; }
 
 }
 

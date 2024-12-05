@@ -19,7 +19,9 @@ namespace VideogamesWebApp.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     GameName = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     GameDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    MainGameId = table.Column<int>(type: "INTEGER", nullable: true)
+                    MainGameId = table.Column<int>(type: "INTEGER", nullable: true),
+                    IsImported = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CoverImageUrl = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
