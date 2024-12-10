@@ -1,5 +1,6 @@
 ﻿using GamesDataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
 
 
@@ -19,7 +20,7 @@ public class GamesController : Controller
     {
         var userId = GetUserId(); // Metodo per ottenere l'ID dell'utente
         var username = GetUsername(); // Metodo per ottenere il nome utente
-        int pageSize = 4;
+        int pageSize = 5;
 
         // Recupera l'utente per ottenere anche l'immagine del profilo
         var user = _dbContext.Users.SingleOrDefault(u => u.UserId == userId);
@@ -53,7 +54,8 @@ public class GamesController : Controller
                                     PlatformName = platform.PlatformName,
                                     LauncherName = launcher.LauncherName,
                                     MainGameId = game.MainGameId,
-                                    MainGameName = mainGame != null ? mainGame.GameName : null
+                                    MainGameName = mainGame != null ? mainGame.GameName : null,
+                                    CoverImageUrl = game.CoverImageUrl
                                 };
 
         // Filtro di ricerca, se presente
@@ -141,10 +143,10 @@ public class GamesController : Controller
         int pageSize = 5;
         var username = GetUsername();
 
-        // Ensure the games are initialized (if not already in the database)
+        // 
         if (!_dbContext.Games.Any())
         {
-            DbInitializer.Initialize(_dbContext); // Initialize games from the JSON file if the database is empty
+            DbInitializer.Initialize(_dbContext);
         }
 
         IQueryable<GameViewModel> allGamesQuery = _dbContext.Games
@@ -158,20 +160,18 @@ public class GamesController : Controller
                 DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId),
                 IsImported = game.IsImported,
                 CoverImageUrl = game.CoverImageUrl
-
-
             });
 
-        // Apply sorting based on the selected sort order
+
         allGamesQuery = sortOrder switch
         {
-            "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName),
-            "GameNameDesc" => allGamesQuery.OrderByDescending(game => game.GameName),
+            "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName.ToLower()),
+            "GameNameDesc" => allGamesQuery.OrderByDescending(game => game.GameName.ToLower()),
             "GameDescriptionAsc" => allGamesQuery.OrderBy(game => game.GameDescription),
             "GameDescriptionDesc" => allGamesQuery.OrderByDescending(game => game.GameDescription),
             "DLCCountAsc" => allGamesQuery.OrderBy(game => game.DLCCount),
             "DLCCountDesc" => allGamesQuery.OrderByDescending(game => game.DLCCount),
-            _ => allGamesQuery.OrderBy(game => game.GameName) // Default alphabetical order
+            _ => allGamesQuery.OrderBy(game => game.GameName.ToLower()) // Ordine alfabetico di default
         };
 
         var mainGames = _dbContext.Games
@@ -334,14 +334,12 @@ public class GamesController : Controller
     {
         if (!string.IsNullOrWhiteSpace(gameName) && !string.IsNullOrWhiteSpace(gameDescription))
         {
-            var existingGame = _dbContext.Games
-                .FirstOrDefault(g => g.GameName.ToLower() == gameName.ToLower() &&
-                                     g.GameDescription.ToLower() == gameDescription.ToLower() &&
-                                     g.MainGameId == mainGameId);
+            var existingGame = await _dbContext.Games
+            .FirstOrDefaultAsync(g => EF.Functions.Like(g.GameName, gameName));
 
             if (existingGame != null)
             {
-                TempData["ErrorMessage"] = "A game with the same name, description already exists. Enter different details.";
+                TempData["ErrorMessage"] = "A game with the same name. Enter different game.";
                 return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
             }
 
@@ -350,7 +348,8 @@ public class GamesController : Controller
                 GameName = gameName,
                 GameDescription = gameDescription,
                 MainGameId = mainGameId,
-                IsImported = false // Imposta IsImported a false per i giochi aggiunti dall'utente
+                IsImported = false, 
+                CoverImageUrl = "/images/cover/controller.jpg"
 
 
             };
@@ -689,4 +688,6 @@ public class GamesController : Controller
 
 
 }
+
+
 

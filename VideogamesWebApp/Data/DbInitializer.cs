@@ -144,7 +144,6 @@ public static class DbInitializer
         var jsonData = File.ReadAllText(filePath);
         var games = JsonConvert.DeserializeObject<List<Game>>(jsonData);
 
-        // Imposta IsImported a true per i giochi importati dal JSON
         foreach (var game in games)
         {
             game.IsImported = true;
@@ -152,7 +151,7 @@ public static class DbInitializer
             // Imposta un valore predefinito per CoverImageUrl se è NULL
             if (string.IsNullOrEmpty(game.CoverImageUrl))
             {
-                game.CoverImageUrl = "/images/default_cover.jpg"; // Imposta un'immagine predefinita
+                game.CoverImageUrl = "/images/cover/controller.jpg"; // Imposta un'immagine predefinita
             }
         }
 

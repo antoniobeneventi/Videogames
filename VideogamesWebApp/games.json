@@ -4,7 +4,7 @@
     "GameName": "The Witcher 3: Wild Hunt",
     "GameDescription": "An open-world RPG by CD Projekt Red",
     "MainGameId": null,
-    "CoverImageUrl": "/images/the_witcher_3.jpg"
+    "CoverImageUrl": "/images/cover/the_witcher_3.jpg"
 
 
   },
@@ -13,7 +13,7 @@
     "GameName": "Hearts of Stone",
     "GameDescription": "DLC for The Witcher 3: Wild Hunt",
     "MainGameId": 1,
-    "CoverImageUrl": "/images/hearts_of_stone.jpg"
+    "CoverImageUrl": "/images/cover/hearts_of_stone.jpg"
 
   },
   {
@@ -21,7 +21,7 @@
     "GameName": "Blood and Wine",
     "GameDescription": "DLC for The Witcher 3: Wild Hunt",
     "MainGameId": 1,
-    "CoverImageUrl": "/images/blood_and_Wine.jpg"
+    "CoverImageUrl": "/images/cover/blood_and_Wine.jpg"
 
   },
   {
@@ -29,7 +29,7 @@
     "GameName": "Cyberpunk 2077",
     "GameDescription": "A futuristic RPG by CD Projekt Red",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Cyberpunk_2077.jpg"
+    "CoverImageUrl": "/images/cover/Cyberpunk_2077.jpg"
 
   },
   {
@@ -37,7 +37,7 @@
     "GameName": "Phantom Liberty",
     "GameDescription": "DLC for Cyberpunk 2077",
     "MainGameId": 4,
-    "CoverImageUrl": "/images/Phantom_Liberty.jpg"
+    "CoverImageUrl": "/images/cover/Phantom_Liberty.jpg"
 
   },
   {
@@ -45,7 +45,7 @@
     "GameName": "Elden Ring",
     "GameDescription": "An action RPG by FromSoftware",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
+    "CoverImageUrl": "/images/cover/Elden_Ring.jpg"
 
   },
   {
@@ -53,7 +53,7 @@
     "GameName": "Dark Souls III",
     "GameDescription": "An action RPG by FromSoftware",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Dark_souls_3.jpg"
+    "CoverImageUrl": "/images/cover/Dark_souls_3.jpg"
 
   },
   {
@@ -61,7 +61,7 @@
     "GameName": "Ashes of Ariandel",
     "GameDescription": "DLC for Dark Souls III",
     "MainGameId": 7,
-    "CoverImageUrl": "/images/Ashes_of_Ariandel.jpg"
+    "CoverImageUrl": "/images/cover/Ashes_of_Ariandel.jpg"
 
   },
   {
@@ -69,7 +69,7 @@
     "GameName": "The Ringed City",
     "GameDescription": "DLC for Dark Souls III",
     "MainGameId": 7,
-    "CoverImageUrl": "/images/The_Ringed_City.jpg"
+    "CoverImageUrl": "/images/cover/The_Ringed_City.jpg"
 
   },
   {
@@ -77,7 +77,7 @@
     "GameName": "Grand Theft Auto V",
     "GameDescription": "An open-world game by Rockstar",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Grand_Theft_Auto_V.jpg"
+    "CoverImageUrl": "/images/cover/Grand_Theft_Auto_V.jpg"
 
   },
   {
@@ -85,7 +85,7 @@
     "GameName": "Red Dead Redemption 2",
     "GameDescription": "An open-world game by Rockstar",
     "MainGameId": null,
-    "CoverImageUrl": "/images/red_dead_redemption_2.jpg"
+    "CoverImageUrl": "/images/cover/red_dead_redemption_2.jpg"
 
   },
   {
@@ -93,7 +93,7 @@
     "GameName": "Horizon Zero Dawn",
     "GameDescription": "A futuristic open-world RPG by Guerrilla Games",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Horizon_Zero_Dawn.jpg"
+    "CoverImageUrl": "/images/cover/Horizon_Zero_Dawn.jpg"
 
   },
   {
@@ -101,7 +101,7 @@
     "GameName": "Frozen Wilds",
     "GameDescription": "DLC for Horizon Zero Dawn",
     "MainGameId": 12,
-    "CoverImageUrl": "/images/Frozen_Wilds.jpg"
+    "CoverImageUrl": "/images/cover/Frozen_Wilds.jpg"
 
   },
   {
@@ -109,7 +109,7 @@
     "GameName": "The Last of Us Part I",
     "GameDescription": "An action-adventure game by Naughty Dog",
     "MainGameId": null,
-    "CoverImageUrl": "/images/The_Last_of_Us_Part_I.jpg"
+    "CoverImageUrl": "/images/cover/The_Last_of_Us_Part_I.jpg"
 
   },
   {
@@ -117,7 +117,7 @@
     "GameName": "Left Behind",
     "GameDescription": "DLC for The Last of Us Part I",
     "MainGameId": 14,
-    "CoverImageUrl": "/images/Left_Behind.jpg"
+    "CoverImageUrl": "/images/cover/Left_Behind.jpg"
 
   },
   {
@@ -125,7 +125,7 @@
     "GameName": "The Last of Us Part II",
     "GameDescription": "Sequel to The Last of Us Part I",
     "MainGameId": null,
-    "CoverImageUrl": "/images/The.jpg"
+    "CoverImageUrl": "/images/cover/The.jpg"
 
   },
   {
@@ -133,7 +133,7 @@
     "GameName": "God of War",
     "GameDescription": "A Norse mythology action game by Santa Monica Studio",
     "MainGameId": null,
-    "CoverImageUrl": "/images/God_of_War.jpg"
+    "CoverImageUrl": "/images/cover/God_of_War.jpg"
 
   },
   {
@@ -141,7 +141,7 @@
     "GameName": "God of War Ragnarok",
     "GameDescription": "Sequel to God of War",
     "MainGameId": null,
-    "CoverImageUrl": "/images/God_of_War_Ragnarok.jpg"
+    "CoverImageUrl": "/images/cover/God_of_War_Ragnarok.jpg"
 
   },
   {
@@ -149,7 +149,7 @@
     "GameName": "Assassin's Creed Valhalla",
     "GameDescription": "An open-world RPG by Ubisoft",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Assassin's_Creed_Valhalla.jpg"
+    "CoverImageUrl": "/images/cover/Assassin's_Creed_Valhalla.jpg"
 
   },
   {
@@ -157,7 +157,7 @@
     "GameName": "Just Dance 2024",
     "GameDescription": "A Dance Game",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Just_Dance_2024.jpg"
+    "CoverImageUrl": "/images/cover/Just_Dance_2024.jpg"
 
   },
 
@@ -166,7 +166,7 @@
     "GameName": "Far Cry 5",
     "GameDescription": "An open-world FPS by Ubisoft",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Far_Cry_5.jpg"
+    "CoverImageUrl": "/images/cover/Far_Cry_5.jpg"
 
   },
   {
@@ -174,7 +174,7 @@
     "GameName": "Lost on Mars",
     "GameDescription": "DLC for Far Cry 5 ",
     "MainGameId": 21,
-    "CoverImageUrl": "/images/Lost_on_Mars.jpg"
+    "CoverImageUrl": "/images/cover/Lost_on_Mars.jpg"
 
   },
   {
@@ -182,7 +182,7 @@
     "GameName": "New Dawn",
     "GameDescription": "Standalone expansion for Far Cry 5",
     "MainGameId": 21,
-    "CoverImageUrl": "/images/New_Dawn.jpg"
+    "CoverImageUrl": "/images/cover/New_Dawn.jpg"
 
   },
   {
@@ -190,7 +190,7 @@
     "GameName": "FIFA 22",
     "GameDescription": "A football simulation game by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/FIFA_22.jpg"
+    "CoverImageUrl": "/images/cover/FIFA_22.jpg"
 
   },
   {
@@ -198,7 +198,7 @@
     "GameName": "FIFA 23",
     "GameDescription": "Sequel to FIFA 22",
     "MainGameId": null,
-    "CoverImageUrl": "/images/FIFA_23.jpg"
+    "CoverImageUrl": "/images/cover/FIFA_23.jpg"
 
   },
   {
@@ -206,7 +206,7 @@
     "GameName": "The Elder Scrolls V: Skyrim",
     "GameDescription": "An open-world RPG by Bethesda",
     "MainGameId": null,
-    "CoverImageUrl": "/images/The_Elder_Scrolls_V_Skyrim.jpg"
+    "CoverImageUrl": "/images/cover/The_Elder_Scrolls_V_Skyrim.jpg"
 
   },
   {
@@ -214,7 +214,7 @@
     "GameName": "Dawnguard",
     "GameDescription": "DLC for The Elder Scrolls V: Skyrim",
     "MainGameId": 26,
-    "CoverImageUrl": "/images/Dawnguard.jpg"
+    "CoverImageUrl": "/images/cover/Dawnguard.jpg"
 
   },
   {
@@ -222,7 +222,7 @@
     "GameName": "Hearthfire",
     "GameDescription": "DLC for The Elder Scrolls V: Skyrim",
     "MainGameId": 26,
-    "CoverImageUrl": "/images/Hearthfire.jpg"
+    "CoverImageUrl": "/images/cover/Hearthfire.jpg"
 
   },
   {
@@ -230,7 +230,7 @@
     "GameName": "Dragon Ball Sparkling Zero",
     "GameDescription": "DLC for The Elder Scrolls V: Skyrim",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Dragon_Ball_Sparkling_Zero.jpg"
+    "CoverImageUrl": "/images/cover/Dragon_Ball_Sparkling_Zero.jpg"
 
   },
   {
@@ -238,7 +238,7 @@
     "GameName": "Minecraft",
     "GameDescription": "A sandbox game by Mojang",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Minecraft.jpg"
+    "CoverImageUrl": "/images/cover/Minecraft.jpg"
 
   },
   {
@@ -246,7 +246,7 @@
     "GameName": "Caves and Cliffs",
     "GameDescription": "DLC for Minecraft",
     "MainGameId": 30,
-    "CoverImageUrl": "/images/Caves_and_Cliffs.jpg"
+    "CoverImageUrl": "/images/cover/Caves_and_Cliffs.jpg"
 
   },
   {
@@ -254,7 +254,7 @@
     "GameName": "The Sims 4",
     "GameDescription": "A life simulation game by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/The_Sims_4.jpg"
+    "CoverImageUrl": "/images/cover/The_Sims_4.jpg"
 
   },
   {
@@ -262,7 +262,7 @@
     "GameName": "Cats and Dogs",
     "GameDescription": "DLC for The Sims 4",
     "MainGameId": 32,
-    "CoverImageUrl": "/images/Cats_and_Dogs.jpg"
+    "CoverImageUrl": "/images/cover/Cats_and_Dogs.jpg"
 
   },
   {
@@ -270,7 +270,7 @@
     "GameName": "City Living",
     "GameDescription": "DLC for The Sims 4",
     "MainGameId": 32,
-    "CoverImageUrl": "/images/City_Living.jpg"
+    "CoverImageUrl": "/images/cover/City_Living.jpg"
 
   },
   {
@@ -278,7 +278,7 @@
     "GameName": "Get to Work",
     "GameDescription": "DLC for The Sims 4",
     "MainGameId": 32,
-    "CoverImageUrl": "/images/Get_to_Work.jpg"
+    "CoverImageUrl": "/images/cover/Get_to_Work.jpg"
 
   },
   {
@@ -286,7 +286,7 @@
     "GameName": "Call of Duty: Warzone",
     "GameDescription": "Battle royale game by Activision",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Call_of_Duty_Warzone.jpg"
+    "CoverImageUrl": "/images/cover/Call_of_Duty_Warzone.jpg"
 
   },
   {
@@ -294,7 +294,7 @@
     "GameName": "Vanguard",
     "GameDescription": "DLC for Call of Duty: Warzone",
     "MainGameId": 36,
-    "CoverImageUrl": "/images/Vanguard.jpg"
+    "CoverImageUrl": "/images/cover/Vanguard.jpg"
 
   },
   {
@@ -302,7 +302,7 @@
     "GameName": "The Witcher 2: Assassins of Kings",
     "GameDescription": "A fantasy RPG by CD Projekt Red",
     "MainGameId": null,
-    "CoverImageUrl": "/images/The_Witcher_2_Assassins_of_Kings.jpg"
+    "CoverImageUrl": "/images/cover/The_Witcher_2_Assassins_of_Kings.jpg"
 
   },
   {
@@ -310,7 +310,7 @@
     "GameName": "FIFA 21",
     "GameDescription": "A football simulation game by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Fifa_21.jpg"
+    "CoverImageUrl": "/images/cover/Fifa_21.jpg"
 
   },
   {
@@ -318,7 +318,7 @@
     "GameName": "Dead Space",
     "GameDescription": "A survival horror game by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Dead_Space.jpg"
+    "CoverImageUrl": "/images/cover/Dead_Space.jpg"
 
   },
   {
@@ -326,7 +326,7 @@
     "GameName": "Severed",
     "GameDescription": "DLC for Dead Space",
     "MainGameId": 40,
-    "CoverImageUrl": "/images/Severed.jpg"
+    "CoverImageUrl": "/images/cover/Severed.jpg"
 
   },
   {
@@ -334,7 +334,7 @@
     "GameName": "Far Cry 4",
     "GameDescription": "An open-world FPS by Ubisoft",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Far_Cry_4.jpg"
+    "CoverImageUrl": "/images/cover/Far_Cry_4.jpg"
 
   },
   {
@@ -342,7 +342,7 @@
     "GameName": "Valley of the Yetis",
     "GameDescription": "DLC for Far Cry 4",
     "MainGameId": 42,
-    "CoverImageUrl": "/images/Valley_of_the_Yetis.jpg"
+    "CoverImageUrl": "/images/cover/Valley_of_the_Yetis.jpg"
 
   },
   {
@@ -350,7 +350,7 @@
     "GameName": "Watch Dogs 2",
     "GameDescription": "An open-world action game by Ubisoft",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Watch_Dogs_2.jpg"
+    "CoverImageUrl": "/images/cover/Watch_Dogs_2.jpg"
 
   },
   {
@@ -358,7 +358,7 @@
     "GameName": "Human Conditions",
     "GameDescription": "DLC for Watch Dogs 2",
     "MainGameId": 44,
-    "CoverImageUrl": "/images/Human_Conditions.jpg"
+    "CoverImageUrl": "/images/cover/Human_Conditions.jpg"
 
   },
   {
@@ -366,7 +366,7 @@
     "GameName": "Hitman",
     "GameDescription": "A stealth game by IO Interactive",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Hitman.jpg"
+    "CoverImageUrl": "/images/cover/Hitman.jpg"
 
   },
   {
@@ -374,7 +374,7 @@
     "GameName": "The Sarajevo Six",
     "GameDescription": "DLC for Hitman",
     "MainGameId": 46,
-    "CoverImageUrl": "/images/The_Sarajevo_Six.jpg"
+    "CoverImageUrl": "/images/cover/The_Sarajevo_Six.jpg"
 
   },
   {
@@ -382,15 +382,15 @@
     "GameName": "Grand Theft Auto IV",
     "GameDescription": "An open-world game by Rockstar",
     "MainGameId": null,
-    "CoverImageUrl": "/images/GTA_IV.jpg"
+    "CoverImageUrl": "/images/cover/GTA_IV.jpg"
 
   },
   {
     "GameId": 49,
-    "GameName": "GTA Vice City",
+    "GameName": "Grand Theft Auto Vice City",
     "GameDescription": "An open-world game by Rockstar",
     "MainGameId": null,
-    "CoverImageUrl": "/images/GTA_Vice_City.jpg"
+    "CoverImageUrl": "/images/cover/GTA_Vice_City.jpg"
 
   },
   {
@@ -398,7 +398,7 @@
     "GameName": "Portal 2",
     "GameDescription": "A puzzle-platformer game by Valve",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Portal2.jpg"
+    "CoverImageUrl": "/images/cover/Portal2.jpg"
 
   },
   {
@@ -406,31 +406,28 @@
     "GameName": "Perpetual Testing Initiative",
     "GameDescription": "DLC for Portal 2",
     "MainGameId": 50,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Portal2_Perpetual_Testing_Initiative.jpg"
   },
   {
     "GameId": 52,
     "GameName": "DOOM Eternal",
     "GameDescription": "A first-person shooter by id Software",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Doom_eternal.jpg"
   },
   {
     "GameId": 53,
     "GameName": "The Ancient Gods",
     "GameDescription": "DLC for DOOM Eternal",
     "MainGameId": 52,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/The_Ancient_Gods.jpg"
   },
   {
     "GameId": 54,
     "GameName": "Fallout 4",
     "GameDescription": "An open-world RPG by Bethesda",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
+    "CoverImageUrl": "/images/cover/FallOut4.jpg"
 
   },
   {
@@ -438,370 +435,323 @@
     "GameName": "Far Harbor",
     "GameDescription": "DLC for Fallout 4",
     "MainGameId": 54,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Far_Harbour.jpg"
   },
   {
     "GameId": 56,
     "GameName": "Dishonored 2",
     "GameDescription": "A stealth action game by Bethesda",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Dishonored_2.jpg"
   },
   {
     "GameId": 57,
     "GameName": "The Death of the Outsider",
     "GameDescription": "DLC for Dishonored 2",
     "MainGameId": 56,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/The_Death_of_the_Outsider.jpg"
   },
   {
     "GameId": 58,
     "GameName": "Dark Souls II",
     "GameDescription": "An action RPG by FromSoftware",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/souls.jpg"
   },
   {
     "GameId": 59,
     "GameName": "Crown of the Sunken King",
     "GameDescription": "DLC for Dark Souls II",
     "MainGameId": 58,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/CrownoftheSunkenKing.jpg"
   },
   {
     "GameId": 60,
     "GameName": "Dark Souls Remastered",
     "GameDescription": "A remastered version of Dark Souls",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Dark_Souls_Remastered.jpg"
   },
   {
     "GameId": 61,
     "GameName": "Artorias of the Abyss",
     "GameDescription": "DLC for Dark Souls Remastered",
     "MainGameId": 60,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Artorias_of_the_Abyss.jpg"
   },
   {
     "GameId": 62,
-    "GameName": "Assassin's Creed Odyssey",
-    "GameDescription": "An open-world RPG by Ubisoft",
+    "GameName": "FIFA 20",
+    "GameDescription": "A football simulation game by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
+    "CoverImageUrl": "/images/cover/Fifa_20.jpg"
 
   },
   {
     "GameId": 63,
-    "GameName": "EA Sports FC 24",
-    "GameDescription": "An Football Game By EA",
+    "GameName": "FIFA 19",
+    "GameDescription": "A football simulation game by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
+    "CoverImageUrl": "/images/cover/Fifa_19.jpg"
 
   },
-
-
   {
     "GameId": 64,
     "GameName": "Bloodborne",
     "GameDescription": "A gothic action RPG by FromSoftware",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Bloodborne.jpg"
   },
   {
     "GameId": 65,
     "GameName": "The Old Hunters",
     "GameDescription": "DLC for Bloodborne",
     "MainGameId": 64,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/The_Old_Hunters.jpg"
   },
   {
     "GameId": 66,
     "GameName": "Metal Gear Solid V: The Phantom Pain",
     "GameDescription": "An open-world action game by Kojima Productions",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/MetalSlug.jpg"
   },
   {
     "GameId": 67,
     "GameName": "Ground Zeroes",
     "GameDescription": "DLC for Metal Gear Solid V: The Phantom Pain",
     "MainGameId": 66,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/groundZero.jpg"
   },
   {
     "GameId": 68,
     "GameName": "Mortal Kombat 11",
     "GameDescription": "A fighting game by NetherRealm Studios",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Mortal Kombat 11.jpg"
   },
   {
     "GameId": 69,
     "GameName": "Aftermath",
     "GameDescription": "DLC for Mortal Kombat 11",
     "MainGameId": 68,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/imageGame1.jpeg"
   },
   {
     "GameId": 70,
     "GameName": "Red Dead Redemption",
     "GameDescription": "An open-world action game by Rockstar",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/RDR.jpg"
   },
   {
     "GameId": 71,
     "GameName": "Undead Nightmare",
     "GameDescription": "DLC for Red Dead Redemption",
     "MainGameId": 70,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/RDRUN.jpg"
   },
   {
     "GameId": 72,
     "GameName": "Uncharted 4: A Thief's End",
     "GameDescription": "An action-adventure game by Naughty Dog",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Uncharted.jpg"
   },
   {
     "GameId": 73,
-    "GameName": "Lost Legacy",
-    "GameDescription": "DLC for Uncharted 4: A Thief's End",
-    "MainGameId": 72,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "GameName": "Rocket league",
+    "GameDescription": "Car Football Game",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/cover/Rocket_League.jpg"
   },
   {
     "GameId": 74,
     "GameName": "The Division 2",
     "GameDescription": "A third-person shooter by Ubisoft",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/TheDivision.jpg"
   },
   {
     "GameId": 75,
     "GameName": "Warlords of New York",
     "GameDescription": "DLC for The Division 2",
     "MainGameId": 74,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/WarlordsofNew York.jpg"
   },
   {
     "GameId": 76,
     "GameName": "Tom Clancy's Ghost Recon Wildlands",
     "GameDescription": "An open-world tactical shooter by Ubisoft",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/GhostRecon.jpg"
   },
   {
     "GameId": 77,
     "GameName": "Narco Road",
     "GameDescription": "DLC for Tom Clancy's Ghost Recon Wildlands",
     "MainGameId": 76,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/NarcoRoad.jpg"
   },
   {
     "GameId": 78,
     "GameName": "Far Cry Primal",
     "GameDescription": "An open-world FPS by Ubisoft",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/FarCryPrimal.jpg"
   },
   {
     "GameId": 79,
     "GameName": "The Visionary",
     "GameDescription": "DLC for Far Cry Primal",
     "MainGameId": 78,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/FarCryPrimal.jpg"
   },
   {
     "GameId": 80,
     "GameName": "Saints Row IV",
     "GameDescription": "An open-world action game by Volition",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/SaintsRow.jpg"
   },
   {
     "GameId": 81,
     "GameName": "Gat Out of Hell",
     "GameDescription": "DLC for Saints Row IV",
     "MainGameId": 80,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/GatOutofHell.jpg"
   },
   {
     "GameId": 82,
     "GameName": "Just Cause 3",
     "GameDescription": "An open-world action game by Avalanche Studios",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/JustCause3.jpg"
   },
   {
     "GameId": 83,
     "GameName": "Sky Fortress",
     "GameDescription": "DLC for Just Cause 3",
     "MainGameId": 82,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/SkyFortress.jpg"
   },
   {
     "GameId": 84,
     "GameName": "Battlefield V",
     "GameDescription": "A first-person shooter by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Battlefield5.jpg"
   },
   {
     "GameId": 85,
     "GameName": "Chapter 5: War in the Pacific",
     "GameDescription": "DLC for Battlefield V",
     "MainGameId": 84,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/WarthePacific.jpg"
   },
   {
     "GameId": 86,
     "GameName": "Overwatch 2",
     "GameDescription": "A first-person shooter by Blizzard",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Overwatch2.jpg"
   },
   {
     "GameId": 87,
     "GameName": "Seasonal Events",
     "GameDescription": "DLC for Overwatch 2",
     "MainGameId": 86,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/Overwatch2.jpg"
   },
   {
     "GameId": 88,
     "GameName": "Star Wars Jedi: Survivor",
     "GameDescription": "A Star Wars action-adventure game by Respawn Entertainment",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/StarWarsJediSurvivor.jpg"
   },
   {
     "GameId": 89,
     "GameName": "The High Republic",
     "GameDescription": "DLC for Star Wars Jedi: Survivor",
     "MainGameId": 88,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/TheHighRepublic.jpg"
   },
   {
     "GameId": 90,
     "GameName": "CyberConnect2",
     "GameDescription": "A combat-focused RPG by CyberConnect2",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/CyberConnect2.jpg"
   },
   {
     "GameId": 91,
     "GameName": "Naruto Shippuden: Ultimate Ninja Storm 4",
     "GameDescription": "A fighting game by CyberConnect2",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/NarutoShippuden.jpg"
   },
   {
     "GameId": 92,
     "GameName": "Season Pass",
     "GameDescription": "DLC for Naruto Shippuden: Ultimate Ninja Storm 4",
     "MainGameId": 91,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/SeasonPass.jpg"
   },
   {
     "GameId": 93,
     "GameName": "Tomb Raider (2013)",
     "GameDescription": "A reboot of the action-adventure series by Crystal Dynamics",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/TombRaider(2013).jpg"
   },
   {
     "GameId": 94,
     "GameName": "The Tomb of the Lost Adventurer",
     "GameDescription": "DLC for Tomb Raider (2013)",
     "MainGameId": 93,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/TombRaider(2013).jpg"
   },
   {
     "GameId": 95,
     "GameName": "Resident Evil 7",
     "GameDescription": "A survival horror game by Capcom",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/ResidentEvil7.jpg"
   },
   {
     "GameId": 96,
     "GameName": "Banned Footage Vol. 1",
     "GameDescription": "DLC for Resident Evil 7",
     "MainGameId": 95,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/BannedFootage.jpg"
   },
   {
     "GameId": 97,
-    "GameName": "Assassin's Creed III",
-    "GameDescription": "An open-world action game by Ubisoft",
+    "GameName": "Grand Theft Auto San Andreas",
+    "GameDescription": "An open-world game by Rockstar",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/GTA_San_Andreas.jpg"
   },
   {
     "GameId": 98,
-    "GameName": "EA Sports FC 25",
-    "GameDescription": "An Football Game by EA",
+    "GameName": "Fortnite",
+    "GameDescription": "Battle Royale Game",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/fortnite.jpg"
   },
-
   {
     "GameId": 99,
-    "GameName": "Dark Souls III",
-    "GameDescription": "An action RPG by FromSoftware",
+    "GameName": "FIFA 18",
+    "GameDescription": "A football simulation game by EA",
     "MainGameId": null,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "CoverImageUrl": "/images/cover/FIFA_18.jpg"
   },
   {
     "GameId": 100,
-    "GameName": "The Ringed City",
-    "GameDescription": "DLC for Dark Souls III",
-    "MainGameId": 99,
-    "CoverImageUrl": "/images/Blood_and_Wine.jpg"
-
+    "GameName": "FIFA 17",
+    "GameDescription": "A football simulation game by EA",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/cover/FIFA_17.jpg"
   }
 ]

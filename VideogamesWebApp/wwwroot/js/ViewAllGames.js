@@ -12,7 +12,15 @@
         }, 3000);
     }
 });
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('applySort').addEventListener('click', function () {
+        const selectedSortOrder = document.querySelector('input[name="sortOrder"]:checked').value;
+        const currentPage = window.currentPage; 
+        const sortActionUrl = window.sortActionUrl; 
 
+        window.location.href = `${sortActionUrl}?pageNumber=${currentPage}&sortOrder=${selectedSortOrder}`;
+    });
+});
 
 function loadDLCs(mainGameId, gameName) {
     document.getElementById("mainGameTitle").textContent = `DLCs for ${gameName}`;
