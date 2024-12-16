@@ -403,10 +403,10 @@
   },
   {
     "GameId": 51,
-    "GameName": "Perpetual Testing Initiative",
-    "GameDescription": "DLC for Portal 2",
-    "MainGameId": 50,
-    "CoverImageUrl": "/images/cover/Portal2_Perpetual_Testing_Initiative.jpg"
+    "GameName": "FIFA 16",
+    "GameDescription": "A football simulation game by EA",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/cover/Fifa16.jpg"
   },
   {
     "GameId": 52,
@@ -535,7 +535,7 @@
     "GameName": "Aftermath",
     "GameDescription": "DLC for Mortal Kombat 11",
     "MainGameId": 68,
-    "CoverImageUrl": "/images/cover/imageGame1.jpeg"
+    "CoverImageUrl": "/images/cover/aftermath.jpg"
   },
   {
     "GameId": 70,
@@ -577,7 +577,7 @@
     "GameName": "Warlords of New York",
     "GameDescription": "DLC for The Division 2",
     "MainGameId": 74,
-    "CoverImageUrl": "/images/cover/WarlordsofNew York.jpg"
+    "CoverImageUrl": "/images/cover/WarlordsofNewYork.jpg"
   },
   {
     "GameId": 76,
@@ -602,10 +602,10 @@
   },
   {
     "GameId": 79,
-    "GameName": "The Visionary",
-    "GameDescription": "DLC for Far Cry Primal",
-    "MainGameId": 78,
-    "CoverImageUrl": "/images/cover/FarCryPrimal.jpg"
+    "GameName": "FIFA 15",
+    "GameDescription": "A football simulation game by EA",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/cover/Fifa15.jpg"
   },
   {
     "GameId": 80,
@@ -647,7 +647,7 @@
     "GameName": "Chapter 5: War in the Pacific",
     "GameDescription": "DLC for Battlefield V",
     "MainGameId": 84,
-    "CoverImageUrl": "/images/cover/WarthePacific.jpg"
+    "CoverImageUrl": "/images/cover/battlefield2.jpg"
   },
   {
     "GameId": 86,
@@ -658,10 +658,10 @@
   },
   {
     "GameId": 87,
-    "GameName": "Seasonal Events",
-    "GameDescription": "DLC for Overwatch 2",
-    "MainGameId": 86,
-    "CoverImageUrl": "/images/cover/Overwatch2.jpg"
+    "GameName": "FIFA 14",
+    "GameDescription": "A football simulation game by EA",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/cover/Fifa14.jpg"
   },
   {
     "GameId": 88,
@@ -707,10 +707,10 @@
   },
   {
     "GameId": 94,
-    "GameName": "The Tomb of the Lost Adventurer",
-    "GameDescription": "DLC for Tomb Raider (2013)",
-    "MainGameId": 93,
-    "CoverImageUrl": "/images/cover/TombRaider(2013).jpg"
+    "GameName": "FIFA 13",
+    "GameDescription": "A football simulation game by EA",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/cover/Fifa13.jpg"
   },
   {
     "GameId": 95,

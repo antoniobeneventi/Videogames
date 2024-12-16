@@ -171,7 +171,7 @@ public class GamesController : Controller
             "GameDescriptionDesc" => allGamesQuery.OrderByDescending(game => game.GameDescription),
             "DLCCountAsc" => allGamesQuery.OrderBy(game => game.DLCCount),
             "DLCCountDesc" => allGamesQuery.OrderByDescending(game => game.DLCCount),
-            _ => allGamesQuery.OrderBy(game => game.GameName.ToLower()) // Ordine alfabetico di default
+            _ => allGamesQuery.OrderBy(game => game.GameName.ToLower()) 
         };
 
         var mainGames = _dbContext.Games
@@ -224,7 +224,6 @@ public class GamesController : Controller
             filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.LauncherId == launcherId.Value);
 
 
-        // Aggiorna le statistiche come prima
         var totalSpent = filteredTransactionsQuery.Sum(t => t.Price);
         ViewData["TotalSpent"] = totalSpent;
 
@@ -241,7 +240,7 @@ public class GamesController : Controller
      ? Math.Round(filteredTransactionsQuery.Average(t => (double?)t.Price) ?? 0, 2)
      : 0;
 
-        ViewData["AveragePrice"] = averagePrice.ToString("F2"); // Format to two decimal places
+        ViewData["AveragePrice"] = averagePrice.ToString("F2");
 
         // Giorno con il maggior numero di acquisti
         var mostActiveDay = filteredTransactionsQuery
@@ -326,7 +325,7 @@ public class GamesController : Controller
 
     private int GetUserId()
     {
-        return HttpContext.Session.GetInt32("UserId") ?? 0;
+        return HttpContext.Session.GetInt32("UserId") ?? 0; 
     }
 
     [HttpPost]
@@ -518,9 +517,6 @@ public class GamesController : Controller
         TempData["SuccessMessage"] = "Game deleted successfully.";
         return RedirectToAction("ViewAllGames");
     }
-
-
-
 
     [HttpGet]
     public IActionResult SearchGames(string query)

@@ -40,9 +40,9 @@ function loadDLCs(mainGameId, gameName) {
                     const listItem = document.createElement("li");
                     listItem.className = "list-group-item";
                     listItem.innerHTML = `
-                                                                                                                                <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                                                                                <strong>${dlc.gameName}</strong>
-                                                                                                                            `;
+                          <i class="fas fa-gamepad me-2 text-primary"></i>
+                          <strong>${dlc.gameName}</strong>
+                          `;
                     dlcListElement.appendChild(listItem);
                 });
             }
@@ -93,9 +93,9 @@ function loadDLCs(mainGameId, gameName, page = 1) {
                     const listItem = document.createElement("li");
                     listItem.className = "list-group-item";
                     listItem.innerHTML = `
-                                                                                                                    <i class="fas fa-gamepad me-2 text-primary"></i>
-                                                                                                                    <strong>${dlc.gameName}</strong>
-                                                                                                                `;
+                        <i class="fas fa-gamepad me-2 text-primary"></i>
+                        <strong>${dlc.gameName}</strong>
+                        `;
                     dlcListElement.appendChild(listItem);
                 });
 
