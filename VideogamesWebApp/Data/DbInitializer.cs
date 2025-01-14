@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 public static class DbInitializer
 {
+    private const string RawgApiKey = "d87d6329a7464628ad26fdb9ab180cbe";
+    private const string RawgApiBaseUrl = "https://api.rawg.io/api";
     public static void Initialize(DatabaseContext context)
     {
         context.Database.EnsureCreated();
@@ -130,29 +133,47 @@ public static class DbInitializer
             };
             context.Launchers.AddRange(launchers);
         }
-        // Aggiungi giochi dal file JSON
         if (!context.Games.Any())
         {
-            var games = ReadGamesFromJson("games.json");
+            var games = FetchGamesFromRawgApi().Result;
             context.Games.AddRange(games);
         }
 
         context.SaveChanges();
     }
-    private static List<Game> ReadGamesFromJson(string filePath)
+
+    private static async Task<List<Game>> FetchGamesFromRawgApi()
     {
-        var jsonData = File.ReadAllText(filePath);
-        var games = JsonConvert.DeserializeObject<List<Game>>(jsonData);
+        using var client = new HttpClient();
+        var games = new List<Game>();
 
-        foreach (var game in games)
+        try
         {
-            game.IsImported = true;
+            var url = $"{RawgApiBaseUrl}/games?key={RawgApiKey}";
+            var response = await client.GetStringAsync(url);
 
-            // Imposta un valore predefinito per CoverImageUrl se è NULL
-            if (string.IsNullOrEmpty(game.CoverImageUrl))
+            var jsonResponse = JObject.Parse(response);
+            var results = jsonResponse["results"]?.ToObject<List<JObject>>();
+
+            if (results != null)
             {
-                game.CoverImageUrl = "/images/cover/controller.jpg"; // Imposta un'immagine predefinita
+                foreach (var result in results)
+                {
+                    var game = new Game
+                    {
+                        GameName = result["name"]?.ToString() ?? "Unknown",
+                        GameDescription = result["description"]?.ToString() ?? "No description available",
+                        CoverImageUrl = result["background_image"]?.ToString() ?? "/images/cover/controller.jpg",
+                        IsImported = true
+                    };
+
+                    games.Add(game);
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data from RAWG API: {ex.Message}");
         }
 
         return games;

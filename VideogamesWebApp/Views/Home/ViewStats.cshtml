@@ -17,9 +17,9 @@
     <button type="button" id="resetFiltersButton" class="btn btn-warning">
         <i class="fas fa-times-circle"></i> Reset Filters
     </button>
-    <button type="button" id="createPdfButton" class="btn btn-success">
-        <i class="fas fa-file-pdf"></i> Create PDF
-    </button>
+    <a href="@Url.Action("GenerateStatsPdf", "Games")" class="btn btn-success">
+        <i class="fas fa-file-pdf"></i> Generate Stats PDF
+    </a>
 
     <div id="activeFiltersContainer" class="mb-3">
         <span class="badge bg-info text-dark" id="activeFiltersText">

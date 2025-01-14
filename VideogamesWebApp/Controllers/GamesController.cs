@@ -2,27 +2,33 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
+using VideogamesWebApp.Services;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
+using Newtonsoft.Json.Linq;
 
 
 public class GamesController : Controller
 {
     private readonly DatabaseContext _dbContext;
+    private readonly StatisticsService _statisticsService;
 
-    public GamesController(DatabaseContext dbContext)
+    public GamesController(DatabaseContext dbContext, StatisticsService statisticsService)
     {
         _dbContext = dbContext;
+        _statisticsService = statisticsService;
+
     }
 
-
-
-
-    public IActionResult Index(string searchQuery, int pageNumber = 1)
+    public IActionResult Index(string searchQuery, int pageNumber = 100)
     {
-        var userId = GetUserId(); // Metodo per ottenere l'ID dell'utente
-        var username = GetUsername(); // Metodo per ottenere il nome utente
-        int pageSize = 5;
+        var userId = GetUserId(); 
+        var username = GetUsername(); 
+        int pageSize = 100;
 
-        // Recupera l'utente per ottenere anche l'immagine del profilo
         var user = _dbContext.Users.SingleOrDefault(u => u.UserId == userId);
 
         if (user == null)
@@ -30,9 +36,6 @@ public class GamesController : Controller
             return RedirectToAction("Login", "Account");
         }
 
-
-
-        // Recupera la lista delle transazioni del gioco
         var transactionsQuery = from transaction in _dbContext.GameTransactions
                                 join game in _dbContext.Games on transaction.GameId equals game.GameId
                                 join store in _dbContext.Stores on transaction.StoreId equals store.StoreId
@@ -58,7 +61,6 @@ public class GamesController : Controller
                                     CoverImageUrl = game.CoverImageUrl
                                 };
 
-        // Filtro di ricerca, se presente
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
             searchQuery = searchQuery.ToLower();
@@ -103,10 +105,6 @@ public class GamesController : Controller
         return View("~/Views/Home/Index.cshtml", transactions);
     }
 
-
-
-
-
     [HttpPost]
     public IActionResult BuyGame(GamePurchaseViewModel model)
     {
@@ -138,181 +136,93 @@ public class GamesController : Controller
     }
 
 
-    public IActionResult ViewAllGames(int pageNumber = 1, string sortOrder = "GameNameAsc")
+    public async Task<IActionResult> ViewAllGames(int pageNumber = 1, string sortOrder = "GameNameAsc")
     {
-        int pageSize = 5;
+        int pageSize = 100;
         var username = GetUsername();
 
-        // 
-        if (!_dbContext.Games.Any())
+        // Ottieni i giochi e il numero totale di giochi dall'API
+        var (games, totalGames) = await FetchGamesFromRawgApi(pageNumber, pageSize);
+
+        // Ordina i giochi in base alla richiesta
+        games = sortOrder switch
         {
-            DbInitializer.Initialize(_dbContext);
-        }
-
-        IQueryable<GameViewModel> allGamesQuery = _dbContext.Games
-            .Select(game => new GameViewModel
-            {
-                GameId = game.GameId,
-                GameName = game.GameName,
-                GameDescription = game.GameDescription,
-                MainGameId = game.MainGameId,
-                MainGameName = game.MainGame != null ? game.MainGame.GameName : null,
-                DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId),
-                IsImported = game.IsImported,
-                CoverImageUrl = game.CoverImageUrl
-            });
-
-
-        allGamesQuery = sortOrder switch
-        {
-            "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName.ToLower()),
-            "GameNameDesc" => allGamesQuery.OrderByDescending(game => game.GameName.ToLower()),
-            "GameDescriptionAsc" => allGamesQuery.OrderBy(game => game.GameDescription),
-            "GameDescriptionDesc" => allGamesQuery.OrderByDescending(game => game.GameDescription),
-            "DLCCountAsc" => allGamesQuery.OrderBy(game => game.DLCCount),
-            "DLCCountDesc" => allGamesQuery.OrderByDescending(game => game.DLCCount),
-            _ => allGamesQuery.OrderBy(game => game.GameName.ToLower()) 
+            "GameNameAsc" => games.OrderBy(g => g.GameName).ToList(),
+            "GameNameDesc" => games.OrderByDescending(g => g.GameName).ToList(),
+            _ => games
         };
 
-        var mainGames = _dbContext.Games
-            .Where(g => g.MainGameId == null)
-            .OrderBy(g => g.GameName)
-            .Select(g => new { g.GameId, g.GameName })
-            .ToList();
+        // Calcola il numero totale di pagine
+        int totalPages = (int)Math.Ceiling((double)totalGames / pageSize);
 
-        ViewBag.MainGames = mainGames;
-
-        int totalGames = allGamesQuery.Count();
-        var paginatedGames = allGamesQuery
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var gamesWithDLCs = _dbContext.Games
-            .Where(g => g.MainGameId == null)
-            .Select(g => new
-            {
-                GameId = g.GameId,
-                HasDLCs = _dbContext.Games.Any(dlc => dlc.MainGameId == g.GameId)
-            })
-            .ToDictionary(g => g.GameId, g => g.HasDLCs);
-
-        ViewBag.GamesWithDLCs = gamesWithDLCs;
-
+        // Passa i dati alla vista
         ViewData["Username"] = username;
-        ViewData["TotalPages"] = (int)Math.Ceiling((double)totalGames / pageSize);
+        ViewData["TotalPages"] = totalPages;
         ViewData["CurrentPage"] = pageNumber;
         ViewData["CurrentSortOrder"] = sortOrder;
 
-        return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
+        return View("~/Views/Home/ViewAllGames.cshtml", games);
     }
 
-    public IActionResult ViewStats(int? storeId, int? platformId, int? launcherId)
+    private async Task<(List<GameViewModel> Games, int TotalGames)> FetchGamesFromRawgApi(int page, int pageSize)
     {
-        var userId = GetUserId();
+        using var client = new HttpClient();
+        var games = new List<GameViewModel>();
+        int totalGames = 0;
 
-        var filteredTransactionsQuery = _dbContext.GameTransactions
-            .Where(t => t.UserId == userId);
-
-        if (storeId.HasValue)
-            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.StoreId == storeId.Value);
-
-        if (platformId.HasValue)
-            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.PlatformId == platformId.Value);
-
-        if (launcherId.HasValue)
-            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.LauncherId == launcherId.Value);
-
-
-        var totalSpent = filteredTransactionsQuery.Sum(t => t.Price);
-        ViewData["TotalSpent"] = totalSpent;
-
-
-        // Giochi totali che ha l'utente
-        var totalGames = filteredTransactionsQuery
-            .Select(t => t.GameId)
-            .Distinct()
-            .Count();
-        ViewData["TotalGames"] = totalGames;
-
-        // Prezzo medio per ogni gioco
-        var averagePrice = filteredTransactionsQuery.Any()
-     ? Math.Round(filteredTransactionsQuery.Average(t => (double?)t.Price) ?? 0, 2)
-     : 0;
-
-        ViewData["AveragePrice"] = averagePrice.ToString("F2");
-
-        // Giorno con il maggior numero di acquisti
-        var mostActiveDay = filteredTransactionsQuery
-            .GroupBy(t => t.PurchaseDate)
-            .OrderByDescending(g => g.Count())
-            .Select(g => new { Date = g.Key, Count = g.Count() })
-            .FirstOrDefault();
-        ViewData["MostActiveDay"] = mostActiveDay != null
-            ? $"{mostActiveDay.Date:dd/MM/yyyy} ({mostActiveDay.Count} shopping)"
-            : "No transactions.";
-
-        // Percentuale di giochi virtuali
-        var totalVirtual = filteredTransactionsQuery
-            .Count(t => t.IsVirtual);
-        var totalTransactions = filteredTransactionsQuery.Count();
-        var percentageVirtual = totalTransactions > 0
-            ? Math.Ceiling((double)totalVirtual / totalTransactions * 100)
-            : 0;
-        ViewData["PercentageVirtual"] = $"{percentageVirtual}% ({totalVirtual} virtual games)";
-
-        //most expensive game
-        var mostExpensiveGame = filteredTransactionsQuery
-    .Where(t => t.UserId == userId)
-    .AsEnumerable()
-    .OrderByDescending(t => t.Price)
-    .Select(t => new { t.GameId, t.Price })
-    .FirstOrDefault();
-
-        if (mostExpensiveGame != null)
+        try
         {
-            var gameName = _dbContext.Games
-                .Where(g => g.GameId == mostExpensiveGame.GameId)
-                .Select(g => g.GameName)
-                .FirstOrDefault();
+            var url = $"https://api.rawg.io/api/games?key=d87d6329a7464628ad26fdb9ab180cbe&page={page}&page_size={pageSize}";
+            var response = await client.GetStringAsync(url);
 
-            ViewData["MostExpensiveGame"] = gameName != null
-                ? $"{gameName} ({mostExpensiveGame.Price} €)"
-                : "Nessun gioco trovato.";
-        }
-        else
-        {
-            ViewData["MostExpensiveGame"] = "No transactions.";
-        }
+            var jsonResponse = JObject.Parse(response);
+            totalGames = jsonResponse["count"]?.ToObject<int>() ?? 0; // Numero totale di giochi nell'API
 
-        // Last purchase
-        var lastPurchase = filteredTransactionsQuery
-            .OrderByDescending(t => t.PurchaseDate)
-            .Select(t => new { t.Game.GameName, t.PurchaseDate })
-            .FirstOrDefault();
-        ViewData["LastPurchase"] = lastPurchase != null
-            ? $"{lastPurchase.GameName} on {lastPurchase.PurchaseDate:dd/MM/yyyy}"
-            : "No transactions.";
+            var results = jsonResponse["results"]?.ToObject<List<JObject>>();
 
-        // Shopping by days of the week
-        var activeDaysOfWeek = filteredTransactionsQuery
-            .GroupBy(t => t.PurchaseDate.DayOfWeek)
-            .OrderByDescending(g => g.Count())
-            .Select(g => new { Day = g.Key, Count = g.Count() })
-            .ToList();
-        ViewData["ActiveDaysOfWeek"] = activeDaysOfWeek;
-
-        // Shopping by month
-        var activeMonths = filteredTransactionsQuery
-            .GroupBy(t => new { Year = t.PurchaseDate.Year, Month = t.PurchaseDate.Month })
-            .Select(g => new
+            if (results != null)
             {
-                Year = g.Key.Year,
-                Month = g.Key.Month,
-                Count = g.Count()
-            })
-            .ToList();
-        ViewData["ActiveMonths"] = activeMonths;
+                foreach (var result in results)
+                {
+                    var game = new GameViewModel
+                    {
+                        GameId = result["id"]?.ToString(),
+                        GameName = result["name"]?.ToString() ?? "Unknown",
+                        GameDescription = result["description_raw"]?.ToString() ?? "No description available",
+                        CoverImageUrl = result["background_image"]?.ToString() ?? "/images/cover/controller.jpg",
+                        DLCCount = 0,
+                        MainGameName = null,
+                        IsImported = true
+                    };
+
+                    games.Add(game);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data from RAWG API: {ex.Message}");
+        }
+
+        return (games, totalGames);
+    }
+
+
+
+    public async Task<IActionResult> ViewStats(int? storeId, int? platformId, int? launcherId)
+    {
+        var userId = GetUserId(); // Funzione per ottenere l'ID dell'utente loggato
+        var stats = await _statisticsService.GetFilteredStatisticsAsync(userId, storeId, platformId, launcherId);
+
+        ViewData["TotalSpent"] = stats.TotalSpent;
+        ViewData["TotalGames"] = stats.TotalGames;
+        ViewData["AveragePrice"] = stats.AveragePrice.ToString("F2");
+        ViewData["MostActiveDay"] = stats.MostActiveDay;
+        ViewData["PercentageVirtual"] = stats.PercentageVirtual;
+        ViewData["MostExpensiveGame"] = stats.MostExpensiveGame;
+        ViewData["LastPurchase"] = stats.LastPurchase;
+        ViewData["ActiveDaysOfWeek"] = stats.ActiveDaysOfWeek;
+        ViewData["ActiveMonths"] = stats.ActiveMonths;
 
         return View("~/Views/Home/ViewStats.cshtml");
     }
@@ -325,7 +235,7 @@ public class GamesController : Controller
 
     private int GetUserId()
     {
-        return HttpContext.Session.GetInt32("UserId") ?? 0; 
+        return HttpContext.Session.GetInt32("UserId") ?? 0;
     }
 
     [HttpPost]
@@ -350,8 +260,8 @@ public class GamesController : Controller
                 IsImported = false, 
                 CoverImageUrl = "/images/cover/controller.jpg"
 
-
             };
+
             _dbContext.Games.Add(game);
             await _dbContext.SaveChangesAsync();
 
@@ -359,12 +269,10 @@ public class GamesController : Controller
 
             if (fromViewAllGames)
             {
-                //  ritorna la pagina di ViewAllGames con il nome gioco
                 return RedirectToAction("index", "Games", new { sortOrder = "alphabetical", gameName = gameName, gameId = game.GameId });
             }
             else
             {
-                // Ritorna pagina Index 
                 return RedirectToAction("ViewAllGames", "Games");
             }
         }
@@ -394,7 +302,6 @@ public class GamesController : Controller
             _dbContext.Stores.Add(newStore);
             _dbContext.SaveChanges();
 
-            // Ritorna messaggio di successo con dettagli sullo store creato
             return Json(new
             {
                 success = true,
@@ -437,7 +344,6 @@ public class GamesController : Controller
                 message = "Platform added successfully!"
             });
         }
-
         return Json(new { success = false, message = "Platform name cannot be empty." });
     }
 
@@ -471,7 +377,6 @@ public class GamesController : Controller
                 message = "Launcher added successfully!"
             });
         }
-
         return Json(new { success = false, message = "Launcher name cannot be empty." });
     }
 
@@ -535,6 +440,7 @@ public class GamesController : Controller
 
         return Json(games);
     }
+
     [HttpGet]
     public IActionResult SearchStores(string query)
     {
@@ -588,6 +494,7 @@ public class GamesController : Controller
 
         return Json(launchers);
     }
+
     [HttpGet]
     public IActionResult GetDLCs(int mainGameId, int page = 1, int pageSize = 5)
     {
@@ -627,7 +534,6 @@ public class GamesController : Controller
 
         return Json(result);
     }
-
 
     public IActionResult GetAllPlatforms(int page = 1, int pageSize = 5)
     {
@@ -681,9 +587,189 @@ public class GamesController : Controller
 
         return Json(new { isDuplicate });
     }
+    public IActionResult GeneratePdf()
+    {
+        var userId = GetUserId();
+
+        var transactions = (from transaction in _dbContext.GameTransactions
+                            join game in _dbContext.Games on transaction.GameId equals game.GameId
+                            join store in _dbContext.Stores on transaction.StoreId equals store.StoreId
+                            join platform in _dbContext.Platforms on transaction.PlatformId equals platform.PlatformId
+                            join launcher in _dbContext.Launchers on transaction.LauncherId equals launcher.LauncherId
+                            where transaction.UserId == userId
+                            select new GameTransactionsViewModel
+                            {
+                                TransactionId = transaction.TransactionId,
+                                GameId = transaction.GameId,
+                                GameName = game.GameName,
+                                PurchaseDate = transaction.PurchaseDate,
+                                Price = transaction.Price,
+                                IsVirtual = transaction.IsVirtual,
+                                StoreName = store.StoreName,
+                                PlatformName = platform.PlatformName,
+                                LauncherName = launcher.LauncherName,
+                                MainGameId = game.MainGameId,
+                                MainGameName = game.MainGame != null ? game.MainGame.GameName : null,
+                                CoverImageUrl = game.CoverImageUrl
+                            }).ToList();
+
+        using (var memoryStream = new MemoryStream())
+        {
+            var document = new iTextSharp.text.Document();
+            PdfWriter.GetInstance(document, memoryStream);
+            document.Open();
+
+            var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20);
+            document.Add(new Paragraph("My Game Purchases", titleFont));
+            document.Add(new Paragraph(" ")); 
+
+            var table = new PdfPTable(5);
+            table.WidthPercentage = 100; 
+            table.SpacingBefore = 20f; 
+            table.SpacingAfter = 20f; 
+
+            table.AddCell("Game Name");
+            table.AddCell("Purchase Date");
+            table.AddCell("Price (€)");
+            table.AddCell("Store");
+            table.AddCell("Platform");
+
+            foreach (var transaction in transactions)
+            {
+                table.AddCell(transaction.GameName);
+                table.AddCell(transaction.PurchaseDate.ToString("dd/MM/yyyy"));
+                table.AddCell(transaction.Price.ToString("F2"));
+                table.AddCell(transaction.StoreName);
+                table.AddCell(transaction.PlatformName);
+            }
+
+            document.Add(table);
+
+            var footerFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+            document.Add(new Paragraph("Generated on: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"), footerFont));
+            document.Add(new Paragraph(" ")); 
+
+            document.Close();
+
+            var fileContent = memoryStream.ToArray();
+            return File(fileContent, "application/pdf", "MyGames.pdf");
+        }
+    }
+
+    public IActionResult GenerateStatsPdf()
+    {
+        var userId = GetUserId();
+        var stats = _statisticsService.GetFilteredStatisticsAsync(userId, null, null, null).Result;
+
+        using (var memoryStream = new MemoryStream())
+        {
+            var document = new iTextSharp.text.Document();
+            PdfWriter.GetInstance(document, memoryStream);
+            document.Open();
+
+            var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20);
+            document.Add(new Paragraph("Personal Statistics", titleFont));
+            document.Add(new Paragraph(" "));
+
+            document.Add(new Paragraph($"Total Spent: {stats.TotalSpent} €"));
+            document.Add(new Paragraph($"Total Games: {stats.TotalGames}"));
+            document.Add(new Paragraph($"Average Price: {stats.AveragePrice:F2} €"));
+            document.Add(new Paragraph($"Most Active Day: {stats.MostActiveDay}"));
+            document.Add(new Paragraph($"Percentage of Virtual Games: {stats.PercentageVirtual}"));
+            document.Add(new Paragraph($"Most Expensive Game: {stats.MostExpensiveGame}"));
+            document.Add(new Paragraph($"Last Purchase: {stats.LastPurchase}"));
+            document.Add(new Paragraph(" "));
+
+            document.Add(new Paragraph("Shopping by Days of the Week:"));
+            var daysOfWeekTable = new PdfPTable(2);
+            daysOfWeekTable.AddCell(new PdfPCell(new Phrase("Day of the Week")));
+            daysOfWeekTable.AddCell(new PdfPCell(new Phrase("Count")));
+            document.Add(new Paragraph(" "));
+
+
+            foreach (var day in stats.ActiveDaysOfWeek)
+            {
+                daysOfWeekTable.AddCell(new PdfPCell(new Phrase(day.Day.ToString())));
+                daysOfWeekTable.AddCell(new PdfPCell(new Phrase(day.Count.ToString())));
+            }
+            document.Add(daysOfWeekTable);
+
+
+            document.Add(new Paragraph("Purchases by Months:"));
+            var monthsTable = new PdfPTable(3);
+            monthsTable.AddCell(new PdfPCell(new Phrase("Year")));
+            monthsTable.AddCell(new PdfPCell(new Phrase("Month")));
+            monthsTable.AddCell(new PdfPCell(new Phrase("Count")));
+            document.Add(new Paragraph(" "));
+
+
+            foreach (var month in stats.ActiveMonths)
+            {
+                monthsTable.AddCell(new PdfPCell(new Phrase(month.Year.ToString())));
+                monthsTable.AddCell(new PdfPCell(new Phrase(DateTimeFormatInfo.CurrentInfo.GetMonthName(month.Month))));
+                monthsTable.AddCell(new PdfPCell(new Phrase(month.Count.ToString()))); 
+            }
+                document.Add(monthsTable);
+
+                var footerFont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+                document.Add(new Paragraph("Generated on: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"), footerFont));
+                document.Add(new Paragraph(" ")); 
+
+                document.Close();
+
+                var fileContent = memoryStream.ToArray();
+                return File(fileContent, "application/pdf", "PersonalStatistics.pdf");
+            }
+        }
+    [HttpPost]
+    public IActionResult ImportGames(IFormFile csvFile)
+    {
+        if (csvFile == null || csvFile.Length == 0)
+        {
+            TempData["ErrorMessage"] = "Please select a valid CSV file.";
+            return RedirectToAction("Index");
+        }
+
+        try
+        {
+            using (var reader = new StreamReader(csvFile.OpenReadStream()))
+            using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ",",
+                HasHeaderRecord = true,
+            }))
+            {
+                var games = csv.GetRecords<GameCsvModel>().ToList();
+
+                foreach (var game in games)
+                {
+
+                    if (!_dbContext.Games.Any(g => g.GameName.ToLower() == game.GameName.ToLower()))
+                    {
+                        var newGame = new Game
+                        {
+                            GameName = game.GameName,
+                            GameDescription = game.GameDescription,
+                            IsImported = true,
+                            CoverImageUrl = string.IsNullOrEmpty(game.CoverImageUrl) ? "/images/default-cover.jpg" : game.CoverImageUrl
+                        };
+
+                        _dbContext.Games.Add(newGame);
+                    }
+                }
+
+                _dbContext.SaveChanges();
+                TempData["SuccessMessage"] = "Games imported successfully!";
+            }
+        }
+
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"An error occurred during import: {ex.Message}";
+        }
+
+        return RedirectToAction("Index");
+    }
 
 
 }
-
-
-

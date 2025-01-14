@@ -252,7 +252,7 @@ function validateForm() {
         isValid = false;
     }
 
-    return isValid; // Restituisce lo stato di validazione.
+    return isValid; 
 }
 
 // Reindirizza alla pagina "View All Games" con i parametri del gioco nella URL.

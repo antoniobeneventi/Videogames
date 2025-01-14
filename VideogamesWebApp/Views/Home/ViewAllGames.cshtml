@@ -5,7 +5,17 @@
 
 <div class="container mt-4">
     <h1 class="text-center text-primary mb-4">All Games</h1>
-
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-3">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search for games..." aria-label="Search games">
+                <button class="btn btn-primary" id="searchButton">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="action-buttons">
         <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Back to Library
@@ -76,66 +86,19 @@
     </div>
 
     <div class="row row-cols-1 row-cols-md-5 g-4">
-        @foreach (var game in Model)
-        {
-            <div class="col">
-                <div class="card h-100 game-card">
-                    <img src="@game.CoverImageUrl" class="card-img-top cover-image" alt="@game.GameName" />
-                    <div class="card-body">
-                        <h5 class="card-title">@game.GameName</h5>
-                        <p class="card-text text-muted">@game.GameDescription</p>
-
-                        <div class="game-details">
-                            <div class="detail-item">
-                                <strong>Main Game:</strong>
-                                @(game.MainGameId.HasValue ? game.MainGameName : "-")
-                            </div>
-                            <div class="detail-item">
-                                <strong>DLC Count:</strong>
-                                @if (game.MainGameId == null)
-                                {
-                                    <span class="badge bg-primary">@game.DLCCount</span>
-                                }
-                                else
-                                {
-                                    <span>-</span>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="card-actions mt-3">
-                            @{
-                                bool hasDLCs = ViewBag.GamesWithDLCs != null &&
-                                ViewBag.GamesWithDLCs.ContainsKey(game.GameId) &&
-                                ViewBag.GamesWithDLCs[game.GameId];
-                            }
-                            @if (hasDLCs)
-                            {
-                                <button class="btn btn-info btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#dlcModal"
-                                        onclick="loadDLCs('@game.GameId','@game.GameName')"
-                                        title="View DLCs">
-                                    <i class="fas fa-eye"></i> View DLCs
-                                </button>
-                            }
-
-                            @if (!game.IsImported)
-                            {
-                                <form asp-action="DeleteAllGame" asp-controller="Games" method="post" class="d-inline">
-                                    <input type="hidden" name="gameId" value="@game.GameId" />
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Are you sure you want to delete this game?');">
-                                        <i class="fas fa-trash-alt"></i> Delete
-                                    </button>
-                                </form>
-                            }
-                        </div>
-                    </div>
+    @foreach (var game in Model)
+    {
+        <div class="col">
+            <div class="card h-100 game-card">
+                <img src="@game.CoverImageUrl" class="card-img-top cover-image" alt="@game.GameName" />
+                <div class="card-body">
+                    <h5 class="card-title">@game.GameName</h5>
+                    <p class="card-text text-muted">@game.GameDescription</p>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
+</div>
 
     <!-- Pagination controls -->
     <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
@@ -222,40 +185,7 @@
     </nav>
 
     <!-- Modal for Adding New Game -->
-    <div class="modal fade" id="addGameModal" tabindex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addGameModalLabel">Add New Game</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form asp-action="AddGame" asp-controller="Games" method="post" id="addGameForm">
-                        <input maxlength="30" type="hidden" name="fromViewAllGames" id="fromAllViewGames" value="false" />
-                        <div class="mb-3">
-                            <label for="gameNameInput" class="form-label">Game Name</label>
-                            <input maxlength="30" type="text" class="form-control" id="gameNameInput" name="GameName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="gameDescription" class="form-label">Description</label>
-                            <textarea maxlength="100" class="form-control" id="gameDescription" name="GameDescription" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="mainGameId" class="form-label">Main Game (optional)</label>
-                            <select class="form-select" id="mainGameId" name="MainGameId">
-                                <option value="">Select a main game (optional)</option>
-                                @foreach (var game in ViewBag.MainGames)
-                                {
-                                    <option value="@game.GameId">@game.GameName</option>
-                                }
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Game</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
     <div class="modal fade" id="dlcModal" tabindex="-1" aria-labelledby="dlcModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">

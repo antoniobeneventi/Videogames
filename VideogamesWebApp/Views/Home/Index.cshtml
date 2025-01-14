@@ -137,6 +137,24 @@
     <a href="@Url.Action("ViewStats", "Games")" class="btn btn-custom btn-buy-game">
         <i class="fas fa-chart-line"></i> View Personal Stats
     </a>
+    <a href="@Url.Action("GeneratePdf", "Games")" class="btn btn-custom btn-buy-game">
+        <i class="bi bi-file-earmark-pdf"></i> Create PDF
+    </a>
+</div>
+<div>
+    <form method="post" asp-action="ImportGames" enctype="multipart/form-data" class="p-4 border rounded bg-light shadow">
+    <h4 class="mb-3">Import Games</h4>
+    <div class="form-group mb-3">
+        <label for="csvFile" class="form-label">Select the CSV file:</label>
+        <input type="file" name="csvFile" id="csvFile" accept=".csv" class="form-control" />
+        <small class="form-text text-muted">Upload a CSV file with your game information.</small>
+    </div>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-upload"></i> Import Games
+        </button>
+    </div>
+</form>
 
 </div>
 
@@ -503,7 +521,7 @@
                             <span class="page-link">...</span>
                         </li>
                     }
-                }
+                } 
 
                 // Mostra pagine nell'intervallo specificato
                 for (int i = Math.Max(1, currentPage - range); i <= Math.Min(totalPages, currentPage + range); i++)
@@ -539,7 +557,7 @@
         </ul>
     </nav>
 
-
+     
     <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
 </div>
 
